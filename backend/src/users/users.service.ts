@@ -22,18 +22,18 @@ export class UsersService {
     return this.repository.findAll();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.repository.findOne(id);
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(id: number, dto: UpdateUserDto) {
     const user = await this.repository.findOne(id);
     wrap(user).assign(dto);
     await this.em.flush();
     return user;
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.repository.nativeDelete(id);
   }
 }

@@ -1,17 +1,13 @@
-import { Collection, Entity, OneToMany, PrimaryKey, Property, SerializedPrimaryKey } from "@mikro-orm/core";
-import { ObjectId } from "@mikro-orm/mongodb";
+import { Collection, Entity, Enum, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { ParadeRepository } from "../parade.repository";
 import { Attendance } from "../../attendances/entities/attendance.entity";
 
 @Entity({ customRepository: () => ParadeRepository })
 export class Parade {
   @PrimaryKey()
-  _id!: ObjectId;
+  id!: number;
 
-  @SerializedPrimaryKey()
-  id!: string;
-
-  @Property()
+  @Enum({ items: () => ParadeType })
   type: ParadeType;
 
   @Property()

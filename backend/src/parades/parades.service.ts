@@ -14,7 +14,7 @@ export class ParadesService {
   }
 
   create(dto: CreateParadeDto) {
-    const entity = new Parade(dto.type, dto.startDate);
+    const entity = new Parade(dto.type, new Date(dto.startDate));
     return this.em.persistAndFlush(entity);
   }
 
@@ -22,18 +22,18 @@ export class ParadesService {
     return this.repository.findAll();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.repository.findOne(id);
   }
 
-  async update(id: string, dto: UpdateParadeDto) {
+  async update(id: number, dto: UpdateParadeDto) {
     const parade = await this.repository.findOne(id);
     wrap(parade).assign(dto);
     await this.em.flush();
     return parade;
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.repository.nativeDelete(id);
   }
 }

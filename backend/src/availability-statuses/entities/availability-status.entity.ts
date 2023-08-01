@@ -1,19 +1,15 @@
-import { ObjectId } from "@mikro-orm/mongodb";
-import { Entity, PrimaryKey, Property, SerializedPrimaryKey } from "@mikro-orm/core";
+import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
 import { AvailabilityStatusesRepository } from "../availability-statuses.repository";
 
 @Entity({ customRepository: () => AvailabilityStatusesRepository })
 export class AvailabilityStatus {
   @PrimaryKey()
-  _id!: ObjectId;
-
-  @SerializedPrimaryKey()
-  id!: string;
+  id!: number;
 
   @Property()
   status: string;
 
-  @Property()
+  @Enum({ items: () => Availability })
   availability: Availability;
 
   constructor(status: string, availability: Availability) {

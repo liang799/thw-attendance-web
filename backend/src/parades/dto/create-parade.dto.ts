@@ -6,9 +6,9 @@ export class CreateParadeDto {
   type: ParadeType;
 
   @IsDateString()
-  startDate: Date;
+  startDate: string;
 
   @IsOptional()
   @IsDateString()
-  endDate: Date;
+  endDate: string;
 }

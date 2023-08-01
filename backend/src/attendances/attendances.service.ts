@@ -28,18 +28,18 @@ export class AttendancesService {
     return this.repository.findAll({ populate: ["user", "availability", "parade"] });
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.repository.findOne(id, { populate: ["user", "availability", "parade"] });
   }
 
-  async update(id: string, dto: UpdateAttendanceDto) {
+  async update(id: number, dto: UpdateAttendanceDto) {
     const attendance = await this.repository.findOne(id);
     wrap(attendance).assign(dto);
     await this.em.flush();
     return attendance;
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.repository.nativeDelete(id);
   }
 }

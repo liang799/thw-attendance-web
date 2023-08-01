@@ -20,16 +20,16 @@ export class AvailabilityStatusesController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.availabilityStatusesService.findOne(id);
+    return this.availabilityStatusesService.findOne(+id);
   }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateAvailabilityStatusDto: UpdateAvailabilityStatusDto) {
-    return this.availabilityStatusesService.update(id, updateAvailabilityStatusDto);
+    return this.availabilityStatusesService.update(+id, updateAvailabilityStatusDto);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.availabilityStatusesService.remove(id);
+    return this.availabilityStatusesService.remove(+id);
   }
 }

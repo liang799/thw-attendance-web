@@ -1,12 +1,12 @@
-import { IsMongoId } from "class-validator";
+import { IsInt } from "class-validator";
 
 export class CreateAttendanceDto {
-  @IsMongoId()
-  user: string;
+  @IsInt()
+  user: number;
 
-  @IsMongoId()
-  availability: string;
+  @IsInt()
+  availability: number;
 
-  @IsMongoId()
-  parade: string;
+  @IsInt()
+  parade: number;
 }

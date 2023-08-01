@@ -1,17 +1,13 @@
-import { Entity, ManyToOne, PrimaryKey, Property, SerializedPrimaryKey } from "@mikro-orm/core";
+import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { User } from "../../users/entities/user.entity";
 import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
 import { Parade } from "../../parades/entities/parade.entity";
-import { ObjectId } from "@mikro-orm/mongodb";
 import { AttendanceRepository } from "../attendance.repository";
 
 @Entity({ customRepository: () => AttendanceRepository })
 export class Attendance {
   @PrimaryKey()
-  _id!: ObjectId;
-
-  @SerializedPrimaryKey()
-  id!: string;
+  id!: number;
 
   @ManyToOne()
   user!: User;

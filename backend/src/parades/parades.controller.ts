@@ -19,16 +19,16 @@ export class ParadesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.paradesService.findOne(id);
+    return this.paradesService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateParadeDto: UpdateParadeDto) {
-    return this.paradesService.update(id, updateParadeDto);
+    return this.paradesService.update(+id, updateParadeDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.paradesService.remove(id);
+    return this.paradesService.remove(+id);
   }
 }

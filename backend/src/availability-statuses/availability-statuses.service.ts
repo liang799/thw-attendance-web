@@ -22,18 +22,18 @@ export class AvailabilityStatusesService {
     return this.repository.findAll();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.repository.findOne(id);
   }
 
-  async update(id: string, dto: UpdateAvailabilityStatusDto) {
+  async update(id: number, dto: UpdateAvailabilityStatusDto) {
     const status = await this.repository.findOne(id);
     wrap(status).assign(dto);
     await this.em.flush();
     return status;
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return this.repository.nativeDelete(id);
   }
 }
