@@ -5,13 +5,15 @@ import { AvailabilityStatusesModule } from "./availability-statuses/availability
 import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { ParadesModule } from './parades/parades.module';
 import { UsersModule } from './users/users.module';
+import { AttendancesModule } from './attendances/attendances.module';
 
 @Module({
   imports: [
     MikroOrmModule.forRoot({ autoLoadEntities: true, entitiesTs: ["src/**/*.entity.ts"], dbName: "attendance", type: "mongo" }),
     AvailabilityStatusesModule,
     ParadesModule,
-    UsersModule
+    UsersModule,
+    AttendancesModule
   ],
   controllers: [AppController],
   providers: [AppService]
