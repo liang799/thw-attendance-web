@@ -27,10 +27,10 @@ export class ParadesService {
   }
 
   async update(id: string, dto: UpdateParadeDto) {
-    const status = await this.repository.findOne(id);
-    wrap(status).assign(dto);
+    const parade = await this.repository.findOne(id);
+    wrap(parade).assign(dto);
     await this.em.flush();
-    return status;
+    return parade;
   }
 
   remove(id: string) {
