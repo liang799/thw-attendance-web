@@ -6,7 +6,7 @@ import { MikroOrmModule } from "@mikro-orm/nestjs";
 
 @Module({
   imports: [
-    MikroOrmModule.forRoot(),
+    MikroOrmModule.forRoot({ autoLoadEntities: true, entitiesTs: ["src/**/*.entity.ts"], dbName: "attendance", type: "mongo" }),
     AvailabilityStatusesModule
   ],
   controllers: [AppController],
