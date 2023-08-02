@@ -1,5 +1,6 @@
 import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
 import { AvailabilityStatusesRepository } from "../availability-statuses.repository";
+import { Availability } from "../types/Availability";
 
 @Entity({ customRepository: () => AvailabilityStatusesRepository })
 export class AvailabilityStatus {
@@ -16,8 +17,4 @@ export class AvailabilityStatus {
     this.status = status;
     this.availability = availability;
   }
-}
-export enum Availability {
-  IN_CAMP = "In Camp",
-  NOT_IN_CAMP = "Not In Camp"
 }

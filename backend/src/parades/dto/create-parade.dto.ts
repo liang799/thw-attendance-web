@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsOptional } from "class-validator";
-import { ParadeType } from "../entities/parade.entity";
+import { ParadeType } from "../type/ParadeType";
 
 export class CreateParadeDto {
   @IsEnum(ParadeType)

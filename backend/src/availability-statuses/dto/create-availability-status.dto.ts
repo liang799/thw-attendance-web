@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from "class-validator";
-import { Availability } from "../entities/availability-status.entity";
+import { Availability } from "../types/Availability";
 
 export class CreateAvailabilityStatusDto {
 
