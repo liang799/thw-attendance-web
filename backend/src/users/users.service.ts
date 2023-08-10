@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { EntityManager, wrap } from "@mikro-orm/core";
@@ -35,5 +35,16 @@ export class UsersService {
 
   remove(id: number) {
     return this.repository.nativeDelete(id);
+  }
+
+  async signIn(email, pass) {
+    const user = await this.em.findOne(User, { email: email });
+    if (user?.password !== pass) {
+      throw new UnauthorizedException();
+    }
+    const { password, ...result } = user;
+    // TODO: Generate a JWT and return it here
+    // instead of the user object
+    return result;
   }
 }

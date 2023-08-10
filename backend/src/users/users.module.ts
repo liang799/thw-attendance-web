@@ -9,7 +9,7 @@ import { UserRepository } from "./user.repostiory";
   controllers: [UsersController],
   imports: [MikroOrmModule.forFeature({ entities: [User] })],
   providers: [UsersService, UserRepository],
-  exports: [UsersService]
+  exports: [UsersService ]
 })
 export class UsersModule {
 }

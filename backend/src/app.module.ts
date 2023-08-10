@@ -23,7 +23,7 @@ import 'dotenv/config';
     AvailabilityStatusesModule,
     ParadesModule,
     UsersModule,
-    AttendancesModule
+    AttendancesModule,
   ],
   controllers: [AppController],
   providers: [AppService]
