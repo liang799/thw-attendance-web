@@ -1,8 +1,8 @@
 import React from "react";
-import { InputGroup, InputRightElement } from "@chakra-ui/input";
+import { InputGroup, InputProps, InputRightElement } from "@chakra-ui/input";
 import { Button, Input } from "@chakra-ui/react";
 
-const PasswordInput = React.forwardRef((props, ref) => {
+const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
 
