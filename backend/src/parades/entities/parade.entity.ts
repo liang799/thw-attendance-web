@@ -24,4 +24,12 @@ export class Parade {
     this.type = type;
     this.startDate = startDate;
   }
+
+  startParade() {
+    this.startDate = new Date();
+  }
+
+  endParade() {
+    this.endDate = new Date();
+  }
 }
