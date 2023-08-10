@@ -1,3 +1,4 @@
 export const ReactQueryKey = {
-  TEST: "test"
+  TEST: "test",
+  USER_ID: "user_id"
 };

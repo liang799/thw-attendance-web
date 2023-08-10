@@ -6,8 +6,8 @@ import { ApiClient } from "@/utils/axios";
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const query = useQuery(ReactQueryKey.TEST, () => ApiClient.get("/"))
+  const {data} = useQuery(ReactQueryKey.TEST, () => ApiClient.get("/"))
   return (
-    <div>{JSON.stringify(query.data)}</div>
+    <div>{JSON.stringify(data)}</div>
   );
 }

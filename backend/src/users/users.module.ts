@@ -3,9 +3,8 @@ import { UsersService } from "./users.service";
 import { UsersController } from "./users.controller";
 import { User } from "./entities/user.entity";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
-import { UserRepository } from "./user.repostiory";
 import { JwtModule } from "@nestjs/jwt";
-import 'dotenv/config';
+import "dotenv/config";
 
 @Module({
   controllers: [UsersController],
@@ -14,11 +13,11 @@ import 'dotenv/config';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: "60days" }
     })
   ],
-  providers: [UsersService, UserRepository],
-  exports: [UsersService ]
+  providers: [UsersService],
+  exports: [UsersService]
 })
 export class UsersModule {
 }

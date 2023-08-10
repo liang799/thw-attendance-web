@@ -3,10 +3,12 @@ import { Attendance } from "../../attendances/entities/attendance.entity";
 import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
 import { Parade } from "../../parades/entities/parade.entity";
 import { PersonnelType } from "../types/PersonnelType";
+import { UserRepository } from "../user.repostiory";
 
 @Entity({
   discriminatorColumn: "type",
-  discriminatorValue: PersonnelType.MEN
+  discriminatorValue: PersonnelType.MEN,
+  customRepository: () => UserRepository,
 })
 export class User {
   @PrimaryKey()
