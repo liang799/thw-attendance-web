@@ -14,7 +14,7 @@ export class UsersService {
   }
 
   create(dto: CreateUserDto) {
-    const entity = new User(dto.rank, dto.name);
+    const entity = new User(dto.email, dto.password);
     return this.em.persistAndFlush(entity);
   }
 

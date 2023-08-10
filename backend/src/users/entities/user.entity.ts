@@ -1,17 +1,18 @@
-import { Collection, Entity, Enum, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
-import { UserRepository } from "../user.repostiory";
+import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
+import { PersonnelType } from "./PersonnelType";
 import { Attendance } from "../../attendances/entities/attendance.entity";
-import { PersonnelType } from "../types/PersonnelType";
-import { BranchType } from "../types/BranchType";
+import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
+import { Parade } from "../../parades/entities/parade.entity";
 
 @Entity({
-  customRepository: () => UserRepository,
-  discriminatorColumn: "type",
-  discriminatorValue: PersonnelType.MEN
+  discriminatorColumn: "type"
 })
 export class User {
   @PrimaryKey()
   id!: number;
+
+  @Enum()
+  type!: PersonnelType;
 
   @Property()
   rank: string;
@@ -19,18 +20,19 @@ export class User {
   @Property()
   name: string;
 
-  @Enum({ items: () => BranchType, nullable: true })
-  branch?: BranchType;
+  @Property()
+  email: string;
 
-  @Enum(() => PersonnelType)
-  type!: PersonnelType;
+  @Property()
+  password: string;
 
-  @OneToMany(() => Attendance, attendance => attendance.user)
-  attendances = new Collection<Attendance>(this);
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
 
-  constructor(rank: string, name: string) {
-    this.rank = rank;
-    this.name = name;
-    this.type = PersonnelType.MEN;
+  submitAttendance(availability: AvailabilityStatus, parade: Parade): Attendance {
+    // @ts-ignore
+    return new Attendance(this, availability, parade);
   }
 }
