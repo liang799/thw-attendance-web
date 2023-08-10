@@ -16,6 +16,7 @@ import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PasswordInput } from "@/components/PasswordInput";
+import { useRouter } from 'next/navigation'
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -24,10 +25,12 @@ const schema = yup.object({
 
 export default function RegisterPage() {
   const toast = useToast();
+  const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
   const onSubmit = async (data) => {
     try {
       const response = await ApiClient.post("/users", data);
+      router.push(`/onboard-user/${response.data.id}`)
     } catch (error: Error) {
       toast({
         title: error.name,
