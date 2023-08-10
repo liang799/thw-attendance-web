@@ -15,18 +15,21 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { setAccessToken } from "@/utils/AuthService";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().required()
 });
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const toast = useToast();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
   const onSubmit = async (data) => {
     try {
       const response = await ApiClient.post("/users/login", data);
+      setAccessToken(response.data?.access_token);
     } catch (error: Error) {
       toast({
         title: error.name,
@@ -51,7 +54,7 @@ export default function RegisterPage() {
             </FormControl>
             <FormControl isInvalid={errors.password}>
               <FormLabel htmlFor="password">Password</FormLabel>
-              <Input {...register("password")} />
+              <PasswordInput {...register("password")} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
             <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">

@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -51,7 +52,7 @@ export default function RegisterPage() {
             </FormControl>
             <FormControl isInvalid={errors.password}>
               <FormLabel htmlFor="password">Password</FormLabel>
-              <Input {...register("password")} />
+              <PasswordInput {...register("password")} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
             <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
