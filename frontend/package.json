@@ -25,6 +25,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.2",
     "react-query": "^3.39.3",
+    "react-secure-storage": "^1.3.0",
     "typescript": "5.1.6",
     "yup": "^1.2.0"
   }

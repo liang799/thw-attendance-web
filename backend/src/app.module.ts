@@ -6,7 +6,10 @@ import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { ParadesModule } from "./parades/parades.module";
 import { UsersModule } from "./users/users.module";
 import { AttendancesModule } from "./attendances/attendances.module";
-import 'dotenv/config';
+import "dotenv/config";
+import { APP_GUARD } from "@nestjs/core";
+import { AuthGuard } from "./auth.guard";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -20,13 +23,24 @@ import 'dotenv/config';
       password: process.env.DB_PASSWORD,
       type: "mysql"
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' },
+    }),
     AvailabilityStatusesModule,
     ParadesModule,
     UsersModule,
-    AttendancesModule,
+    AttendancesModule
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
+  ]
 })
 export class AppModule {
 }
