@@ -4,12 +4,14 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { EntityManager, wrap } from "@mikro-orm/core";
 import { User } from "./entities/user.entity";
 import { UserRepository } from "./user.repostiory";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly repository: UserRepository,
-    private readonly em: EntityManager
+    private readonly em: EntityManager,
+    private jwtService: JwtService
   ) {
   }
 
@@ -42,9 +44,9 @@ export class UsersService {
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
-    const { password, ...result } = user;
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    return result;
+    const payload = { sub: user.id, email: user.email };
+    return {
+      access_token: await this.jwtService.signAsync(payload)
+    };
   }
 }
