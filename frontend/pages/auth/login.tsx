@@ -16,7 +16,7 @@ import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { setAccessToken } from "@/utils/AuthService";
-import { PasswordInput } from "@/components/PasswordInput";
+import PasswordInput from "@/components/PasswordInput";
 
 const schema = yup.object({
   email: yup.string().email().required(),

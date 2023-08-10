@@ -15,8 +15,8 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { PasswordInput } from "@/components/PasswordInput";
-import { useRouter } from 'next/navigation'
+import PasswordInput from "@/components/PasswordInput";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object({
   email: yup.string().email().required(),

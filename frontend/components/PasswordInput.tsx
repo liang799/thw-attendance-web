@@ -2,7 +2,7 @@ import React from "react";
 import { InputGroup, InputRightElement } from "@chakra-ui/input";
 import { Button, Input } from "@chakra-ui/react";
 
-export const PasswordInput = React.forwardRef((props, ref) => {
+const PasswordInput = React.forwardRef((props, ref) => {
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
 
@@ -22,3 +22,7 @@ export const PasswordInput = React.forwardRef((props, ref) => {
     </InputGroup>
   );
 });
+
+PasswordInput.displayName = "PasswordInput";
+
+export default PasswordInput;
