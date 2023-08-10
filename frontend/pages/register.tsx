@@ -17,8 +17,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const schema = yup.object({
-  rank: yup.string().uppercase().required(),
-  name: yup.string().lowercase().required()
+  email: yup.string().email().required(),
+  password: yup.string().required()
 });
 
 export default function RegisterPage() {
@@ -44,15 +44,15 @@ export default function RegisterPage() {
         <Heading p={5}>Registration</Heading>
         <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.rank}>
-              <FormLabel htmlFor="rank">Rank</FormLabel>
-              <Input {...register("rank")} />
-              <FormErrorMessage>{errors.rank?.message}</FormErrorMessage>
+            <FormControl isInvalid={errors.email}>
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <Input {...register("email")} />
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.name}>
-              <FormLabel htmlFor="name">Name</FormLabel>
-              <Input {...register("name")} />
-              <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+            <FormControl isInvalid={errors.password}>
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <Input {...register("password")} />
+              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
             <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
               Submit

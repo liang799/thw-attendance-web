@@ -1,24 +1,25 @@
 import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
-import { PersonnelType } from "./PersonnelType";
 import { Attendance } from "../../attendances/entities/attendance.entity";
 import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
 import { Parade } from "../../parades/entities/parade.entity";
+import { PersonnelType } from "../types/PersonnelType";
 
 @Entity({
-  discriminatorColumn: "type"
+  discriminatorColumn: "type",
+  discriminatorValue: PersonnelType.MEN
 })
 export class User {
   @PrimaryKey()
   id!: number;
 
-  @Enum()
+  @Enum(() => PersonnelType)
   type!: PersonnelType;
 
-  @Property()
-  rank: string;
+  @Property({ nullable: true })
+  rank?: string;
 
-  @Property()
-  name: string;
+  @Property({ nullable: true })
+  name?: string;
 
   @Property()
   email: string;
