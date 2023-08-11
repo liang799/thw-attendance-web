@@ -1,8 +1,8 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import { Embedded, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { User } from "../../users/entities/user.entity";
-import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
 import { Parade } from "../../parades/entities/parade.entity";
 import { AttendanceRepository } from "../attendance.repository";
+import { Availability } from "../value-objects/Availability";
 
 @Entity({ customRepository: () => AttendanceRepository })
 export class Attendance {
@@ -12,18 +12,12 @@ export class Attendance {
   @ManyToOne()
   user!: User;
 
-  @ManyToOne()
-  availability!: AvailabilityStatus;
+  @Embedded(() => Availability)
+  availability!: Availability;
 
   @ManyToOne(() => Parade)
   parade!: Parade;
 
   @Property()
   submittedAt: Date = new Date();
-
-  constructor(user: User, availability: AvailabilityStatus, parade: Parade) {
-    this.user = user;
-    this.availability = availability;
-    this.parade = parade;
-  }
 }

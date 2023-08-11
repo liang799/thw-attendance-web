@@ -22,10 +22,10 @@ export class AttendancesController {
     return this.attendancesService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAttendanceDto: UpdateAttendanceDto) {
-    return this.attendancesService.update(+id, updateAttendanceDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAttendanceDto: UpdateAttendanceDto) {
+  //   return this.attendancesService.update(+id, updateAttendanceDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

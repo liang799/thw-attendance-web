@@ -1,9 +1,9 @@
-import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, Enum, PrimaryKey, Property, Unique } from "@mikro-orm/core";
 import { Attendance } from "../../attendances/entities/attendance.entity";
-import { AvailabilityStatus } from "../../availability-statuses/entities/availability-status.entity";
 import { Parade } from "../../parades/entities/parade.entity";
 import { PersonnelType } from "../types/PersonnelType";
 import { UserRepository } from "../user.repostiory";
+import { Availability } from "../../attendances/value-objects/Availability";
 
 @Entity({
   discriminatorColumn: "type",
@@ -24,6 +24,7 @@ export class User {
   name?: string;
 
   @Property()
+  @Unique()
   email: string;
 
   @Property()
@@ -34,8 +35,11 @@ export class User {
     this.password = password;
   }
 
-  submitAttendance(availability: AvailabilityStatus, parade: Parade): Attendance {
-    // @ts-ignore
-    return new Attendance(this, availability, parade);
+  submitAttendance(availability: Availability, parade: Parade): Attendance {
+    const attendance = new Attendance();
+    attendance.user = this;
+    attendance.availability = availability;
+    attendance.parade = parade;
+    return attendance;
   }
 }

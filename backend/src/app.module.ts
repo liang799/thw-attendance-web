@@ -1,11 +1,10 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { AvailabilityStatusesModule } from "./availability-statuses/availability-statuses.module";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
-import { ParadesModule } from "./parades/parades.module";
-import { UsersModule } from "./users/users.module";
-import { AttendancesModule } from "./attendances/attendances.module";
+import { ParadesModule } from "./api/parades/parades.module";
+import { UsersModule } from "./api/users/users.module";
+import { AttendancesModule } from "./api/attendances/attendances.module";
 import "dotenv/config";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
@@ -26,9 +25,8 @@ import { JwtModule } from "@nestjs/jwt";
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '60 days' },
     }),
-    AvailabilityStatusesModule,
     ParadesModule,
     UsersModule,
     AttendancesModule

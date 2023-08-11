@@ -31,4 +31,9 @@ export class ParadesController {
   remove(@Param('id') id: string) {
     return this.paradesService.remove(+id);
   }
+
+  @Post(':id/attendance')
+  createAttendance(@Body() createParadeDto: CreateParadeDto) {
+    return this.paradesService.create(createParadeDto);
+  }
 }
