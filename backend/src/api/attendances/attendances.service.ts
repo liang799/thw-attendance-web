@@ -6,6 +6,7 @@ import { Availability } from "./value-objects/Availability";
 import { AttendanceStatus } from "./dto/attendance-status";
 import { ParadesService } from "../parades/parades.service";
 import { UsersService } from "../users/users.service";
+import { UpdateAttendanceDto } from "./dto/update-attendance.dto";
 
 @Injectable()
 export class AttendancesService {
@@ -48,12 +49,25 @@ export class AttendancesService {
     return this.repository.findOne(id, { populate: ["user", "availability", "parade"] });
   }
 
-  // async update(id: number, dto: UpdateAttendanceDto) {
-  //   const attendance = await this.repository.findOne(id);
-  //   wrap(attendance).assign(dto);
-  //   await this.em.flush();
-  //   return attendance;
-  // }
+  async update(id: number, dto: UpdateAttendanceDto) {
+    const attendance = await this.repository.findOne(id);
+
+    let availability: Availability = new Availability();
+    if (dto.availability == AttendanceStatus.DISPATCH) {
+      availability = Availability.dispatchTo(dto.location);
+    } else if (dto.availability == AttendanceStatus.NO_MC) {
+      availability = Availability.noMC(dto.status);
+    } else if (dto.availability == AttendanceStatus.MIGHT_HAVE_MC) {
+      availability = Availability.mightHaveMc(dto.status);
+    } else if (dto.availability == AttendanceStatus.ABSENT) {
+      availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
+    }
+
+    attendance.availability = availability;
+
+    await this.em.flush();
+    return attendance;
+  }
 
   remove(id: number) {
     return this.repository.nativeDelete(id);
