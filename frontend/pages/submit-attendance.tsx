@@ -27,6 +27,16 @@ const list = [
   { availability: "Absent", status: "Course" },
   { availability: "Absent", status: "MC" }
 ];
+
+type AttendanceData = {
+  availability: string,
+  status: string,
+  mcStartDate?: Date,
+  mcEndDate?: Date,
+  user: number,
+  location?: string,
+}
+
 export default function SubmitAttendancePage() {
   const toast = useToast();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -35,11 +45,12 @@ export default function SubmitAttendancePage() {
   const [dispatchLocation, setDispatchLocation] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
 
-  const onSubmit = async (event) => {
-    let data;
+  const onSubmit = async () => {
+    let data: AttendanceData;
     if (hasDispatchLocation) {
       data = {
         availability: list[selectedIndex].availability,
+        status: list[selectedIndex].status,
         location: dispatchLocation,
         user: getUserId()
       };
@@ -62,7 +73,7 @@ export default function SubmitAttendancePage() {
     try {
       console.log(data);
       const response = await ApiClient.post("/attendances", data);
-    } catch (error: Error) {
+    } catch (error: any) {
       toast({
         title: error.name,
         description: error.message,
@@ -71,7 +82,6 @@ export default function SubmitAttendancePage() {
         isClosable: true
       });
     }
-    event.preventDefault();
   };
 
   function determineAdditionalInput(event: ChangeEvent<HTMLSelectElement>) {

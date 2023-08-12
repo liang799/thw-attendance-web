@@ -22,14 +22,19 @@ const schema = yup.object({
   name: yup.string().lowercase().required()
 });
 
+type UserDetails = {
+  rank: string,
+  name: string
+}
+
 export default function UserIdPage() {
   const toast = useToast();
   const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: UserDetails) => {
     try {
       const response = await ApiClient.patch(`/users/${router.query.slug}`, data);
-    } catch (error: Error) {
+    } catch (error: any) {
       toast({
         title: error.name,
         description: error.message,
@@ -46,12 +51,12 @@ export default function UserIdPage() {
         <Heading size="lg" p={5}>Hi! Help us to get to know you better</Heading>
         <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.rank}>
+            <FormControl isInvalid={!!errors.rank}>
               <FormLabel htmlFor="rank">Rank</FormLabel>
               <Input {...register("rank")} />
               <FormErrorMessage>{errors.rank?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.name}>
+            <FormControl isInvalid={!!errors.name}>
               <FormLabel htmlFor="name">Name</FormLabel>
               <Input {...register("name")} />
               <FormErrorMessage>{errors.name?.message}</FormErrorMessage>

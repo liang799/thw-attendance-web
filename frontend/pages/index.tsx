@@ -26,17 +26,22 @@ const schema = yup.object({
   password: yup.string().required()
 });
 
+type RegisterData = {
+  email: string,
+  password: string
+}
+
 export default function RegisterPage() {
   const toast = useToast();
   const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: RegisterData) => {
     try {
       const response = await ApiClient.post("/users", data);
       setAccessToken(response.data?.access_token);
       setUserId(response.data?.id);
       router.push(`/onboard-user/${response.data.id}`);
-    } catch (error: Error) {
+    } catch (error: any) {
       toast({
         title: error.name,
         description: error.message,
@@ -53,12 +58,12 @@ export default function RegisterPage() {
         <Heading p={5}>Registration</Heading>
         <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.email}>
+            <FormControl isInvalid={!!errors.email}>
               <FormLabel htmlFor="email">Email</FormLabel>
               <Input {...register("email")} />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.password}>
+            <FormControl isInvalid={!!errors.password}>
               <FormLabel htmlFor="password">Password</FormLabel>
               <PasswordInput {...register("password")} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>

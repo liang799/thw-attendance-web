@@ -13,7 +13,9 @@ export function logout() {
 }
 
 export function getUserId(): number {
-  return +secureLocalStorage.getItem("userId");
+  const userIdString = secureLocalStorage.getItem("userId");
+  if (!userIdString) throw new Error("Cannot get User Id")
+  return +userIdString;
 }
 
 export function setUserId(userId: number) {
