@@ -24,7 +24,7 @@ export class UsersService {
     return this.repository.findAll();
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<User> {
     return this.repository.findOne(id);
   }
 

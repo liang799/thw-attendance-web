@@ -37,7 +37,7 @@ export class ParadesService {
     return this.repository.nativeDelete(id);
   }
 
-  getLatestOngoingParade() {
+  getLatestOngoingParade(): Promise<Parade> {
     return this.repository.findOneOrFail({ endDate: null }, {
       orderBy: { id: QueryOrder.DESC }
     });

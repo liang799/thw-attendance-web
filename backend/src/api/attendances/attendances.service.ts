@@ -1,24 +1,31 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { CreateAttendanceDto } from "./dto/create-attendance.dto";
-import { EntityManager, wrap } from "@mikro-orm/core";
+import { EntityManager } from "@mikro-orm/core";
 import { AttendanceRepository } from "./attendance.repository";
-import { User } from "../users/entities/user.entity";
 import { Availability } from "./value-objects/Availability";
 import { AttendanceStatus } from "./dto/attendance-status";
 import { ParadesService } from "../parades/parades.service";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class AttendancesService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly em: EntityManager,
-    private readonly paradeService: ParadesService
+    private readonly paradeService: ParadesService,
+    private readonly userService: UsersService
   ) {
   }
 
   async create(dto: CreateAttendanceDto) {
-    const user = await this.em.findOne(User, { id: dto.user });
-    let availability: Availability;
+
+    const user = await this.userService.findOne(dto.user);
+    const parade = await this.paradeService.getLatestOngoingParade();
+    const existingAttendance = await this.repository.findOne({ user: user, parade: parade });
+
+    if (existingAttendance) throw new ForbiddenException("[Prohibited Action]: duplicate attendance is not allowed");
+
+    let availability: Availability = new Availability();
     if (dto.availability == AttendanceStatus.DISPATCH) {
       availability = Availability.dispatchTo(dto.location);
     } else if (dto.availability == AttendanceStatus.NO_MC) {
@@ -28,7 +35,7 @@ export class AttendancesService {
     } else if (dto.availability == AttendanceStatus.ABSENT) {
       availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
     }
-    const parade = await this.paradeService.getLatestOngoingParade();
+
     const attendance = user.submitAttendance(availability, parade);
     return this.em.persistAndFlush(attendance);
   }
