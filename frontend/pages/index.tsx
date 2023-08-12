@@ -19,6 +19,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import PasswordInput from "@/components/PasswordInput";
 import { useRouter } from "next/navigation";
+import { setAccessToken, setUserId } from "@/utils/AuthService";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -32,7 +33,9 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     try {
       const response = await ApiClient.post("/users", data);
-      router.push(`/onboard-user/${response.data.id}`)
+      setAccessToken(response.data?.access_token);
+      setUserId(response.data?.id);
+      router.push(`/onboard-user/${response.data.id}`);
     } catch (error: Error) {
       toast({
         title: error.name,

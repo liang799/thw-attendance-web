@@ -15,8 +15,9 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { setAccessToken } from "@/utils/AuthService";
+import { setAccessToken, setUserId } from "@/utils/AuthService";
 import PasswordInput from "@/components/PasswordInput";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -26,10 +27,13 @@ const schema = yup.object({
 export default function LoginPage() {
   const toast = useToast();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
+  const router = useRouter();
   const onSubmit = async (data) => {
     try {
       const response = await ApiClient.post("/users/login", data);
       setAccessToken(response.data?.access_token);
+      setUserId(response.data?.id);
+      router.push("/parade");
     } catch (error: Error) {
       toast({
         title: error.name,
