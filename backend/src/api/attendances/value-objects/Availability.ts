@@ -1,9 +1,7 @@
 import { Embeddable, Enum, Property } from "@mikro-orm/core";
 
 export enum AvailabilityType {
-  NO_MC = "No MC",
-  DISPATCH = "Dispatch",
-  MIGHT_HAVE_MC = "Might Have MC",
+  PRESENT = "Present",
   ABSENT = "Absent"
 }
 
@@ -26,14 +24,14 @@ export class Availability {
 
   static noMC(status: string) {
     const availability = new Availability();
-    availability.type = AvailabilityType.NO_MC;
+    availability.type = AvailabilityType.PRESENT;
     availability.status = status;
     return availability;
   }
 
   static dispatchTo(location: string) {
     const availability = new Availability();
-    availability.type = AvailabilityType.DISPATCH;
+    availability.type = AvailabilityType.PRESENT;
     availability.status = "Dispatch";
     availability.dispatchLocation = location;
     return availability;
@@ -41,7 +39,7 @@ export class Availability {
 
   static mightHaveMc(status: string) {
     const availability = new Availability();
-    availability.type = AvailabilityType.MIGHT_HAVE_MC;
+    availability.type = AvailabilityType.ABSENT;
     availability.status = status;
     return availability;
   }

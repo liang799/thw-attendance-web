@@ -1,12 +1,12 @@
 import { IsDateString, IsEnum, IsInt, IsOptional, IsString } from "class-validator";
-import { AvailabilityType } from "../value-objects/Availability";
+import { AttendanceStatus } from "./attendance-status";
 
 export class CreateAttendanceDto {
   @IsInt()
   user: number;
 
-  @IsEnum(() => AvailabilityType)
-  availability: AvailabilityType;
+  @IsEnum(() => AttendanceStatus)
+  availability: AttendanceStatus;
 
   @IsInt()
   parade: number;
