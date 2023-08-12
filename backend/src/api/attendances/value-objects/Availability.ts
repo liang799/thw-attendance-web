@@ -15,14 +15,14 @@ export class Availability {
   @Enum(() => AvailabilityType)
   type!: AvailabilityType;
 
-  @Property()
-  dispatchLocation?: string = null;
+  @Property({ nullable: true })
+  dispatchLocation?: string;
 
-  @Property()
-  mcStartDate?: Date = null;
+  @Property({ nullable: true })
+  mcStartDate?: Date;
 
-  @Property()
-  mcEndDate?: Date = null;
+  @Property({ nullable: true })
+  mcEndDate?: Date;
 
   static noMC(status: string) {
     const availability = new Availability();
@@ -53,5 +53,17 @@ export class Availability {
     availability.mcStartDate = start;
     availability.mcEndDate = end;
     return availability;
+  }
+
+  toJSON() {
+    const filteredProperties: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(this)) {
+      if (value !== null && value !== undefined) {
+        filteredProperties[key] = value;
+      }
+    }
+
+    return filteredProperties;
   }
 }
