@@ -1,13 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { CreateAttendanceDto } from "./dto/create-attendance.dto";
-import { UpdateAttendanceDto } from "./dto/update-attendance.dto";
 import { EntityManager, wrap } from "@mikro-orm/core";
 import { AttendanceRepository } from "./attendance.repository";
 import { User } from "../users/entities/user.entity";
 import { Availability } from "./value-objects/Availability";
-import { Parade } from "../parades/entities/parade.entity";
 import { AttendanceStatus } from "./dto/attendance-status";
-import { ParadeRepository } from "../parades/parade.repository";
 import { ParadesService } from "../parades/parades.service";
 
 @Injectable()
@@ -31,7 +28,7 @@ export class AttendancesService {
     } else if (dto.availability == AttendanceStatus.ABSENT) {
       availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
     }
-    const parade = await this.paradeService.getOngoingParade();
+    const parade = await this.paradeService.getLatestOngoingParade();
     const attendance = user.submitAttendance(availability, parade);
     return this.em.persistAndFlush(attendance);
   }

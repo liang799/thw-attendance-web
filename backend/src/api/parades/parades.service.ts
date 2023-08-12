@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateParadeDto } from "./dto/create-parade.dto";
 import { UpdateParadeDto } from "./dto/update-parade.dto";
 import { ParadeRepository } from "./parade.repository";
-import { EntityManager, wrap } from "@mikro-orm/core";
+import { EntityManager, QueryOrder, wrap } from "@mikro-orm/core";
 import { Parade } from "./entities/parade.entity";
 
 @Injectable()
@@ -37,7 +37,9 @@ export class ParadesService {
     return this.repository.nativeDelete(id);
   }
 
-  getOngoingParade() {
-    return this.repository.findOne({ endDate: null });
+  getLatestOngoingParade() {
+    return this.repository.findOneOrFail({ endDate: null }, {
+      orderBy: { id: QueryOrder.DESC }
+    });
   }
 }
