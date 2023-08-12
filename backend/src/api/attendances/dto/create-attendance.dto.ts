@@ -5,11 +5,11 @@ export class CreateAttendanceDto {
   @IsInt()
   user: number;
 
-  @IsEnum(() => AttendanceStatus)
+  @IsEnum(AttendanceStatus)
   availability: AttendanceStatus;
 
-  @IsInt()
-  parade: number;
+  // @IsInt()
+  // parade: number;
 
   @IsOptional()
   @IsString()

@@ -7,7 +7,8 @@ import { Parade } from "./entities/parade.entity";
 @Module({
   controllers: [ParadesController],
   imports: [MikroOrmModule.forFeature({ entities: [Parade] })],
-  providers: [ParadesService]
+  providers: [ParadesService],
+  exports: [ParadesService]
 })
 export class ParadesModule {
 }

@@ -36,4 +36,8 @@ export class ParadesService {
   remove(id: number) {
     return this.repository.nativeDelete(id);
   }
+
+  getOngoingParade() {
+    return this.repository.findOne({ endDate: null });
+  }
 }

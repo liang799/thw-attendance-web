@@ -7,17 +7,20 @@ import { User } from "../users/entities/user.entity";
 import { Availability } from "./value-objects/Availability";
 import { Parade } from "../parades/entities/parade.entity";
 import { AttendanceStatus } from "./dto/attendance-status";
+import { ParadeRepository } from "../parades/parade.repository";
+import { ParadesService } from "../parades/parades.service";
 
 @Injectable()
 export class AttendancesService {
   constructor(
     private readonly repository: AttendanceRepository,
-    private readonly em: EntityManager
+    private readonly em: EntityManager,
+    private readonly paradeService: ParadesService
   ) {
   }
 
-  create(dto: CreateAttendanceDto) {
-    const user = this.em.getReference(User, dto.user, { wrapped: true });
+  async create(dto: CreateAttendanceDto) {
+    const user = await this.em.findOne(User, { id: dto.user });
     let availability: Availability;
     if (dto.availability == AttendanceStatus.DISPATCH) {
       availability = Availability.dispatchTo(dto.location);
@@ -28,7 +31,7 @@ export class AttendancesService {
     } else if (dto.availability == AttendanceStatus.ABSENT) {
       availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
     }
-    const parade = this.em.getReference(Parade, dto.parade, { wrapped: true });
+    const parade = await this.paradeService.getOngoingParade();
     const attendance = user.submitAttendance(availability, parade);
     return this.em.persistAndFlush(attendance);
   }
