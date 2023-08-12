@@ -1,21 +1,21 @@
 import { Entity, Enum, PrimaryKey, Property, Unique } from "@mikro-orm/core";
 import { Attendance } from "../../attendances/entities/attendance.entity";
 import { Parade } from "../../parades/entities/parade.entity";
-import { PersonnelType } from "../types/PersonnelType";
+import { AccountType } from "../types/AccountType";
 import { UserRepository } from "../user.repostiory";
 import { Availability } from "../../attendances/value-objects/Availability";
 
 @Entity({
   discriminatorColumn: "type",
-  discriminatorValue: PersonnelType.MEN,
+  discriminatorValue: AccountType.PERSONAL,
   customRepository: () => UserRepository,
 })
 export class User {
   @PrimaryKey()
   id!: number;
 
-  @Enum(() => PersonnelType)
-  type!: PersonnelType;
+  @Enum(() => AccountType)
+  type!: AccountType;
 
   @Property({ nullable: true })
   rank?: string;

@@ -1,12 +1,12 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { CreateUserDto } from "./create-user.dto";
 import { IsEnum, IsLowercase, IsOptional, IsString, IsUppercase } from "class-validator";
-import { PersonnelType } from "../types/PersonnelType";
+import { AccountType } from "../types/AccountType";
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
-  @IsEnum(() => PersonnelType)
-  type: PersonnelType;
+  @IsEnum(() => AccountType)
+  type: AccountType;
 
   @IsUppercase()
   @IsString()
