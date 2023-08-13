@@ -11,14 +11,16 @@ import {
 import { useQuery } from "react-query";
 import { ReactQueryKey } from "@/utils/react-query-keys";
 import { ApiClient } from "@/utils/axios";
+import GenericErrorDisplay from "@/components/GenericErrorDisplay";
 
 export default function ParadeIndexPage() {
-  const { data, isLoading } = useQuery(ReactQueryKey.LATEST_PARADE,
+  const { data, isLoading, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
       return ApiClient.get("/ongoing-parade")
         .then(res => res.data);
     }
   );
+
   if (isLoading) {
     return (
       <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
@@ -29,6 +31,11 @@ export default function ParadeIndexPage() {
       </Container>
     );
   }
+
+  if (isError) {
+    return <GenericErrorDisplay title="Error">Something went wrong</GenericErrorDisplay>
+  }
+
   return (
     <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
       <Stack p={4} spacing="12px">
