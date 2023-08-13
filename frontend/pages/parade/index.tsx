@@ -3,12 +3,32 @@ import {
   CardBody,
   Container,
   Heading,
+  Skeleton,
   Link,
   Stack,
   useColorModeValue
 } from "@chakra-ui/react";
+import { useQuery } from "react-query";
+import { ReactQueryKey } from "@/utils/react-query-keys";
+import { ApiClient } from "@/utils/axios";
 
 export default function ParadeIndexPage() {
+  const { data, isLoading } = useQuery(ReactQueryKey.LATEST_PARADE,
+    () => {
+      return ApiClient.get("/ongoing-parade")
+        .then(res => res.data);
+    }
+  );
+  if (isLoading) {
+    return (
+      <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+        <Stack p={4} spacing="12px">
+          <Skeleton height='20px' />
+          <Skeleton height='20px' />
+        </Stack>
+      </Container>
+    );
+  }
   return (
     <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
       <Stack p={4} spacing="12px">
@@ -21,7 +41,7 @@ export default function ParadeIndexPage() {
           </HorizontalCard>
         </Link>
 
-        <Link href="/parade/:id">
+        <Link href={`/parade/${data.id}`}>
           <HorizontalCard>
             <CardBody>
               <Heading size="md">Overview</Heading>
