@@ -25,7 +25,10 @@ export class AttendancesService {
     const parade = await this.paradeService.getLatestOngoingParade();
     const existingAttendance = await this.repository.findOne({ user: user, parade: parade });
 
-    if (existingAttendance) throw new ForbiddenException("[Prohibited Action]: duplicate attendance is not allowed");
+    if (existingAttendance) throw new ForbiddenException(
+      `Please use: PUT /attendances/${existingAttendance.id}`,
+      "[Prohibited Action]: duplicate attendance is not allowed"
+    );
 
     let availability: Availability = new Availability();
     if (dto.availability == AttendanceStatus.DISPATCH) {

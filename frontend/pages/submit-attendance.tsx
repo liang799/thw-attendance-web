@@ -71,16 +71,20 @@ export default function SubmitAttendancePage() {
     }
 
     try {
-      console.log(data);
-      const response = await ApiClient.post("/attendances", data);
+      await ApiClient.post("/attendances", data);
     } catch (error: any) {
-      toast({
-        title: error.name,
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true
-      });
+      try {
+        const recommendedUrl = error.response.data.message.replace("Please use: PUT ", "");
+        await ApiClient.put(recommendedUrl, data);
+      } catch (e: any) {
+        toast({
+          title: error.name,
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true
+        });
+      }
     }
   };
 
