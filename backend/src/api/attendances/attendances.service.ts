@@ -7,6 +7,7 @@ import { AttendanceStatus } from "./dto/attendance-status";
 import { ParadesService } from "../parades/parades.service";
 import { UsersService } from "../users/users.service";
 import { UpdateAttendanceDto } from "./dto/update-attendance.dto";
+import { Attendance } from "./entities/attendance.entity";
 
 @Injectable()
 export class AttendancesService {
@@ -18,7 +19,7 @@ export class AttendancesService {
   ) {
   }
 
-  async create(dto: CreateAttendanceDto) {
+  async create(dto: CreateAttendanceDto): Promise<Attendance> {
 
     const user = await this.userService.findOne(dto.user);
     const parade = await this.paradeService.getLatestOngoingParade();
@@ -38,18 +39,19 @@ export class AttendancesService {
     }
 
     const attendance = user.submitAttendance(availability, parade);
-    return this.em.persistAndFlush(attendance);
+    await this.em.persistAndFlush(attendance);
+    return attendance;
   }
 
-  findAll() {
+  findAll(): Promise<Attendance[]> {
     return this.repository.findAll({ populate: ["user", "availability", "parade"] });
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<Attendance> {
     return this.repository.findOne(id, { populate: ["user", "availability", "parade"] });
   }
 
-  async update(id: number, dto: UpdateAttendanceDto) {
+  async update(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
     const attendance = await this.repository.findOne(id);
 
     let availability: Availability = new Availability();
@@ -69,7 +71,7 @@ export class AttendancesService {
     return attendance;
   }
 
-  remove(id: number) {
+  remove(id: number): Promise<number> {
     return this.repository.nativeDelete(id);
   }
 }
