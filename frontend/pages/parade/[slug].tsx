@@ -1,5 +1,6 @@
 import {
-  Container, Skeleton, Stack,
+  CardBody,
+  Container, Heading, Link, Skeleton, Stack, Text,
   useColorModeValue
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -7,9 +8,25 @@ import { useQuery } from "react-query";
 import { ReactQueryKey } from "@/utils/react-query-keys";
 import { ApiClient } from "@/utils/axios";
 import GenericErrorDisplay from "@/components/GenericErrorDisplay";
-import { DataTable } from "@/components/DataTable";
-import { createColumnHelper } from "@tanstack/table-core";
-import { Attendance } from "@/utils/types/AttendanceData";
+import { Attendance, AttendanceData } from "@/utils/types/AttendanceData";
+import HorizontalCard from "@/components/HorizontalCard";
+
+function generateAttendanceStatus(data: AttendanceData) {
+  const availability = data.availability;
+  switch (availability) {
+    case "Dispatch":
+      return <Text>{`${data.status} - ${data.location}`}</Text>;
+    case "No MC":
+      return <Text>{`${data.status}`}</Text>;
+    case "Might Have MC":
+      return <Text>{`${data.status}`}</Text>;
+    case "Absent":
+      return <Text>{`${data.status} - ${data.mcEndDate}`}</Text>;
+    default:
+      return <Text>{data.status}</Text>;
+  }
+
+}
 
 export default function ParadeIdPage() {
   const router = useRouter();
@@ -29,26 +46,27 @@ export default function ParadeIdPage() {
   }
 
   if (data) {
-    const columnHelper = createColumnHelper<Attendance>();
-
-    const columns = [
-      columnHelper.accessor("id", {
-        cell: (info) => info.getValue(),
-        header: "Attendance Id"
-      }),
-      columnHelper.accessor("user", {
-        cell: (info) => `${info.getValue().rank} ${info.getValue().name}`,
-        header: "User"
-      }),
-      columnHelper.accessor("availability.status", {
-        cell: (info) => info.getValue(),
-        header: "Status"
-      })
-    ];
-
     return (
       <Container maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
-        <DataTable columns={columns} data={data.attendances} />
+        <Stack spacing={4}>
+          <Heading>Parade State Summary</Heading>
+          <Text>Node: THWHQ</Text>
+          <Text>Start Time: {data.startDate}</Text>
+          <Text>End Time: {data.endDate}</Text>
+          {data.attendances.map((attendance: Attendance) => {
+            return (
+              <Link key={attendance.id} href={`/attendances/${attendance.id}`}>
+                <HorizontalCard>
+                  <CardBody>
+                    <Text>{`${attendance.user.rank} ${attendance.user.name}`}</Text>
+                    {generateAttendanceStatus(attendance.availability)}
+                  </CardBody>
+                </HorizontalCard>
+              </Link>
+            );
+          })
+          }
+        </Stack>
       </Container>
     );
   }
