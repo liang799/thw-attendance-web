@@ -13,6 +13,7 @@ import { ChangeEvent, useState } from "react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { ApiClient } from "@/utils/axios";
 import { getUserId } from "@/utils/AuthService";
+import { AttendanceData } from "@/utils/types/AttendanceData";
 
 
 const list = [
@@ -28,14 +29,6 @@ const list = [
   { availability: "Absent", status: "MC" }
 ];
 
-type AttendanceData = {
-  availability: string,
-  status: string,
-  mcStartDate?: Date,
-  mcEndDate?: Date,
-  user: number,
-  location?: string,
-}
 
 export default function SubmitAttendancePage() {
   const toast = useToast();
