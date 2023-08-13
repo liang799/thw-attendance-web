@@ -23,7 +23,7 @@ export class ParadesService {
   }
 
   findOne(id: number) {
-    return this.repository.findOne(id);
+    return this.repository.findOne(id, { populate: ["attendances"] });
   }
 
   async update(id: number, dto: UpdateParadeDto) {
