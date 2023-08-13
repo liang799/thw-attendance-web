@@ -9,6 +9,7 @@ import "dotenv/config";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
 import { JwtModule } from "@nestjs/jwt";
+import { OngoingParadeModule } from "./api/ongoing-parade/ongoing-parade.module";
 
 @Module({
   imports: [
@@ -26,11 +27,12 @@ import { JwtModule } from "@nestjs/jwt";
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60 days' },
+      signOptions: { expiresIn: "60 days" }
     }),
     ParadesModule,
     UsersModule,
-    AttendancesModule
+    AttendancesModule,
+    OngoingParadeModule
   ],
   controllers: [AppController],
   providers: [
