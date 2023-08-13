@@ -20,7 +20,8 @@ import { JwtModule } from "@nestjs/jwt";
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      type: "mysql"
+      type: "mysql",
+      debug: true
     }),
     JwtModule.register({
       global: true,
