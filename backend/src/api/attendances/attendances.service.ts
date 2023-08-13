@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateAttendanceDto } from "./dto/create-attendance.dto";
 import { EntityManager } from "@mikro-orm/core";
 import { AttendanceRepository } from "./attendance.repository";
@@ -23,12 +23,6 @@ export class AttendancesService {
 
     const user = await this.userService.findOne(dto.user);
     const parade = await this.paradeService.getLatestOngoingParade();
-    const existingAttendance = await this.repository.findOne({ user: user, parade: parade });
-
-    if (existingAttendance) throw new ForbiddenException(
-      `Please use: PUT /attendances/${existingAttendance.id}`,
-      "[Prohibited Action]: duplicate attendance is not allowed"
-    );
 
     let availability: Availability = new Availability();
     if (dto.availability == AttendanceStatus.DISPATCH) {
@@ -39,6 +33,13 @@ export class AttendancesService {
       availability = Availability.mightHaveMc(dto.status);
     } else if (dto.availability == AttendanceStatus.ABSENT) {
       availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
+    }
+
+    const existingAttendance = await this.repository.findOne({ user: user, parade: parade });
+    if (existingAttendance) {
+      existingAttendance.availability = availability;
+      await this.em.flush();
+      return existingAttendance;
     }
 
     const attendance = user.submitAttendance(availability, parade);

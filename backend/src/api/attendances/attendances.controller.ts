@@ -8,7 +8,7 @@ export class AttendancesController {
   constructor(private readonly attendancesService: AttendancesService) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   create(@Body() createAttendanceDto: CreateAttendanceDto) {
     return this.attendancesService.create(createAttendanceDto);
   }

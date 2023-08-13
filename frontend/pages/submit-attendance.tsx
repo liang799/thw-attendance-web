@@ -72,19 +72,21 @@ export default function SubmitAttendancePage() {
 
     try {
       await ApiClient.post("/attendances", data);
+      toast({
+        title: "Successful",
+        description: "You have submitted your attendance",
+        status: "success",
+        duration: 5000,
+        isClosable: true
+      });
     } catch (error: any) {
-      try {
-        const recommendedUrl = error.response.data.message.replace("Please use: PUT ", "");
-        await ApiClient.put(recommendedUrl, data);
-      } catch (e: any) {
-        toast({
-          title: error.name,
-          description: error.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true
-        });
-      }
+      toast({
+        title: error.name,
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      });
     }
   };
 
