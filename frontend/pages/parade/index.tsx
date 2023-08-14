@@ -19,7 +19,7 @@ export default function ParadeIndexPage() {
     () => {
       return ApiClient.get("/ongoing-parade")
         .then(res => res.data);
-    }
+    }, { retry: false }
   );
 
   if (isLoading) {
@@ -34,7 +34,20 @@ export default function ParadeIndexPage() {
   }
 
   if (isError) {
-    return <GenericErrorDisplay title="Error">Something went wrong</GenericErrorDisplay>
+    return (
+      <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
+        <Stack p={4} spacing="12px">
+          <Heading pb={4}>Parade State Tracker</Heading>
+          <Link href="/parade/create">
+            <HorizontalCard>
+              <CardBody>
+                <Heading size="md">Create Parade</Heading>
+              </CardBody>
+            </HorizontalCard>
+          </Link>
+        </Stack>
+      </Container>
+    );
   }
 
   return (
