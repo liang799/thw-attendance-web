@@ -14,6 +14,7 @@ import { ApiClient } from "@/utils/axios";
 import GenericErrorDisplay from "@/components/GenericErrorDisplay";
 
 export default function ParadeIndexPage() {
+  const bgColor = useColorModeValue("gray.50", "gray.800");
   const { data, isLoading, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
       return ApiClient.get("/ongoing-parade")
@@ -23,7 +24,7 @@ export default function ParadeIndexPage() {
 
   if (isLoading) {
     return (
-      <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+      <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
         <Stack p={4} spacing="12px">
           <Skeleton height='20px' />
           <Skeleton height='20px' />
@@ -37,7 +38,7 @@ export default function ParadeIndexPage() {
   }
 
   return (
-    <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+    <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
       <Stack p={4} spacing="12px">
         <Heading pb={4}>Parade State Tracker</Heading>
         <Link href="/submit-attendance">

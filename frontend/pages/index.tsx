@@ -32,9 +32,12 @@ type RegisterData = {
 }
 
 export default function RegisterPage() {
+  const bgColor = useColorModeValue("gray.50", "gray.800");
+  const boxColor = useColorModeValue("gray.50", "gray.800");
   const toast = useToast();
   const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
+
   const onSubmit = async (data: RegisterData) => {
     try {
       const response = await ApiClient.post("/users", data);
@@ -53,10 +56,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <Container maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+    <Container maxW="container.xl" minH="100vh" bg={bgColor}>
       <Flex p={5} align="center" justify="center" flexDirection="column">
         <Heading p={5}>Registration</Heading>
-        <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
+        <Stack bg={boxColor} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.email}>
               <FormLabel htmlFor="email">Email</FormLabel>

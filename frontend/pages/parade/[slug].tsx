@@ -58,6 +58,7 @@ function generateAttendanceStatus(data: AttendanceData) {
 
 
 export default function ParadeIdPage() {
+  const bgColor = useColorModeValue("gray.50", "gray.800");
   const finalRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [attendance, setAttendance] = useState<Attendance>();
@@ -156,7 +157,7 @@ export default function ParadeIdPage() {
     };
 
     return (
-      <Container maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+      <Container maxW="container.xl" minH="100vh" bg={bgColor}>
 
         <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
@@ -222,7 +223,7 @@ export default function ParadeIdPage() {
   }
 
   return (
-    <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+    <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
       <Stack p={4} spacing="12px">
         <Skeleton height="20px" />
         <Skeleton height="20px" />
