@@ -6,7 +6,7 @@ export type AttendanceData = {
   mcStartDate?: Date,
   mcEndDate?: Date,
   user: number,
-  location?: string,
+  dispatchLocation?: string,
 }
 
 export type Attendance = {

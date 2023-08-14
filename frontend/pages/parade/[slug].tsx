@@ -40,16 +40,14 @@ const list = [
 ];
 
 function generateAttendanceStatus(data: AttendanceData) {
-  const availability = data.availability;
+  const availability = data.status;
   switch (availability) {
     case "Dispatch":
-      return <Text>{`${data.status} - ${data.location}`}</Text>;
-    case "No MC":
+      return <Text>{`${data.status} - ${data.dispatchLocation}`}</Text>;
+    case "Present":
       return <Text>{`${data.status}`}</Text>;
-    case "Might Have MC":
+    case "MC":
       return <Text>{`${data.status}`}</Text>;
-    case "Absent":
-      return <Text>{`${data.status} - ${data.mcEndDate}`}</Text>;
     default:
       return <Text>{data.status}</Text>;
   }
