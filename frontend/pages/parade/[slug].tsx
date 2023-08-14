@@ -47,7 +47,7 @@ function generateAttendanceStatus(data: AttendanceData) {
     case "Present":
       return <Text>{`${data.status}`}</Text>;
     case "MC":
-      return <Text>{`${data.status}`}</Text>;
+      return <Text>{`${data.status} - ${data.mcEndDate}`}</Text>;
     default:
       return <Text>{data.status}</Text>;
   }
