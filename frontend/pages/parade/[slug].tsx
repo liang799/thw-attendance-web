@@ -115,7 +115,7 @@ export default function ParadeIdPage() {
     }
 
     try {
-      await ApiClient.post("/attendances", data);
+      await ApiClient.put(`/attendances/${slug}`, data);
       await queryClient.invalidateQueries(ReactQueryKey.LATEST_PARADE);
       toast({
         title: "Successful",
