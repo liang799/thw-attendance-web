@@ -1,17 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { CreateParadeDto } from "./dto/create-parade.dto";
-import { UpdateParadeDto } from "./dto/update-parade.dto";
-import { ParadeRepository } from "./parade.repository";
-import { EntityManager, QueryOrder, wrap } from "@mikro-orm/core";
-import { Parade } from "./entities/parade.entity";
+import { Injectable } from '@nestjs/common';
+import { CreateParadeDto } from './dto/create-parade.dto';
+import { UpdateParadeDto } from './dto/update-parade.dto';
+import { ParadeRepository } from './parade.repository';
+import { EntityManager, QueryOrder, wrap } from '@mikro-orm/core';
+import { Parade } from './entities/parade.entity';
 
 @Injectable()
 export class ParadesService {
   constructor(
     private readonly repository: ParadeRepository,
-    private readonly em: EntityManager
-  ) {
-  }
+    private readonly em: EntityManager,
+  ) {}
 
   create(dto: CreateParadeDto) {
     const entity = new Parade(dto.type, new Date(dto.startDate));
@@ -23,7 +22,9 @@ export class ParadesService {
   }
 
   findOne(id: number) {
-    return this.repository.findOne(id, { populate: ["attendances", "attendances.user"] });
+    return this.repository.findOne(id, {
+      populate: ['attendances', 'attendances.user'],
+    });
   }
 
   async update(id: number, dto: UpdateParadeDto) {
@@ -38,8 +39,11 @@ export class ParadesService {
   }
 
   getLatestOngoingParade(): Promise<Parade> {
-    return this.repository.findOneOrFail({ endDate: null }, {
-      orderBy: { id: QueryOrder.DESC }
-    });
+    return this.repository.findOneOrFail(
+      { endDate: null },
+      {
+        orderBy: { id: QueryOrder.DESC },
+      },
+    );
   }
 }

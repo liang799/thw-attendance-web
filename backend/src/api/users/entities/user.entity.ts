@@ -1,12 +1,12 @@
-import { Entity, Enum, PrimaryKey, Property, Unique } from "@mikro-orm/core";
-import { Attendance } from "../../attendances/entities/attendance.entity";
-import { Parade } from "../../parades/entities/parade.entity";
-import { AccountType } from "../types/AccountType";
-import { UserRepository } from "../user.repostiory";
-import { Availability } from "../../attendances/value-objects/Availability";
+import { Entity, Enum, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { Parade } from '../../parades/entities/parade.entity';
+import { AccountType } from '../types/AccountType';
+import { UserRepository } from '../user.repostiory';
+import { Availability } from '../../attendances/value-objects/Availability';
 
 @Entity({
-  discriminatorColumn: "type",
+  discriminatorColumn: 'type',
   discriminatorValue: AccountType.PERSONAL,
   customRepository: () => UserRepository,
 })

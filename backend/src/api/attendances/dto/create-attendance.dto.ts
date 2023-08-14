@@ -1,5 +1,11 @@
-import { IsDateString, IsEnum, IsInt, IsOptional, IsString } from "class-validator";
-import { AttendanceStatus } from "./attendance-status";
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { AttendanceStatus } from './attendance-status';
 
 export class CreateAttendanceDto {
   @IsInt()

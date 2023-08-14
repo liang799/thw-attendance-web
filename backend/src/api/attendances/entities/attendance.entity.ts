@@ -1,8 +1,14 @@
-import { Embedded, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
-import { User } from "../../users/entities/user.entity";
-import { Parade } from "../../parades/entities/parade.entity";
-import { AttendanceRepository } from "../attendance.repository";
-import { Availability } from "../value-objects/Availability";
+import {
+  Embedded,
+  Entity,
+  ManyToOne,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
+import { User } from '../../users/entities/user.entity';
+import { Parade } from '../../parades/entities/parade.entity';
+import { AttendanceRepository } from '../attendance.repository';
+import { Availability } from '../value-objects/Availability';
 
 @Entity({ customRepository: () => AttendanceRepository })
 export class Attendance {

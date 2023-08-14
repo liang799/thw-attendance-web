@@ -1,5 +1,4 @@
-import { Parade } from "./entities/parade.entity";
-import { EntityRepository } from "@mikro-orm/mysql";
+import { Parade } from './entities/parade.entity';
+import { EntityRepository } from '@mikro-orm/mysql';
 
-export class ParadeRepository extends EntityRepository<Parade> {
-}
+export class ParadeRepository extends EntityRepository<Parade> {}

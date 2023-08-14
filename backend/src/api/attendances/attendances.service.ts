@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { CreateAttendanceDto } from "./dto/create-attendance.dto";
-import { EntityManager } from "@mikro-orm/core";
-import { AttendanceRepository } from "./attendance.repository";
-import { Availability } from "./value-objects/Availability";
-import { AttendanceStatus } from "./dto/attendance-status";
-import { ParadesService } from "../parades/parades.service";
-import { UsersService } from "../users/users.service";
-import { UpdateAttendanceDto } from "./dto/update-attendance.dto";
-import { Attendance } from "./entities/attendance.entity";
+import { Injectable } from '@nestjs/common';
+import { CreateAttendanceDto } from './dto/create-attendance.dto';
+import { EntityManager } from '@mikro-orm/core';
+import { AttendanceRepository } from './attendance.repository';
+import { Availability } from './value-objects/Availability';
+import { AttendanceStatus } from './dto/attendance-status';
+import { ParadesService } from '../parades/parades.service';
+import { UsersService } from '../users/users.service';
+import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import { Attendance } from './entities/attendance.entity';
 
 @Injectable()
 export class AttendancesService {
@@ -15,12 +15,10 @@ export class AttendancesService {
     private readonly repository: AttendanceRepository,
     private readonly em: EntityManager,
     private readonly paradeService: ParadesService,
-    private readonly userService: UsersService
-  ) {
-  }
+    private readonly userService: UsersService,
+  ) {}
 
   async create(dto: CreateAttendanceDto): Promise<Attendance> {
-
     const user = await this.userService.findOne(dto.user);
     const parade = await this.paradeService.getLatestOngoingParade();
 
@@ -32,10 +30,17 @@ export class AttendancesService {
     } else if (dto.availability == AttendanceStatus.MIGHT_HAVE_MC) {
       availability = Availability.mightHaveMc(dto.status);
     } else if (dto.availability == AttendanceStatus.ABSENT) {
-      availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
+      availability = Availability.absent(
+        dto.status,
+        new Date(dto.mcStartDate),
+        new Date(dto.mcEndDate),
+      );
     }
 
-    const existingAttendance = await this.repository.findOne({ user: user, parade: parade });
+    const existingAttendance = await this.repository.findOne({
+      user: user,
+      parade: parade,
+    });
     if (existingAttendance) {
       existingAttendance.availability = availability;
       await this.em.flush();
@@ -48,11 +53,15 @@ export class AttendancesService {
   }
 
   findAll(): Promise<Attendance[]> {
-    return this.repository.findAll({ populate: ["user", "availability", "parade"] });
+    return this.repository.findAll({
+      populate: ['user', 'availability', 'parade'],
+    });
   }
 
   findOne(id: number): Promise<Attendance> {
-    return this.repository.findOne(id, { populate: ["user", "availability", "parade"] });
+    return this.repository.findOne(id, {
+      populate: ['user', 'availability', 'parade'],
+    });
   }
 
   async update(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
@@ -66,7 +75,11 @@ export class AttendancesService {
     } else if (dto.availability == AttendanceStatus.MIGHT_HAVE_MC) {
       availability = Availability.mightHaveMc(dto.status);
     } else if (dto.availability == AttendanceStatus.ABSENT) {
-      availability = Availability.absent(dto.status, new Date(dto.mcStartDate), new Date(dto.mcEndDate));
+      availability = Availability.absent(
+        dto.status,
+        new Date(dto.mcStartDate),
+        new Date(dto.mcEndDate),
+      );
     }
 
     attendance.availability = availability;

@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ParadesService } from './parades.service';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
-import { Public } from "../../constants";
+import { Public } from '../../constants';
 
 @Controller('parades')
 export class ParadesController {

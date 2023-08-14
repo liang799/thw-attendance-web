@@ -1,4 +1,4 @@
 export enum AccountType {
-  PERSONAL = "personal",
-  DUTY = "duty"
+  PERSONAL = 'personal',
+  DUTY = 'duty',
 }

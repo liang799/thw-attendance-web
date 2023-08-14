@@ -1,8 +1,8 @@
-import { Embeddable, Enum, Property } from "@mikro-orm/core";
+import { Embeddable, Enum, Property } from '@mikro-orm/core';
 
 export enum AvailabilityType {
-  PRESENT = "Present",
-  ABSENT = "Absent"
+  PRESENT = 'Present',
+  ABSENT = 'Absent',
 }
 
 @Embeddable()
@@ -32,7 +32,7 @@ export class Availability {
   static dispatchTo(location: string) {
     const availability = new Availability();
     availability.type = AvailabilityType.PRESENT;
-    availability.status = "Dispatch";
+    availability.status = 'Dispatch';
     availability.dispatchLocation = location;
     return availability;
   }

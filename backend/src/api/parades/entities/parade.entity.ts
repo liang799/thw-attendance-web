@@ -1,7 +1,14 @@
-import { Collection, Entity, Enum, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
-import { ParadeRepository } from "../parade.repository";
-import { Attendance } from "../../attendances/entities/attendance.entity";
-import { ParadeType } from "../type/ParadeType";
+import {
+  Collection,
+  Entity,
+  Enum,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
+import { ParadeRepository } from '../parade.repository';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { ParadeType } from '../type/ParadeType';
 
 @Entity({ customRepository: () => ParadeRepository })
 export class Parade {
@@ -17,7 +24,7 @@ export class Parade {
   @Property({ nullable: true })
   endDate?: Date;
 
-  @OneToMany(() => Attendance, attendance => attendance.parade)
+  @OneToMany(() => Attendance, (attendance) => attendance.parade)
   attendances = new Collection<Attendance>(this);
 
   constructor(type: ParadeType, startDate: Date) {

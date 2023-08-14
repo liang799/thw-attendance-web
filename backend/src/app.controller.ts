@@ -1,11 +1,10 @@
-import { Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { AppService } from "./app.service";
-import { AuthGuard } from "./auth.guard";
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AppService } from './app.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {
-  }
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello(): string {
@@ -15,6 +14,6 @@ export class AppController {
   @UseGuards(AuthGuard)
   @Post()
   testProtectedRoute(): string {
-    return "yes";
+    return 'yes';
   }
 }

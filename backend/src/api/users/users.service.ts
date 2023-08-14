@@ -1,19 +1,18 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { EntityManager, wrap } from "@mikro-orm/core";
-import { User } from "./entities/user.entity";
-import { UserRepository } from "./user.repostiory";
-import { JwtService } from "@nestjs/jwt";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { EntityManager, wrap } from '@mikro-orm/core';
+import { User } from './entities/user.entity';
+import { UserRepository } from './user.repostiory';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly repository: UserRepository,
     private readonly em: EntityManager,
-    private jwtService: JwtService
-  ) {
-  }
+    private jwtService: JwtService,
+  ) {}
 
   create(dto: CreateUserDto) {
     const entity = new User(dto.email, dto.password);
@@ -47,7 +46,7 @@ export class UsersService {
     const payload = { sub: user.id, email: user.email };
     return {
       id: user.id,
-      access_token: await this.jwtService.signAsync(payload)
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 }
