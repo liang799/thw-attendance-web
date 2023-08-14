@@ -13,7 +13,7 @@ import { ChangeEvent, useState } from "react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { ApiClient } from "@/utils/axios";
 import { getUserId } from "@/utils/AuthService";
-import { AttendanceData } from "@/utils/types/AttendanceData";
+import { CreateAttendanceData } from "@/utils/types/AttendanceData";
 
 
 const list = [
@@ -39,7 +39,7 @@ export default function SubmitAttendancePage() {
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
 
   const onSubmit = async () => {
-    let data: AttendanceData;
+    let data: CreateAttendanceData;
     if (hasDispatchLocation) {
       data = {
         availability: list[selectedIndex].availability,

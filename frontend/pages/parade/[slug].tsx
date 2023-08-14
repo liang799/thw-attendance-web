@@ -20,11 +20,12 @@ import { useQuery, useQueryClient } from "react-query";
 import { ReactQueryKey } from "@/utils/react-query-keys";
 import { ApiClient } from "@/utils/axios";
 import GenericErrorDisplay from "@/components/GenericErrorDisplay";
-import { Attendance, AttendanceData } from "@/utils/types/AttendanceData";
+import { Attendance, CreateAttendanceData, GetAttendanceData } from "@/utils/types/AttendanceData";
 import HorizontalCard from "@/components/HorizontalCard";
 import { ChangeEvent, useRef, useState } from "react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { getUserId } from "@/utils/AuthService";
+import { DateTime } from "luxon";
 
 const list = [
   { availability: "No MC", status: "Present" },
@@ -39,7 +40,7 @@ const list = [
   { availability: "Absent", status: "MC" }
 ];
 
-function generateAttendanceStatus(data: AttendanceData) {
+function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
   switch (availability) {
     case "Dispatch":
@@ -47,7 +48,9 @@ function generateAttendanceStatus(data: AttendanceData) {
     case "Present":
       return <Text>{`${data.status}`}</Text>;
     case "MC":
-      return <Text>{`${data.status} - ${data.mcEndDate}`}</Text>;
+      if (!data.mcEndDate) return <Text>{`${data.status} - No End date`}</Text>;
+      const date = DateTime.fromISO(data.mcEndDate).toFormat("ddLLyy");
+      return <Text>{`${data.status} - ${date}`}</Text>;
     default:
       return <Text>{data.status}</Text>;
   }
@@ -68,7 +71,7 @@ export default function ParadeIdPage() {
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
   const [dispatchLocation, setDispatchLocation] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   function determineAdditionalInput(event: ChangeEvent<HTMLSelectElement>) {
     const value = +event.target.value;
@@ -90,7 +93,7 @@ export default function ParadeIdPage() {
 
 
   const onSubmit = async () => {
-    let data: AttendanceData;
+    let data: CreateAttendanceData;
     if (hasDispatchLocation) {
       data = {
         availability: list[selectedIndex].availability,
@@ -154,10 +157,15 @@ export default function ParadeIdPage() {
       onOpen();
     };
 
+    const handleClose = () => {
+      setHasDispatchLocation(false);
+      setHasMcDates(false);
+      onClose();
+    }
+
     return (
       <Container maxW="container.xl" minH="100vh" bg={bgColor}>
-
-        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Edit Attendance for {attendance?.user.name}</ModalHeader>
@@ -200,8 +208,8 @@ export default function ParadeIdPage() {
         <Stack spacing={4}>
           <Heading>Parade State Summary</Heading>
           <Text>Node: THWHQ</Text>
-          <Text>Start Time: {data.startDate}</Text>
-          <Text>End Time: {data.endDate}</Text>
+          <Text>Start Time: {DateTime.fromISO(data.startDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
+          <Text>End Time: {DateTime.fromISO(data.endDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
           {data.attendances.map((attendance: Attendance) => {
             return (
               <Link key={attendance.id} onClick={() => handleClickOnName(attendance)}>

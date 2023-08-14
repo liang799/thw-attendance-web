@@ -1,10 +1,19 @@
 import { UserData } from "@/utils/types/UserData";
 
-export type AttendanceData = {
+export type CreateAttendanceData = {
   availability: string,
   status: string,
   mcStartDate?: Date,
   mcEndDate?: Date,
+  user: number,
+  location?: string,
+}
+
+export type GetAttendanceData = {
+  availability: string,
+  status: string,
+  mcStartDate?: string,
+  mcEndDate?: string,
   user: number,
   dispatchLocation?: string,
   location?: string,
@@ -13,7 +22,7 @@ export type AttendanceData = {
 export type Attendance = {
   id: number,
   user: UserData,
-  availability: AttendanceData,
+  availability: GetAttendanceData,
   parade: number,
   submittedAt: Date
 }
