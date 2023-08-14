@@ -33,7 +33,7 @@ type RegisterData = {
 
 export default function RegisterPage() {
   const bgColor = useColorModeValue("gray.50", "gray.800");
-  const boxColor = useColorModeValue("gray.50", "gray.800");
+  const boxColor = useColorModeValue("white", "gray.700");
   const toast = useToast();
   const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
