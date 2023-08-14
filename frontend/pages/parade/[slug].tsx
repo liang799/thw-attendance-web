@@ -53,7 +53,7 @@ export default function ParadeIdPage() {
 
     return (
       <Container maxW="container.xl" minH="100vh" bg={bgColor}>
-        <AttendanceModal attendanceId={+attendance?.id} name={attendance?.user.name?.toString()} showModal={showModal} setShowModal={setShowModal} />
+        <AttendanceModal attendance={attendance} showModal={showModal} setShowModal={setShowModal} />
 
         <Stack spacing={4}>
           <Heading>Parade State Summary</Heading>

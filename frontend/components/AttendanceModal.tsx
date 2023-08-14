@@ -15,7 +15,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import { CreateAttendanceData } from "@/utils/types/AttendanceData";
+import { Attendance, CreateAttendanceData } from "@/utils/types/AttendanceData";
 import { getUserId } from "@/utils/AuthService";
 import { ApiClient } from "@/utils/axios";
 import { useQueryClient } from "react-query";
@@ -37,13 +37,12 @@ const list = [
 type setterFunction = (showModal: boolean) => void;
 
 type AttendanceModalProps = {
-  attendanceId: number,
-  name: string
+  attendance?: Attendance,
   showModal: boolean,
   setShowModal: setterFunction
 }
 
-export default function AttendanceModal({ attendanceId, name, showModal, setShowModal }: AttendanceModalProps) {
+export default function AttendanceModal({ attendance, showModal, setShowModal }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
@@ -85,7 +84,7 @@ export default function AttendanceModal({ attendanceId, name, showModal, setShow
     }
 
     try {
-      await ApiClient.put(`/attendances/${attendanceId}`, data);
+      await ApiClient.put(`/attendances/${attendance?.id}`, data);
       await queryClient.invalidateQueries();
       toast({
         title: "Successful",
@@ -127,7 +126,7 @@ export default function AttendanceModal({ attendanceId, name, showModal, setShow
     <Modal finalFocusRef={finalRef} isOpen={showModal} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit Attendance for {name}</ModalHeader>
+        <ModalHeader>Edit Attendance for {attendance?.user.name}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form>
