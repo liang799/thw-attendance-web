@@ -27,7 +27,7 @@ const schema = yup.object({
 
 type RegisterData = {
     type: string,
-    startDate: string
+    startDate: Date,
 }
 
 export default function CreateParadePage() {
