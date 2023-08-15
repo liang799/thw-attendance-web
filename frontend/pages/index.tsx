@@ -1,5 +1,4 @@
 import {
-  Text,
   Button,
   Container,
   Flex,
@@ -9,7 +8,6 @@ import {
   Heading,
   Input,
   Stack,
-  Link,
   useColorModeValue,
   useToast
 } from "@chakra-ui/react";
@@ -17,33 +15,30 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { setAccessToken, setUserId } from "@/utils/AuthService";
 import PasswordInput from "@/components/PasswordInput";
 import { useRouter } from "next/navigation";
-import { setAccessToken, setUserId } from "@/utils/AuthService";
 
 const schema = yup.object({
-  email: yup.string().email().required(),
+  userName: yup.string().required(),
   password: yup.string().required()
 });
 
-type RegisterData = {
-  email: string,
+type LoginData = {
+  userName: string,
   password: string
 }
 
-export default function RegisterPage() {
-  const bgColor = useColorModeValue("gray.50", "gray.800");
-  const boxColor = useColorModeValue("white", "gray.700");
+export default function LoginPage() {
   const toast = useToast();
-  const router = useRouter();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
-
-  const onSubmit = async (data: RegisterData) => {
+  const router = useRouter();
+  const onSubmit = async (data: LoginData) => {
     try {
-      const response = await ApiClient.post("/users", data);
+      const response = await ApiClient.post("/auth/login", data);
       setAccessToken(response.data?.access_token);
       setUserId(response.data?.id);
-      router.push(`/onboard-user/${response.data.id}`);
+      router.push("/parade");
     } catch (error: any) {
       toast({
         title: error.name,
@@ -56,15 +51,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <Container maxW="container.xl" minH="100vh" bg={bgColor}>
+    <Container maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
       <Flex p={5} align="center" justify="center" flexDirection="column">
-        <Heading p={5}>Registration</Heading>
-        <Stack bg={boxColor} p={5}>
+        <Heading p={5}>Login</Heading>
+        <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={!!errors.email}>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <Input {...register("email")} />
-              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+            <FormControl isInvalid={!!errors.userName}>
+              <FormLabel htmlFor="userName">Email</FormLabel>
+              <Input {...register("userName")} />
+              <FormErrorMessage>{errors.userName?.message}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.password}>
               <FormLabel htmlFor="password">Password</FormLabel>
@@ -75,7 +70,6 @@ export default function RegisterPage() {
               Submit
             </Button>
           </form>
-          <Text align="center">Already a user? <Link href="/auth/login">Login</Link></Text>
         </Stack>
       </Flex>
     </Container>
