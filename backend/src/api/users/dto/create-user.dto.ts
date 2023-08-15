@@ -1,10 +1,13 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsString } from "class-validator";
+import { BranchType } from "../types/BranchType";
 
 export class CreateUserDto {
-  @IsEmail()
-  email: string;
+  @IsEnum(BranchType)
+  type: BranchType;
 
   @IsString()
-  @IsNotEmpty()
-  password: string;
+  rank: string;
+
+  @IsString()
+  name: string;
 }
