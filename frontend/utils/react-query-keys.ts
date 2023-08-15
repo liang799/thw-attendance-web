@@ -1,5 +1,5 @@
 export const ReactQueryKey = {
-  TEST: "test",
+  USER_DETAIL: "user details",
   USER_ID: "user_id",
   LATEST_PARADE: "latest parade"
 };

@@ -9,6 +9,7 @@ import HorizontalCard from "@/components/HorizontalCard";
 import { useState } from "react";
 import { DateTime } from "luxon";
 import AttendanceModal from "@/components/AttendanceModal";
+import Navbar from "@/components/Navbar";
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -42,7 +43,12 @@ export default function ParadeIdPage() {
   );
 
   if (isError) {
-    return <GenericErrorDisplay title="Error">Something went wrong</GenericErrorDisplay>;
+    return (
+      <>
+        <Navbar />
+        <GenericErrorDisplay title="Error">Something went wrong</GenericErrorDisplay>
+      </>
+    );
   }
 
   if (data) {
@@ -53,6 +59,8 @@ export default function ParadeIdPage() {
 
     return (
       <Container maxW="container.xl" minH="100vh" bg={bgColor}>
+        <Navbar />
+
         <AttendanceModal attendance={attendance} showModal={showModal} setShowModal={setShowModal} />
 
         <Stack spacing={4}>
@@ -80,6 +88,7 @@ export default function ParadeIdPage() {
 
   return (
     <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
+      <Navbar />
       <Stack p={4} spacing="12px">
         <Skeleton height="20px" />
         <Skeleton height="20px" />

@@ -8,7 +8,7 @@ export function setAccessToken(token: string) {
   secureLocalStorage.setItem("token", token);
 }
 
-export function logout() {
+export function clearLocalStorage() {
   secureLocalStorage.clear();
 }
 
