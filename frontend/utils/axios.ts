@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken } from "@/utils/AuthService";
 
 export const ApiClient = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json"
