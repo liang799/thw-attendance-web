@@ -37,7 +37,7 @@ const list = [
 type setterFunction = (showModal: boolean) => void;
 
 type AttendanceModalProps = {
-  attendance?: Attendance,
+  attendance?: Attendance | null,
   showModal: boolean,
   setShowModal: setterFunction
 }

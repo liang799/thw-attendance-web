@@ -28,7 +28,7 @@ function generateAttendanceStatus(data: GetAttendanceData) {
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue("gray.50", "gray.800");
-  const [attendance, setAttendance] = useState<Attendance>();
+  const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
   const { slug } = router.query;
