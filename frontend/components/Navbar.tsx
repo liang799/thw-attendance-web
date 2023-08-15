@@ -50,7 +50,7 @@ export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  const { isLoading, data, isError } = useQuery("repoData", () =>
+  const { isLoading, data } = useQuery("repoData", () =>
     ApiClient.get(`/users/${getUserId()}`).then(res =>
       res.data
     ), {
@@ -97,7 +97,7 @@ export default function Navbar() {
                   <br />
                   <Center>
                     <Skeleton isLoaded={!isLoading}>
-                      <p>{isError ? "Unable to fetch user's name" : data.name}</p>
+                      <p>{data && data.name ? data.name : "Unable to fetch user's name"}</p>
                     </Skeleton>
                   </Center>
                   <br />
