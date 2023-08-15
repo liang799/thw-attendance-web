@@ -57,7 +57,7 @@ export default function LoginPage() {
         <Stack bg={useColorModeValue("white", "gray.700")} p={5}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.userName}>
-              <FormLabel htmlFor="userName">Email</FormLabel>
+              <FormLabel htmlFor="userName">Username</FormLabel>
               <Input {...register("userName")} />
               <FormErrorMessage>{errors.userName?.message}</FormErrorMessage>
             </FormControl>

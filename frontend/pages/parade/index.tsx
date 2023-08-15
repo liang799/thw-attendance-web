@@ -1,17 +1,9 @@
 import HorizontalCard from "@/components/HorizontalCard";
-import {
-  CardBody,
-  Container,
-  Heading,
-  Skeleton,
-  Link,
-  Stack,
-  useColorModeValue
-} from "@chakra-ui/react";
+import { CardBody, Container, Heading, Link, Skeleton, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import { ReactQueryKey } from "@/utils/react-query-keys";
 import { ApiClient } from "@/utils/axios";
-import GenericErrorDisplay from "@/components/GenericErrorDisplay";
+import Navbar from "@/components/Navbar";
 
 export default function ParadeIndexPage() {
   const bgColor = useColorModeValue("gray.50", "gray.800");
@@ -25,9 +17,10 @@ export default function ParadeIndexPage() {
   if (isLoading) {
     return (
       <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
+        <Navbar />
         <Stack p={4} spacing="12px">
-          <Skeleton height='20px' />
-          <Skeleton height='20px' />
+          <Skeleton height="20px" />
+          <Skeleton height="20px" />
         </Stack>
       </Container>
     );
@@ -36,6 +29,7 @@ export default function ParadeIndexPage() {
   if (isError) {
     return (
       <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
+        <Navbar />
         <Stack p={4} spacing="12px">
           <Heading pb={4}>Parade State Tracker</Heading>
           <Link href="/parade/create">
@@ -52,8 +46,11 @@ export default function ParadeIndexPage() {
 
   return (
     <Container p={4} maxW="container.xl" minH="100vh" bg={bgColor}>
+      <Navbar />
+
       <Stack p={4} spacing="12px">
         <Heading pb={4}>Parade State Tracker</Heading>
+
         <Link href="/submit-attendance">
           <HorizontalCard>
             <CardBody>
@@ -69,6 +66,7 @@ export default function ParadeIndexPage() {
             </CardBody>
           </HorizontalCard>
         </Link>
+
       </Stack>
     </Container>
   );
