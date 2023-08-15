@@ -9,6 +9,13 @@ const config: Options = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   type: 'mysql',
+  seeder: {
+    path: './dist/src/seeders',
+    pathTs: './src/seeders',
+    defaultSeeder: 'DatabaseSeeder',
+    glob: '!(*.d).{js,ts}',
+    emit: 'ts',
+  },
 };
 
 export default config;

@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "setup-db": "mikro-orm schema:fresh --run",
+    "setup-db": "mikro-orm schema:fresh --run --seed",
     "debug-orm": "mikro-orm debug",
     "docs": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
@@ -42,6 +42,7 @@
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.21",
     "@mikro-orm/cli": "^5.7.14",
+    "@mikro-orm/seeder": "^5.7.14",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
