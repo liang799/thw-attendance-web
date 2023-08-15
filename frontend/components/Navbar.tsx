@@ -50,12 +50,12 @@ export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  const { isLoading, data } = useQuery("repoData", () =>
-      ApiClient.get(`/users/${getUserId()}`).then(res =>
-        res.data
-      ), {
-      refetchOnWindowFocus: false
-    }
+  const { isLoading, data, isError } = useQuery("repoData", () =>
+    ApiClient.get(`/users/${getUserId()}`).then(res =>
+      res.data
+    ), {
+    refetchOnWindowFocus: false
+  }
   );
   const logout = () => {
     clearLocalStorage();
@@ -97,7 +97,7 @@ export default function Navbar() {
                   <br />
                   <Center>
                     <Skeleton isLoaded={!isLoading}>
-                      <p>{data.name || "Unable to fetch user's name"}</p>
+                      <p>{isError ? "Unable to fetch user's name" : data.name}</p>
                     </Skeleton>
                   </Center>
                   <br />
