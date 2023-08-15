@@ -1,6 +1,5 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { AuthGuard } from './auth.guard';
 
 @Controller()
 export class AppController {
@@ -11,7 +10,6 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseGuards(AuthGuard)
   @Post()
   testProtectedRoute(): string {
     return 'yes';

@@ -37,10 +37,10 @@ import { OngoingParadeModule } from './api/ongoing-parade/ongoing-parade.module'
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule {}
