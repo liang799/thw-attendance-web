@@ -31,6 +31,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const authUser = await this.repo.findOne({ username: loginDto.userName });
+    if (!authUser) throw new UnauthorizedException();
     const match = await bcrypt.compare(loginDto.password, authUser.password);
     if (!match) throw new UnauthorizedException();
     const payload = { sub: authUser.id, username: loginDto.userName };
