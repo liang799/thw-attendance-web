@@ -12,7 +12,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { ApiClient } from "@/utils/axios";
-import { getUserId } from "@/utils/AuthService";
+import { getUserId, useAuthentication } from '@/utils/auth';
 import { CreateAttendanceData } from "@/utils/types/AttendanceData";
 import Navbar from '@/components/Navbar';
 
@@ -32,6 +32,8 @@ const list = [
 
 
 export default function SubmitAttendancePage() {
+  useAuthentication();
+
   const toast = useToast();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);

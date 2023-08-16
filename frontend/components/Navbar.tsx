@@ -19,7 +19,7 @@ import {
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
-import { clearLocalStorage, getUserId } from "@/utils/AuthService";
+import { clearLocalStorage, getUserId } from "@/utils/auth";
 import { ApiClient } from "@/utils/axios";
 import { useQuery } from "react-query";
 import Link from 'next/link';

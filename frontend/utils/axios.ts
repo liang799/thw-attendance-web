@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "@/utils/AuthService";
+import { getAccessToken } from "@/utils/auth";
 
 export const ApiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,

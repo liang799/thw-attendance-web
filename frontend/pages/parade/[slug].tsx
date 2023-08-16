@@ -15,6 +15,7 @@ import AttendanceModal from '@/components/AttendanceModal';
 import Navbar from '@/components/Navbar';
 import { CopyIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
+import { useAuthentication } from '@/utils/auth';
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -40,6 +41,8 @@ export default function ParadeIdPage() {
   const { slug } = router.query;
   const { onCopy, value, hasCopied, setValue } = useClipboard('');
   const toast = useToast();
+
+  useAuthentication();
 
   const { data, isError, isLoading } = useQuery(`Get Parade ${slug}`,
     () => {
