@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { Attendance, CreateAttendanceData } from "@/utils/types/AttendanceData";
-import { getUserId } from "@/utils/AuthService";
+import { getUserId } from "@/utils/auth";
 import { ApiClient } from "@/utils/axios";
 import { useQueryClient } from "react-query";
 

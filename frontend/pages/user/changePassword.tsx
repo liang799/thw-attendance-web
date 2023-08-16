@@ -15,6 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ApiClient } from '@/utils/axios';
 import * as yup from 'yup';
 import Navbar from '@/components/Navbar';
+import { useAuthentication } from '@/utils/auth';
 
 const schema = yup.object({
   oldPassword: yup.string().required(),
@@ -29,6 +30,8 @@ type ChangePasswordDate = {
 export default function ChangePasswordPage() {
   const toast = useToast();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
+
+  useAuthentication();
 
   const onSubmit = async (data: ChangePasswordDate) => {
     try {

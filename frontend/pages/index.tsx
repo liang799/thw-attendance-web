@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { setAccessToken, setUserId } from "@/utils/AuthService";
+import { setAccessToken, setUserId } from "@/utils/auth";
 import PasswordInput from "@/components/PasswordInput";
 import { useRouter } from "next/navigation";
 

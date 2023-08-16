@@ -1,6 +1,6 @@
 import { Box, Heading, Text, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { getUserId } from "@/utils/AuthService";
+import { getUserId } from "@/utils/auth";
 
 export default function NotFound() {
   const router = useRouter();

@@ -5,8 +5,11 @@ import { ReactQueryKey } from '@/utils/react-query-keys';
 import { ApiClient } from '@/utils/axios';
 import Navbar from '@/components/Navbar';
 import NextLink from 'next/link';
+import { useAuthentication } from '@/utils/auth';
 
 export default function ParadeIndexPage() {
+  useAuthentication();
+
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const { data, isLoading, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {

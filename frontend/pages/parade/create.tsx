@@ -17,6 +17,7 @@ import { ApiClient } from '@/utils/axios';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Navbar from '@/components/Navbar';
+import { useAuthentication } from '@/utils/auth';
 
 const schema = yup.object({
   type: yup.string().required(),
@@ -33,6 +34,8 @@ export default function CreateParadePage() {
   const boxColor = useColorModeValue('white', 'gray.700');
   const toast = useToast();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
+
+  useAuthentication();
 
   const onSubmit = async (data: RegisterData) => {
     try {
