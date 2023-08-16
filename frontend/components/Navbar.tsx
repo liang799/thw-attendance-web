@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Flex,
+  Text,
   Menu,
   MenuButton,
   MenuDivider,
@@ -13,14 +14,15 @@ import {
   Stack,
   useColorMode,
   useColorModeValue,
-  useDisclosure
-} from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+  useDisclosure,
+} from '@chakra-ui/react';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
 import { clearLocalStorage, getUserId } from "@/utils/AuthService";
 import { ApiClient } from "@/utils/axios";
 import { useQuery } from "react-query";
+import Link from 'next/link';
 
 interface Props {
   children: ReactNode;
@@ -66,7 +68,11 @@ export default function Navbar() {
     <>
       <Box bg={useColorModeValue("gray.100", "gray.800")} px={5}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Box>THW</Box>
+          <Link href="/parade">
+            <Box>
+              <Text as='b'>THW</Text>
+            </Box>
+          </Link>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
@@ -100,6 +106,7 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <MenuDivider />
+                  <MenuItem onClick={() => router.push("/user/changePassword")}>Change Password</MenuItem>
                   <MenuItem onClick={logout}>Logout</MenuItem>
                 </MenuList>
               </Menu>
