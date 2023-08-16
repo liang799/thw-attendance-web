@@ -50,7 +50,7 @@ export default function ParadeIndexPage() {
       <Navbar />
 
       <Stack p={4} spacing='12px'>
-        <Heading pb={4}>Parade State Tracker</Heading>
+        <Heading py={4}>Parade State Tracker</Heading>
 
         <Link href='/submit-attendance' as={NextLink}>
           <HorizontalCard>

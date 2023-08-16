@@ -14,6 +14,7 @@ import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { ApiClient } from "@/utils/axios";
 import { getUserId } from "@/utils/AuthService";
 import { CreateAttendanceData } from "@/utils/types/AttendanceData";
+import Navbar from '@/components/Navbar';
 
 
 const list = [
@@ -103,8 +104,9 @@ export default function SubmitAttendancePage() {
 
   return (
     <Container p={4} maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
-      <Stack spacing={4}>
-        <Heading>Attendance</Heading>
+      <Navbar />
+      <Stack p={4} spacing={4}>
+        <Heading py={4}>Attendance</Heading>
         <form>
           <FormControl>
             <FormLabel>Status</FormLabel>
