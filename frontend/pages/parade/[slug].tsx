@@ -100,13 +100,13 @@ export default function ParadeIdPage() {
   }
 
   return (
-    <Container maxW='container.xl' minH='100vh' bg={bgColor}>
+    <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
       <AttendanceModal attendance={attendance} showModal={showModal} setShowModal={setShowModal} />
 
-      <Stack spacing={4}>
-        <Heading>Parade State Summary</Heading>
+      <Stack p={4} spacing={4}>
+        <Heading pt={4}>Parade State Summary</Heading>
         <Button
           colorScheme='teal'
           leftIcon={<CopyIcon />}
