@@ -1,4 +1,8 @@
-import { CardBody, Container, Heading, Link, Skeleton, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  CardBody,
+  Container, Heading, Button, Link, Skeleton, Stack, useToast,
+  Text, useColorModeValue, useClipboard, IconButton
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { ReactQueryKey } from "@/utils/react-query-keys";
@@ -10,6 +14,7 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 import AttendanceModal from "@/components/AttendanceModal";
 import Navbar from "@/components/Navbar";
+import { CopyIcon } from '@chakra-ui/icons';
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -33,6 +38,8 @@ export default function ParadeIdPage() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
   const { slug } = router.query;
+  const { onCopy, value, hasCopied, setValue } = useClipboard("");
+  const toast = useToast();
 
   const { data, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
@@ -57,6 +64,29 @@ export default function ParadeIdPage() {
       setShowModal(true);
     };
 
+    const generateCopiedContent = () => {
+      const copiedText: string = [
+        `Parade State Summary`,
+        `Node: THWHQ`,
+        `Start Time: ${DateTime.fromISO(data.startDate).toLocaleString(DateTime.DATETIME_FULL)}`,
+        `End Time: ${DateTime.fromISO(data.endDate).toLocaleString(DateTime.DATETIME_FULL)}`,
+        ...data.attendances.map((attendance: Attendance) => {
+          console.log(attendance?.id)
+          return `${attendance.user.rank} ${attendance.user.name} - ${attendance.availability.status}`;
+        }),
+      ].join('\n');
+      setValue(copiedText);
+      console.log(value);
+      onCopy();
+      toast({
+        title: 'Copied!',
+        description: `You have copied Parade State ${data.id} to clipboard`,
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
+    };
+
     return (
       <Container maxW="container.xl" minH="100vh" bg={bgColor}>
         <Navbar />
@@ -65,6 +95,9 @@ export default function ParadeIdPage() {
 
         <Stack spacing={4}>
           <Heading>Parade State Summary</Heading>
+          <Button colorScheme='teal' leftIcon={<CopyIcon />} onClick={generateCopiedContent} width="200px">
+            {hasCopied ? "Copied!" : "Copy"}
+          </Button>
           <Text>Node: THWHQ</Text>
           <Text>Start Time: {DateTime.fromISO(data.startDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
           <Text>End Time: {DateTime.fromISO(data.endDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
