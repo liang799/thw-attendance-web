@@ -122,6 +122,11 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
     setHasDispatchLocation(false);
   }
 
+  function getPreviousResponse(): number {
+    const previousAttendanceIndex = list.findIndex(value => value.status === attendance?.availability.status)
+    return previousAttendanceIndex;
+  }
+
   return (
     <Modal finalFocusRef={finalRef} isOpen={showModal} onClose={handleClose}>
       <ModalOverlay />
@@ -132,7 +137,7 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
           <form>
             <FormControl>
               <FormLabel>Status</FormLabel>
-              <Select onChange={determineAdditionalInput}>
+              <Select onChange={determineAdditionalInput} defaultValue={getPreviousResponse()}>
                 {list.map((data, index) => (
                   <option key={index} value={index}>{data.status}</option>
                 ))}
