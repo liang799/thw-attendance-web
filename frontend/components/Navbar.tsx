@@ -83,7 +83,6 @@ export default function Navbar() {
                   minW={0}>
                   <Avatar
                     size={"sm"}
-                    src={"https://avatars.dicebear.com/api/male/username.svg"}
                   />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
@@ -91,7 +90,6 @@ export default function Navbar() {
                   <Center>
                     <Avatar
                       size={"2xl"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
                     />
                   </Center>
                   <br />
