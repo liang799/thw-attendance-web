@@ -128,7 +128,7 @@ export default function ParadeIdPage() {
             <TagLabel>{data.type}</TagLabel>
           </Tag>
         </HStack>
-        <Text>Time: {DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy, hhmm')}</Text>
+        <Text>Time: {DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy, HHmm')}</Text>
         <Button
           colorScheme='teal'
           leftIcon={<CopyIcon />}
