@@ -10,7 +10,6 @@ import {
 import { ParadesService } from './parades.service';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
-import { Public } from '../../constants';
 
 @Controller('parades')
 export class ParadesController {
@@ -26,7 +25,6 @@ export class ParadesController {
     return this.paradesService.findAll();
   }
 
-  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.paradesService.findOne(+id);
