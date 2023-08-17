@@ -6,7 +6,7 @@ export default function generateParadeText(paradeData: ParadeData): string {
   return [
     `Parade State Summary`,
     `Node: THWHQ`,
-    `Time: ${DateTime.fromISO(paradeData.startDate).toFormat('dd MMM yyyy, hhmm')}`,
+    `Time: ${DateTime.fromISO(paradeData.startDate).toFormat('dd MMM yyyy, HHmm')}`,
     '',
     ...paradeData?.attendances.map((attendance: Attendance) => {
       return `${attendance.user.rank} ${attendance.user.name} - ${attendance.availability.status}`;
