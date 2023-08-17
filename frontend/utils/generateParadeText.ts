@@ -6,12 +6,10 @@ export default function generateParadeText(paradeData: ParadeData): string {
   return [
     `Parade State Summary`,
     `Node: THWHQ`,
-    `Start Time: ${DateTime.fromISO(paradeData.startDate).toLocaleString(DateTime.DATETIME_FULL)}`,
-    `End Time: ${paradeData.endDate ? DateTime.fromISO(paradeData.endDate).toLocaleString(DateTime.DATETIME_FULL) : '-'}`,
+    `Time: ${DateTime.fromISO(paradeData.startDate).toFormat('dd MMM yyyy, hhmm')}`,
+    '',
     ...paradeData?.attendances.map((attendance: Attendance) => {
-      console.log(attendance?.id);
       return `${attendance.user.rank} ${attendance.user.name} - ${attendance.availability.status}`;
     }),
   ].join('\n');
-  // setValue(copiedText);
 }

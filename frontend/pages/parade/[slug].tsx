@@ -1,7 +1,7 @@
 import {
   CardBody,
   Container, Heading, Button, Link, Skeleton, Stack, useToast,
-  Text, useColorModeValue, useClipboard,
+  Text, useColorModeValue, useClipboard, HStack, Tag, TagLabel, TagLeftIcon,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon, InfoIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 
@@ -110,6 +110,25 @@ export default function ParadeIdPage() {
 
       <Stack p={4} spacing={4}>
         <Heading pt={4}>Parade State Summary</Heading>
+        <HStack spacing={4}>
+          <Tag
+            size='md'
+            variant='outline'
+            colorScheme='green'
+          >
+            <TagLeftIcon boxSize='12px' as={InfoIcon} />
+            <TagLabel>THWHQ</TagLabel>
+          </Tag>
+          <Tag
+            size='md'
+            variant='outline'
+            colorScheme='green'
+          >
+            <TagLeftIcon boxSize='12px' as={TimeIcon} />
+            <TagLabel>{data.type}</TagLabel>
+          </Tag>
+        </HStack>
+        <Text>Time: {DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy, hhmm')}</Text>
         <Button
           colorScheme='teal'
           leftIcon={<CopyIcon />}
@@ -118,9 +137,6 @@ export default function ParadeIdPage() {
         >
           {hasCopied ? 'Copied!' : 'Copy'}
         </Button>
-        <Text>Node: THWHQ</Text>
-        <Text>Start Time: {DateTime.fromISO(data.startDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
-        <Text>End Time: {DateTime.fromISO(data.endDate).toLocaleString(DateTime.DATETIME_FULL)}</Text>
         {data.attendances.map((attendance: Attendance) => {
           return (
             <Link key={attendance.id} onClick={() => handleClick(attendance)}>
