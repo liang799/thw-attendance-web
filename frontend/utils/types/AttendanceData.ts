@@ -10,7 +10,7 @@ export type CreateAttendanceData = {
 }
 
 export type GetAttendanceData = {
-  availability: string,
+  type: string,
   status: string,
   mcStartDate?: string,
   mcEndDate?: string,
