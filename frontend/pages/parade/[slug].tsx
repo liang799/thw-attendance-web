@@ -1,7 +1,7 @@
 import {
   CardBody,
   Container, Heading, Button, Link, Skeleton, Stack, useToast,
-  Text, useColorModeValue, useClipboard, HStack, Tag, TagLabel, TagLeftIcon,
+  Text, useColorModeValue, useClipboard, HStack, Tag, TagLabel, TagLeftIcon, Avatar, Flex, Box, Badge,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
@@ -16,6 +16,7 @@ import Navbar from '@/components/Navbar';
 import { CopyIcon, InfoIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
+import { convertCapsWithSpacingToCamelCaseWithSpacing } from '@/utils/text';
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -102,6 +103,14 @@ export default function ParadeIdPage() {
     );
   }
 
+  const determineAttendanceColor = (data: Attendance) => {
+    if (data.availability.type === "Present")
+      return "green"
+    if (data.availability.type === "Absent")
+      return "red"
+    return "yellow"
+  }
+
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
@@ -142,8 +151,18 @@ export default function ParadeIdPage() {
             <Link key={attendance.id} onClick={() => handleClick(attendance)}>
               <HorizontalCard key={attendance.id}>
                 <CardBody>
-                  <Text>{`${attendance.user.rank} ${attendance.user.name}`}</Text>
-                  {generateAttendanceStatus(attendance.availability)}
+              <Flex>
+                <Avatar />
+                <Box ml='3'>
+                  <Text fontWeight='bold'>
+                    {`${attendance.user.rank} ${convertCapsWithSpacingToCamelCaseWithSpacing(attendance.user.name)}`}
+                    <Badge ml='2' mb='1' colorScheme={determineAttendanceColor(attendance)}>
+                      {generateAttendanceStatus(attendance.availability)}
+                    </Badge>
+                  </Text>
+                  <Text fontSize='sm'>{attendance.user.type}</Text>
+                </Box>
+              </Flex>
                 </CardBody>
               </HorizontalCard>
             </Link>
