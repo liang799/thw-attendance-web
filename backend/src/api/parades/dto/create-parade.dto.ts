@@ -10,5 +10,5 @@ export class CreateParadeDto {
 
   @IsOptional()
   @IsDateString()
-  endDate: string;
+  endDate?: string;
 }
