@@ -4,6 +4,7 @@ import { UpdateParadeDto } from './dto/update-parade.dto';
 import { ParadeRepository } from './parade.repository';
 import { EntityManager, QueryOrder, wrap } from '@mikro-orm/core';
 import { Parade } from './entities/parade.entity';
+import { FindOneParadeDto } from './dto/find-one-parade.dto';
 
 @Injectable()
 export class ParadesService {
@@ -21,10 +22,11 @@ export class ParadesService {
     return this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return this.repository.findOne(id, {
+  async findOne(id: number) {
+    const parade = await this.repository.findOne(id, {
       populate: ['attendances', 'attendances.user'],
     });
+    return new FindOneParadeDto(parade);
   }
 
   async update(id: number, dto: UpdateParadeDto) {
