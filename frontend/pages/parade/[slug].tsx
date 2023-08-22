@@ -17,6 +17,7 @@ import { CopyIcon, InfoIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { convertCapsWithSpacingToCamelCaseWithSpacing } from '@/utils/text';
+import { ParadeData } from '@/utils/types/ParadeData';
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -45,7 +46,7 @@ export default function ParadeIdPage() {
 
   useAuthentication();
 
-  const { data, isError, isLoading } = useQuery(`Get Parade ${slug}`,
+  const { data, isError, isLoading } = useQuery<ParadeData>(`Get Parade ${slug}`,
     () => {
       return ApiClient.get(`/parades/${slug}`)
         .then(res => res.data);
@@ -70,7 +71,7 @@ export default function ParadeIdPage() {
     setShowModal(true);
   };
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (data: ParadeData) => {
     if (!value) {
       toast({
         title: 'Error',
@@ -141,7 +142,7 @@ export default function ParadeIdPage() {
         <Button
           colorScheme='teal'
           leftIcon={<CopyIcon />}
-          onClick={copyToClipboard}
+          onClick={() => copyToClipboard(data)}
           width='200px'
         >
           {hasCopied ? 'Copied!' : 'Copy'}
