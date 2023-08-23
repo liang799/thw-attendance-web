@@ -14,9 +14,10 @@ export class CreateParadeService {
   async createFirstParade() {
     const currentParade = await this.paradeService.getLatestOngoingParade();
     if (!currentParade) {
-      return this.paradeService.create({ type: ParadeType.FIRST, startDate: (new Date()).toString() });
+      await this.paradeService.create({ type: ParadeType.FIRST, startDate: (new Date()).toString() });
+      return;
     }
-    return this.paradeService.update(currentParade.id, {
+    await this.paradeService.update(currentParade.id, {
       type: ParadeType.FIRST,
       startDate: (new Date()).toString()
     });
@@ -26,9 +27,10 @@ export class CreateParadeService {
   async createMidParade() {
     const currentParade = await this.paradeService.getLatestOngoingParade();
     if (!currentParade) {
-      return this.paradeService.create({ type: ParadeType.MID, startDate: (new Date()).toString() });
+      await this.paradeService.create({ type: ParadeType.MID, startDate: (new Date()).toString() });
+      return;
     }
-    return this.paradeService.update(currentParade.id, {
+    await this.paradeService.update(currentParade.id, {
       type: ParadeType.MID,
       startDate: (new Date()).toString()
     });
