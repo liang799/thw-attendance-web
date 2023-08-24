@@ -7,16 +7,19 @@ import { Auth } from './entities/auth.entity';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { MikroORM, UseRequestContext } from '@mikro-orm/core';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly repo: AuthRepository,
     private readonly em: EntityManager,
+    private readonly orm: MikroORM,
     private jwtService: JwtService
   ) {
   }
 
+  @UseRequestContext()
   async register(registerDto: RegisterDto) {
     const password = await bcrypt.hash(registerDto.password, 5);
     const auth = new Auth();
@@ -30,6 +33,7 @@ export class AuthService {
     };
   }
 
+  @UseRequestContext()
   async login(loginDto: LoginDto) {
     const authUser = await this.repo.findOne({ username: loginDto.userName });
     if (!authUser) throw new UnauthorizedException();
@@ -42,6 +46,7 @@ export class AuthService {
     };
   }
 
+  @UseRequestContext()
   async changePassword(authHeader: string, dto: ChangePasswordDto) {
     const decodedJwt = this.jwtService.decode(authHeader.split(' ')[1]) as PayloadType;
     const authUser = await this.repo.findOneOrFail(decodedJwt.sub);
