@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
 import { ParadeRepository } from './parade.repository';
-import { EntityManager, QueryOrder, wrap } from '@mikro-orm/core';
+import { EntityManager, MikroORM, QueryOrder, UseRequestContext, wrap } from '@mikro-orm/core';
 import { Parade } from './entities/parade.entity';
 import { FindOneParadeDto } from './dto/find-one-parade.dto';
 
@@ -10,18 +10,23 @@ import { FindOneParadeDto } from './dto/find-one-parade.dto';
 export class ParadesService {
   constructor(
     private readonly repository: ParadeRepository,
+
+    private readonly orm: MikroORM,
     private readonly em: EntityManager,
   ) {}
 
+  @UseRequestContext()
   create(dto: CreateParadeDto) {
     const entity = new Parade(dto.type, new Date(dto.startDate));
     return this.em.persistAndFlush(entity);
   }
 
+  @UseRequestContext()
   findAll() {
     return this.repository.findAll();
   }
 
+  @UseRequestContext()
   async findOne(id: number) {
     const parade = await this.repository.findOne(id, {
       populate: ['attendances', 'attendances.user'],
@@ -29,6 +34,7 @@ export class ParadesService {
     return new FindOneParadeDto(parade);
   }
 
+  @UseRequestContext()
   async update(id: number, dto: UpdateParadeDto) {
     const parade = await this.repository.findOne(id);
     wrap(parade).assign(dto);
@@ -36,10 +42,12 @@ export class ParadesService {
     return parade;
   }
 
+  @UseRequestContext()
   remove(id: number) {
     return this.repository.nativeDelete(id);
   }
 
+  @UseRequestContext()
   getLatestOngoingParade(): Promise<Parade> {
     return this.repository.findOneOrFail(
       { endDate: null },

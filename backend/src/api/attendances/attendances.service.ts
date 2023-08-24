@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityManager, MikroORM, UseRequestContext } from '@mikro-orm/core';
 import { AttendanceRepository } from './attendance.repository';
 import { Availability } from './value-objects/Availability';
 import { AttendanceStatus } from './dto/attendance-status';
@@ -14,10 +14,12 @@ export class AttendancesService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly em: EntityManager,
+    private readonly orm: MikroORM,
     private readonly paradeService: ParadesService,
     private readonly userService: UsersService,
   ) {}
 
+  @UseRequestContext()
   async create(dto: CreateAttendanceDto): Promise<Attendance> {
     const user = await this.userService.findOne(dto.user);
     const parade = await this.paradeService.getLatestOngoingParade();
@@ -52,18 +54,21 @@ export class AttendancesService {
     return attendance;
   }
 
+  @UseRequestContext()
   findAll(): Promise<Attendance[]> {
     return this.repository.findAll({
       populate: ['user', 'availability', 'parade'],
     });
   }
 
+  @UseRequestContext()
   findOne(id: number): Promise<Attendance> {
     return this.repository.findOne(id, {
       populate: ['user', 'availability', 'parade'],
     });
   }
 
+  @UseRequestContext()
   async update(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
     const attendance = await this.repository.findOne(id);
 
@@ -88,6 +93,7 @@ export class AttendancesService {
     return attendance;
   }
 
+  @UseRequestContext()
   remove(id: number): Promise<number> {
     return this.repository.nativeDelete(id);
   }
