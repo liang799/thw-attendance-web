@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ParadesService } from '../../api/parades/parades.service';
 import { ParadeType } from '../../api/parades/type/ParadeType';
 import { Cron } from '@nestjs/schedule';
+import { UpdateParadeDto } from '../../api/parades/dto/update-parade.dto';
 
 @Injectable()
 export class CreateParadeService {
@@ -17,10 +18,7 @@ export class CreateParadeService {
       await this.paradeService.create({ type: ParadeType.FIRST, startDate: (new Date()).toString() });
       return;
     }
-    await this.paradeService.update(currentParade.id, {
-      type: ParadeType.FIRST,
-      startDate: (new Date()).toString()
-    });
+    await this.paradeService.update(currentParade.id, UpdateParadeDto.firstParade());
   }
 
   @Cron('30 13 * * 1-5') // Cron job For 1:30 PM on Monday to Friday
@@ -30,9 +28,6 @@ export class CreateParadeService {
       await this.paradeService.create({ type: ParadeType.MID, startDate: (new Date()).toString() });
       return;
     }
-    await this.paradeService.update(currentParade.id, {
-      type: ParadeType.MID,
-      startDate: (new Date()).toString()
-    });
+    await this.paradeService.update(currentParade.id, UpdateParadeDto.midParade());
   }
 }
