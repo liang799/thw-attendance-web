@@ -26,7 +26,6 @@ export class ParadesController {
     return this.paradesService.findAll();
   }
 
-  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     if (!Number(id)) throw new BadRequestException();
@@ -48,5 +47,18 @@ export class ParadesController {
   @Post(':id/attendance')
   createAttendance(@Body() createParadeDto: CreateParadeDto) {
     return this.paradesService.create(createParadeDto);
+  }
+
+  /* Call these externally when deploying to serverless */
+  @Public()
+  @Post('first')
+  createFirstParade() {
+    return this.paradesService.createFirstParade();
+  }
+
+  @Public()
+  @Post('mid')
+  createMidParade() {
+    return this.paradesService.createMidParade();
   }
 }

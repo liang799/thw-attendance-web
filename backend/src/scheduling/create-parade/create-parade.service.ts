@@ -4,6 +4,7 @@ import { ParadeType } from '../../api/parades/type/ParadeType';
 import { Cron } from '@nestjs/schedule';
 import { UpdateParadeDto } from '../../api/parades/dto/update-parade.dto';
 
+/* These does not work on serverless deployments */
 @Injectable()
 export class CreateParadeService {
   constructor(
