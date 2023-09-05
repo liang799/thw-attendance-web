@@ -17,8 +17,8 @@ export default function generateParadeText(paradeData: ParadeData): string {
 
     '',
 
-    ...Object.keys(paradeData.summary).map((submittedStatus, submittedNumber) => {
-      return `${submittedStatus}: ${submittedNumber}`;
+    ...Object.keys(paradeData.summary).map((submittedStatus) => {
+      return `${submittedStatus}: ${paradeData.summary[submittedStatus]}`;
     }),
 
     '',
