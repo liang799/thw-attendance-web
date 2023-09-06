@@ -14,14 +14,12 @@ import {
 } from '@chakra-ui/react';
 import { ApiClient } from '@/utils/axios';
 import { useQueryClient } from 'react-query';
-import { useRef } from 'react';
 
 type StopParadeButtonProps = {
   paradeId: number
 }
 
 export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
-  const initRef = useRef<HTMLInputElement | null>(null);
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -48,7 +46,7 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
     }
   };
   return (
-    <Popover closeOnBlur={false} initialFocusRef={initRef}>
+    <Popover closeOnBlur={false}>
       {({ isOpen, onClose }) => (
         <>
           <PopoverTrigger>
@@ -64,7 +62,7 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
                   <Text colorScheme='grey'>
                     Press the button below again to continue.
                   </Text>
-                  <Button colorScheme='red' onClick={() => handleClick(onClose)} ref={initRef}>Stop Parade</Button>
+                  <Button colorScheme='red' onClick={() => handleClick(onClose)}>Stop Parade</Button>
                 </Stack>
               </PopoverBody>
             </PopoverContent>
