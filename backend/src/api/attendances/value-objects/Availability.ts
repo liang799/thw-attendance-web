@@ -53,6 +53,13 @@ export class Availability {
     return availability;
   }
 
+  static unknown() {
+    const availability = new Availability();
+    availability.type = AvailabilityType.ABSENT;
+    availability.status = '';
+    return availability;
+  }
+
   toJSON() {
     const filteredProperties: Record<string, any> = {};
 
