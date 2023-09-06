@@ -22,8 +22,7 @@ const schema = yup.object({
   startDate: yup.date().required(),
 });
 
-type RegisterData = {
-  type: string,
+type CreateParadeData = {
   startDate: Date,
 }
 
@@ -35,7 +34,7 @@ export default function CreateParadePage() {
 
   useAuthentication();
 
-  const onSubmit = async (data: RegisterData) => {
+  const onSubmit = async (data: CreateParadeData) => {
     try {
       await ApiClient.post('/parades', data);
       toast({
