@@ -11,8 +11,6 @@ import { AuthGuard } from './api/auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { OngoingParadeModule } from './api/ongoing-parade/ongoing-parade.module';
 import { AuthModule } from "./api/auth/auth.module";
-import { ScheduleModule } from '@nestjs/schedule';
-import { CreateParadeModule } from './scheduling/create-parade/create-parade.module';
 
 @Module({
   imports: [
@@ -32,8 +30,6 @@ import { CreateParadeModule } from './scheduling/create-parade/create-parade.mod
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60 days' },
     }),
-    ScheduleModule.forRoot(),
-    CreateParadeModule,
     ParadesModule,
     UsersModule,
     AttendancesModule,

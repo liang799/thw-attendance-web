@@ -1,10 +1,6 @@
-import { IsDateString, IsEnum, IsOptional } from 'class-validator';
-import { ParadeType } from '../type/ParadeType';
+import { IsDateString, IsOptional } from 'class-validator';
 
 export class CreateParadeDto {
-  @IsEnum(ParadeType)
-  type: ParadeType;
-
   @IsDateString()
   startDate: string;
 
