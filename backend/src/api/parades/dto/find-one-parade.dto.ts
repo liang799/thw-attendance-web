@@ -1,12 +1,9 @@
-import { ParadeType } from '../type/ParadeType';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../entities/parade.entity';
 import { BranchType } from '../../users/types/BranchType';
 
 export class FindOneParadeDto {
   id: number;
-
-  type: ParadeType;
 
   startDate: Date;
 
@@ -18,7 +15,6 @@ export class FindOneParadeDto {
 
   constructor(parade: Parade) {
     this.id = parade.id;
-    this.type = parade.type;
     this.startDate = parade.startDate;
     this.endDate = parade.endDate;
     const rawAttendances = parade.attendances.getItems();
