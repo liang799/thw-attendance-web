@@ -10,7 +10,6 @@ import {
 import { ParadesService } from './parades.service';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
-import { Public } from '../../constants';
 
 @Controller('parades')
 export class ParadesController {
@@ -47,18 +46,5 @@ export class ParadesController {
   @Post(':id/attendance')
   createAttendance(@Body() createParadeDto: CreateParadeDto) {
     return this.paradesService.create(createParadeDto);
-  }
-
-  /* Call these externally when deploying to serverless */
-  @Public()
-  @Post('first')
-  createFirstParade() {
-    return this.paradesService.createFirstParade();
-  }
-
-  @Public()
-  @Post('mid')
-  createMidParade() {
-    return this.paradesService.createMidParade();
   }
 }
