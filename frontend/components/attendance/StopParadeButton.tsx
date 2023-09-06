@@ -21,7 +21,7 @@ type StopParadeButtonProps = {
 }
 
 export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
-  const initRef = useRef();
+  const initRef = useRef<HTMLInputElement | null>(null);
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -37,7 +37,7 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
         duration: 5000,
         isClosable: true,
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: error.name,
         description: error.message,
