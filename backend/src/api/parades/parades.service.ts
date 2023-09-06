@@ -5,6 +5,7 @@ import { ParadeRepository } from './parade.repository';
 import { EntityManager, MikroORM, QueryOrder, UseRequestContext, wrap } from '@mikro-orm/core';
 import { Parade } from './entities/parade.entity';
 import { FindOneParadeDto } from './dto/find-one-parade.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ParadesService {
@@ -15,9 +16,15 @@ export class ParadesService {
   ) {}
 
   @UseRequestContext()
-  create(dto: CreateParadeDto) {
-    const entity = new Parade(new Date(dto.startDate));
-    return this.em.persistAndFlush(entity);
+  async create(dto: CreateParadeDto) {
+    const parade = new Parade(new Date(dto.startDate));
+    const users = await this.em.find(User, {});
+    if (!users) return this.em.persistAndFlush(parade);
+    for (const user of users) {
+      const attendance = user.createBlankAttendance(parade);
+      await this.em.persist(attendance);
+    }
+    return this.em.flush();
   }
 
   @UseRequestContext()
