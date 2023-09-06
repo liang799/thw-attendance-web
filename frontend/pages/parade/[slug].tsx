@@ -135,10 +135,9 @@ export default function ParadeIdPage() {
             colorScheme='green'
           >
             <TagLeftIcon boxSize='12px' as={TimeIcon} />
-            <TagLabel>{data.type}</TagLabel>
+            <TagLabel>{DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy')}</TagLabel>
           </Tag>
         </HStack>
-        <Text>Time: {DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy, HHmm')}</Text>
         <Button
           colorScheme='teal'
           leftIcon={<CopyIcon />}
