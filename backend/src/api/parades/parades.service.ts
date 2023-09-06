@@ -10,7 +10,6 @@ import { FindOneParadeDto } from './dto/find-one-parade.dto';
 export class ParadesService {
   constructor(
     private readonly repository: ParadeRepository,
-
     private readonly orm: MikroORM,
     private readonly em: EntityManager,
   ) {}
@@ -55,24 +54,5 @@ export class ParadesService {
         orderBy: { id: QueryOrder.DESC },
       },
     );
-  }
-
-  @UseRequestContext()
-  async createMidParade() {
-    const currentParade = await this.getLatestOngoingParade();
-    if (!currentParade) {
-      return this.create({ startDate: (new Date()).toString() });
-    }
-    return this.update(currentParade.id, UpdateParadeDto.midParade());
-  }
-
-  @UseRequestContext()
-  async createFirstParade() {
-    const currentParade = await this.getLatestOngoingParade();
-    if (!currentParade) {
-      await this.create({  startDate: (new Date()).toString() });
-      return;
-    }
-    await this.update(currentParade.id, UpdateParadeDto.firstParade());
   }
 }

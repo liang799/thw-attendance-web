@@ -7,7 +7,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  Select,
   Stack,
   useColorModeValue,
   useToast,
@@ -20,7 +19,6 @@ import Navbar from '@/components/Navbar';
 import { useAuthentication } from '@/utils/auth';
 
 const schema = yup.object({
-  type: yup.string().required(),
   startDate: yup.date().required(),
 });
 
@@ -64,22 +62,14 @@ export default function CreateParadePage() {
         <Navbar />
         <Flex p={5} align='center' justify='center' flexDirection='column'>
           <Heading p={5}>New Parade</Heading>
-          <Stack bg={boxColor} p={5}>
+          <Stack w={[350, 400]} bg={boxColor} p={5}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormControl isInvalid={!!errors.type}>
-                <FormLabel htmlFor='parade'>Parade</FormLabel>
-                <Select {...register('type')}>
-                  <option value='First Parade'>First Parade</option>
-                  <option value='Mid Parade'>Mid Parade</option>
-                </Select>
-                <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
-              </FormControl>
               <FormControl isInvalid={!!errors.startDate}>
                 <FormLabel htmlFor='date'>Start Date & Time</FormLabel>
                 <Input
-                  placeholder='Select Date and Time'
+                  placeholder='Select Date'
                   size='md'
-                  type='datetime-local'
+                  type='date'
                   {...register('startDate')}
                 />
                 <FormErrorMessage>{errors.startDate?.message}</FormErrorMessage>
