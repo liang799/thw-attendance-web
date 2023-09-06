@@ -1,4 +1,4 @@
-import { Entity, Enum, Index, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { Entity, Enum, Index, PrimaryKey, Property } from "@mikro-orm/core";
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../../parades/entities/parade.entity';
 import { UserRepository } from '../user.repostiory';
@@ -26,6 +26,14 @@ export class User {
     const attendance = new Attendance();
     attendance.user = this;
     attendance.availability = availability;
+    attendance.parade = parade;
+    return attendance;
+  }
+
+  createBlankAttendance(parade: Parade): Attendance {
+    const attendance = new Attendance();
+    attendance.user = this;
+    attendance.availability = Availability.unknown();
     attendance.parade = parade;
     return attendance;
   }
