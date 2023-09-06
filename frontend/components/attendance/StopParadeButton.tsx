@@ -25,7 +25,7 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const handleClick = async (onClose) => {
+  const handleClick = async (onClose: () => void) => {
     try {
       await ApiClient.patch(`/parades/${paradeId}`, { endDate: new Date() });
       queryClient.invalidateQueries();
