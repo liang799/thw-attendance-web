@@ -1,7 +1,23 @@
 import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
   CardBody,
-  Container, Heading, Button, Link, Skeleton, Stack, useToast,
-  Text, useColorModeValue, useClipboard, HStack, Tag, TagLabel, TagLeftIcon, Avatar, Flex, Box, Badge,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Link,
+  Skeleton,
+  Stack,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  Text,
+  useClipboard,
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
@@ -11,13 +27,14 @@ import { Attendance, GetAttendanceData } from '@/utils/types/AttendanceData';
 import HorizontalCard from '@/components/HorizontalCard';
 import { useState } from 'react';
 import { DateTime } from 'luxon';
-import AttendanceModal from '@/components/AttendanceModal';
+import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon, InfoIcon, TimeIcon } from '@chakra-ui/icons';
+import { CopyIcon, InfoIcon, TimeIcon, LockIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { convertCapsWithSpacingToCamelCaseWithSpacing } from '@/utils/text';
 import { ParadeData } from '@/utils/types/ParadeData';
+import StopParadeButton from '@/components/attendance/StopParadeButton';
 
 function generateAttendanceStatus(data: GetAttendanceData) {
   const availability = data.status;
@@ -137,32 +154,44 @@ export default function ParadeIdPage() {
             <TagLeftIcon boxSize='12px' as={TimeIcon} />
             <TagLabel>{DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy')}</TagLabel>
           </Tag>
+          {data.endDate &&
+            <Tag
+              size='md'
+              colorScheme='red'
+            >
+              <TagLeftIcon boxSize='12px' as={LockIcon} />
+              <TagLabel>Parade Stopped</TagLabel>
+            </Tag>
+          }
         </HStack>
-        <Button
-          colorScheme='teal'
-          leftIcon={<CopyIcon />}
-          onClick={() => copyToClipboard(data)}
-          width='200px'
-        >
-          {hasCopied ? 'Copied!' : 'Copy'}
-        </Button>
+        <HStack spacing={4}>
+          <Button
+            colorScheme='teal'
+            leftIcon={<CopyIcon />}
+            onClick={() => copyToClipboard(data)}
+            width='200px'
+          >
+            {hasCopied ? 'Copied!' : 'Copy'}
+          </Button>
+          <StopParadeButton paradeId={data.id}/>
+        </HStack>
         {data.attendances.map((attendance: Attendance) => {
           return (
             <Link key={attendance.id} onClick={() => handleClick(attendance)}>
               <HorizontalCard key={attendance.id}>
                 <CardBody>
-              <Flex>
-                <Avatar />
-                <Box ml='3'>
-                  <Text fontWeight='bold'>
-                    {`${attendance.user.rank} ${convertCapsWithSpacingToCamelCaseWithSpacing(attendance.user.name)}`}
-                    <Badge ml='2' mb='1' colorScheme={determineAttendanceColor(attendance)}>
-                      {generateAttendanceStatus(attendance.availability)}
-                    </Badge>
-                  </Text>
-                  <Text fontSize='sm'>{attendance.user.type}</Text>
-                </Box>
-              </Flex>
+                  <Flex>
+                    <Avatar />
+                    <Box ml='3'>
+                      <Text fontWeight='bold'>
+                        {`${attendance.user.rank} ${convertCapsWithSpacingToCamelCaseWithSpacing(attendance.user.name)}`}
+                        <Badge ml='2' mb='1' colorScheme={determineAttendanceColor(attendance)}>
+                          {generateAttendanceStatus(attendance.availability)}
+                        </Badge>
+                      </Text>
+                      <Text fontSize='sm'>{attendance.user.type}</Text>
+                    </Box>
+                  </Flex>
                 </CardBody>
               </HorizontalCard>
             </Link>
