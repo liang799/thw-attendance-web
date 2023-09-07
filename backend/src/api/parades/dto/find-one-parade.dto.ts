@@ -2,6 +2,11 @@ import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../entities/parade.entity';
 import { BranchType } from '../../users/types/BranchType';
 
+interface availabilityCount {
+  status: string,
+  count: number,
+}
+
 export class FindOneParadeDto {
   id: number;
 
@@ -11,15 +16,15 @@ export class FindOneParadeDto {
 
   attendances: Attendance[];
 
-  summary: Record<string, number>;
+  summary: availabilityCount[]
 
-  constructor(parade: Parade) {
+  constructor(parade: Parade, availabilitySummary: availabilityCount[]) {
     this.id = parade.id;
     this.startDate = parade.startDate;
     this.endDate = parade.endDate;
     const rawAttendances = parade.attendances.getItems();
     this.attendances = this.sortPeople(rawAttendances);
-    this.summary = this.tallyAttendance(this.attendances)
+    this.summary = availabilitySummary;
   }
 
   private tallyAttendance(attendances: Attendance[]): Record<string, number> {

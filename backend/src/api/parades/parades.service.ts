@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
 import { ParadeRepository } from './parade.repository';
-import { EntityManager, MikroORM, QueryOrder, UseRequestContext, wrap } from '@mikro-orm/core';
+import { MikroORM, QueryOrder, UseRequestContext, wrap } from '@mikro-orm/core';
 import { Parade } from './entities/parade.entity';
 import { FindOneParadeDto } from './dto/find-one-parade.dto';
 import { User } from '../users/entities/user.entity';
+import { EntityManager } from '@mikro-orm/mysql';
 
 @Injectable()
 export class ParadesService {
@@ -13,7 +14,8 @@ export class ParadesService {
     private readonly repository: ParadeRepository,
     private readonly orm: MikroORM,
     private readonly em: EntityManager,
-  ) {}
+  ) {
+  }
 
   @UseRequestContext()
   async create(dto: CreateParadeDto) {
@@ -35,9 +37,17 @@ export class ParadesService {
   @UseRequestContext()
   async findOne(id: number) {
     const parade = await this.repository.findOne(id, {
-      populate: ['attendances', 'attendances.user'],
+      populate: ['attendances', 'attendances.user']
     });
-    return new FindOneParadeDto(parade);
+    const connection = this.em.getConnection();
+    const knex = connection.getKnex();
+    const availabilitySummary = await knex
+      .select('availability_status as status')
+      .count('* as count')
+      .from('attendance')
+      .where('parade_id', parade.id)
+      .groupBy('availability_status')
+    return new FindOneParadeDto(parade, availabilitySummary);
   }
 
   @UseRequestContext()
