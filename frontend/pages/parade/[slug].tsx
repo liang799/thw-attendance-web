@@ -151,7 +151,15 @@ export default function ParadeIdPage() {
           <StopParadeButton paradeId={data.id} />
         </HStack>
         <Tabs>
-          <TabList>
+          <TabList
+            overflowY='hidden'
+            sx={{
+              scrollbarWidth: 'none',
+              '::-webkit-scrollbar': {
+                display: 'none',
+              },
+            }}
+          >
             <Tab>Commanders</Tab>
             <Tab>S1 Branch</Tab>
             <Tab>S3 Branch</Tab>
