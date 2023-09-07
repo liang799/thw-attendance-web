@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { EntityManager, MikroORM, UseRequestContext } from '@mikro-orm/core';
 import { AttendanceRepository } from './attendance.repository';
-import { Availability } from './value-objects/Availability';
-import { AttendanceStatus } from './dto/attendance-status';
+import { Availability } from './value-objects/availability/Availability';
 import { ParadesService } from '../parades/parades.service';
 import { UsersService } from '../users/users.service';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { Attendance } from './entities/attendance.entity';
+import AvailabilityFactory from './value-objects/availability/AvailabilityFactory';
 
 @Injectable()
 export class AttendancesService {
@@ -24,25 +24,14 @@ export class AttendancesService {
     const user = await this.userService.findOne(dto.user);
     const parade = await this.paradeService.getLatestOngoingParade();
 
-    let availability: Availability = new Availability();
-    if (dto.availability == AttendanceStatus.DISPATCH) {
-      availability = Availability.dispatchTo(dto.location);
-    } else if (dto.availability == AttendanceStatus.NO_MC) {
-      availability = Availability.noMC(dto.status);
-    } else if (dto.availability == AttendanceStatus.MIGHT_HAVE_MC) {
-      availability = Availability.mightHaveMc(dto.status);
-    } else if (dto.availability == AttendanceStatus.ABSENT) {
-      availability = Availability.absent(
-        dto.status,
-        new Date(dto.mcStartDate),
-        new Date(dto.mcEndDate),
-      );
-    }
+    const factory = new AvailabilityFactory();
+    const availability = factory.createAvailability(dto);
 
     const existingAttendance = await this.repository.findOne({
       user: user,
       parade: parade,
     });
+
     if (existingAttendance) {
       existingAttendance.availability = availability;
       await this.em.flush();
@@ -71,30 +60,20 @@ export class AttendancesService {
   @UseRequestContext()
   async update(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
     const attendance = await this.repository.findOne(id);
+    if (!attendance) throw new NotFoundException();
 
-    let availability: Availability = new Availability();
-    if (dto.availability == AttendanceStatus.DISPATCH) {
-      availability = Availability.dispatchTo(dto.location);
-    } else if (dto.availability == AttendanceStatus.NO_MC) {
-      availability = Availability.noMC(dto.status);
-    } else if (dto.availability == AttendanceStatus.MIGHT_HAVE_MC) {
-      availability = Availability.mightHaveMc(dto.status);
-    } else if (dto.availability == AttendanceStatus.ABSENT) {
-      availability = Availability.absent(
-        dto.status,
-        new Date(dto.mcStartDate),
-        new Date(dto.mcEndDate),
-      );
-    }
-
-    attendance.availability = availability;
+    const factory = new AvailabilityFactory();
+    attendance.availability = factory.createAvailability(dto);
 
     await this.em.flush();
     return attendance;
   }
 
   @UseRequestContext()
-  remove(id: number): Promise<number> {
-    return this.repository.nativeDelete(id);
+  async remove(id: number): Promise<void> {
+    const attendance = await this.repository.findOne(id);
+    if (!attendance) throw new NotFoundException();
+    attendance.availability = Availability.unknown();
+    return this.em.flush();
   }
 }

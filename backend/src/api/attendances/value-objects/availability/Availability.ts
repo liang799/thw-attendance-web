@@ -17,12 +17,12 @@ export class Availability {
   dispatchLocation?: string;
 
   @Property({ nullable: true })
-  mcStartDate?: Date;
+  absentStartDate?: Date;
 
   @Property({ nullable: true })
-  mcEndDate?: Date;
+  absentEndDate?: Date;
 
-  static noMC(status: string) {
+  static willBeInCamp(status: string) {
     const availability = new Availability();
     availability.type = AvailabilityType.PRESENT;
     availability.status = status;
@@ -37,7 +37,7 @@ export class Availability {
     return availability;
   }
 
-  static mightHaveMc(status: string) {
+  static seeDoctor(status: string) {
     const availability = new Availability();
     availability.type = AvailabilityType.ABSENT;
     availability.status = status;
@@ -48,8 +48,8 @@ export class Availability {
     const availability = new Availability();
     availability.type = AvailabilityType.ABSENT;
     availability.status = status;
-    availability.mcStartDate = start;
-    availability.mcEndDate = end;
+    availability.absentStartDate = start;
+    availability.absentEndDate = end;
     return availability;
   }
 

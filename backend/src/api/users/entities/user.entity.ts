@@ -2,7 +2,7 @@ import { Entity, Enum, Index, PrimaryKey, Property } from "@mikro-orm/core";
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../../parades/entities/parade.entity';
 import { UserRepository } from '../user.repostiory';
-import { Availability } from '../../attendances/value-objects/Availability';
+import { Availability } from '../../attendances/value-objects/availability/Availability';
 import { BranchType } from "../types/BranchType";
 
 @Entity({
