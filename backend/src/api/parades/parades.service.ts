@@ -23,7 +23,7 @@ export class ParadesService {
     const users = await this.em.find(User, {});
     if (!users) return this.em.persistAndFlush(parade);
     for (const user of users) {
-      const attendance = user.createBlankAttendance(parade);
+      const attendance = user.createBlankTemplateAttendance(parade);
       await this.em.persist(attendance);
     }
     return this.em.flush();
