@@ -28,6 +28,6 @@ export class Attendance {
   submittedAt: Date = new Date();
 
   isPresent(): boolean {
-    return this.availability.status == AvailabilityType.PRESENT;
+    return this.availability.type == AvailabilityType.PRESENT;
   }
 }
