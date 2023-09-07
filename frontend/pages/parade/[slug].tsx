@@ -1,20 +1,13 @@
 import {
-  Avatar,
-  Badge,
-  Box,
   Button,
-  CardBody,
   Container,
-  Flex,
   Heading,
   HStack,
-  Link,
   Skeleton,
   Stack,
   Tag,
   TagLabel,
   TagLeftIcon,
-  Text,
   useClipboard,
   useColorModeValue,
   useToast,
@@ -23,34 +16,18 @@ import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { ApiClient } from '@/utils/axios';
 import GenericErrorDisplay from '@/components/GenericErrorDisplay';
-import { Attendance, GetAttendanceData } from '@/utils/types/AttendanceData';
-import HorizontalCard from '@/components/HorizontalCard';
+import { Attendance } from '@/utils/types/AttendanceData';
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon, InfoIcon, TimeIcon, LockIcon } from '@chakra-ui/icons';
+import { CopyIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
-import { convertCapsWithSpacingToCamelCaseWithSpacing } from '@/utils/text';
 import { ParadeData } from '@/utils/types/ParadeData';
 import StopParadeButton from '@/components/attendance/StopParadeButton';
+import AttendanceCard from '@/components/attendance/AttendanceCard';
 
-function generateAttendanceStatus(data: GetAttendanceData) {
-  const availability = data.status;
-  switch (availability) {
-    case 'Dispatch':
-      return <Text>{`${data.status} - ${data.dispatchLocation}`}</Text>;
-    case 'Present':
-      return <Text>{`${data.status}`}</Text>;
-    case 'MC':
-      if (!data.mcEndDate) return <Text>{`${data.status} - No End date`}</Text>;
-      const date = DateTime.fromISO(data.mcEndDate).toFormat('ddLLyy');
-      return <Text>{`${data.status} - ${date}`}</Text>;
-    default:
-      return <Text>{data.status}</Text>;
-  }
-}
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
@@ -121,13 +98,6 @@ export default function ParadeIdPage() {
     );
   }
 
-  const determineAttendanceColor = (data: Attendance) => {
-    if (data.availability.type === "Present")
-      return "green"
-    if (data.availability.type === "Absent")
-      return "red"
-    return "yellow"
-  }
 
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
@@ -177,25 +147,8 @@ export default function ParadeIdPage() {
         </HStack>
         {data.attendances.map((attendance: Attendance) => {
           return (
-            <Link key={attendance.id} onClick={() => handleClick(attendance)}>
-              <HorizontalCard key={attendance.id}>
-                <CardBody>
-                  <Flex>
-                    <Avatar />
-                    <Box ml='3'>
-                      <Text fontWeight='bold'>
-                        {`${attendance.user.rank} ${convertCapsWithSpacingToCamelCaseWithSpacing(attendance.user.name)}`}
-                        <Badge ml='2' mb='1' colorScheme={determineAttendanceColor(attendance)}>
-                          {generateAttendanceStatus(attendance.availability)}
-                        </Badge>
-                      </Text>
-                      <Text fontSize='sm'>{attendance.user.type}</Text>
-                    </Box>
-                  </Flex>
-                </CardBody>
-              </HorizontalCard>
-            </Link>
-          );
+            <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+          )
         })
         }
       </Stack>
