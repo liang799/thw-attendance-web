@@ -15,20 +15,7 @@ import { ApiClient } from "@/utils/axios";
 import { getUserId, useAuthentication } from '@/utils/auth';
 import { CreateAttendanceData } from "@/utils/types/AttendanceData";
 import Navbar from '@/components/Navbar';
-
-
-const list = [
-  { availability: "Expect Arrival", status: "Present" },
-  { availability: "Expect Arrival", status: "Late" },
-  { availability: "Dispatch", status: "Dispatch" },
-  { availability: "Doctor", status: "RSO/RSI" },
-  { availability: "Doctor", status: "MA (AM)" },
-  { availability: "Doctor", status: "MA (PM)" },
-  { availability: "Absent", status: "Off" },
-  { availability: "Absent", status: "LVE/OL" },
-  { availability: "Absent", status: "Course" },
-  { availability: "Absent", status: "MC" }
-];
+import { attendanceOptions } from '@/config/attendanceOptions';
 
 
 export default function SubmitAttendancePage() {
@@ -45,23 +32,23 @@ export default function SubmitAttendancePage() {
     let data: CreateAttendanceData;
     if (hasDispatchLocation) {
       data = {
-        availability: list[selectedIndex].availability,
-        status: list[selectedIndex].status,
+        availability: attendanceOptions[selectedIndex].availability,
+        status: attendanceOptions[selectedIndex].status,
         location: dispatchLocation,
         user: getUserId()
       };
     } else if (hasMcDates) {
       data = {
-        availability: list[selectedIndex].availability,
-        status: list[selectedIndex].status,
+        availability: attendanceOptions[selectedIndex].availability,
+        status: attendanceOptions[selectedIndex].status,
         absentStartDate: selectedDates[0],
         absentEndDate: selectedDates[1],
         user: getUserId()
       };
     } else {
       data = {
-        availability: list[selectedIndex].availability,
-        status: list[selectedIndex].status,
+        availability: attendanceOptions[selectedIndex].availability,
+        status: attendanceOptions[selectedIndex].status,
         user: getUserId()
       };
     }
@@ -90,12 +77,12 @@ export default function SubmitAttendancePage() {
     const value = +event.target.value;
     setSelectedIndex(value);
 
-    if (list[value].availability === "Absent") {
+    if (attendanceOptions[value].availability === "Absent") {
       setHasMcDates(true);
       setHasDispatchLocation(false);
       return;
     }
-    if (list[value].availability === "Dispatch") {
+    if (attendanceOptions[value].availability === "Dispatch") {
       setHasDispatchLocation(true);
       setHasMcDates(false);
       return;
@@ -113,7 +100,7 @@ export default function SubmitAttendancePage() {
           <FormControl>
             <FormLabel>Status</FormLabel>
             <Select onChange={determineAdditionalInput}>
-              {list.map((data, index) => (
+              {attendanceOptions.map((data, index) => (
                 <option key={index} value={index}>{data.status}</option>
               ))}
             </Select>
