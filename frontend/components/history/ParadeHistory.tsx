@@ -9,7 +9,9 @@ import { DateTime } from 'luxon';
 
 export default function ParadeHistory() {
   const { data, isLoading } = useQuery<ParadeListItem[]>(ReactQueryKey.ALL_PARADES,
-    () => ApiClient.get('/parades').then(res => res.data),
+    () => {
+      return ApiClient.get('/parades').then(res => res.data);
+    },
   );
 
   if (isLoading) {
@@ -24,12 +26,12 @@ export default function ParadeHistory() {
 
   return (
     <>
-      {data.map(data => {
+      {data.map(parade => {
         return (
-          <Link href={`/parade/${data.id}`} as={NextLink}>
-            <HorizontalCard key={data.id}>
+          <Link href={`/parade/${parade.id}`} as={NextLink} key={parade.id}>
+            <HorizontalCard>
               <CardBody>
-                <Heading size='md'>{DateTime.fromISO(data.startDate).toLocaleString(DateTime.DATE_HUGE)}</Heading>
+                <Heading size='md'>{DateTime.fromISO(parade.startDate).toLocaleString(DateTime.DATE_HUGE)}</Heading>
               </CardBody>
             </HorizontalCard>
           </Link>
