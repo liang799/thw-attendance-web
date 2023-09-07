@@ -14,9 +14,6 @@ export class CreateAttendanceDto {
   @IsEnum(AttendanceStatus)
   availability: AttendanceStatus;
 
-  // @IsInt()
-  // parade: number;
-
   @IsOptional()
   @IsString()
   location?: string;
@@ -27,9 +24,9 @@ export class CreateAttendanceDto {
 
   @IsDateString()
   @IsOptional()
-  mcStartDate: string;
+  absentStartDate: string;
 
   @IsDateString()
   @IsOptional()
-  mcEndDate: string;
+  absentEndDate: string;
 }

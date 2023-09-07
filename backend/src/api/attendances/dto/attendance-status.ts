@@ -1,6 +1,6 @@
 export enum AttendanceStatus {
-  NO_MC = 'No MC',
+  EXPECT_ARRIVAL = 'Expect Arrival',
   DISPATCH = 'Dispatch',
-  MIGHT_HAVE_MC = 'Might Have MC',
+  DOCTOR = 'Doctor',
   ABSENT = 'Absent',
 }
