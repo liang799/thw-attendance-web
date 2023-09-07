@@ -64,7 +64,7 @@ export default function CreateParadePage() {
           <Stack w={[350, 400]} bg={boxColor} p={5}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl isInvalid={!!errors.startDate}>
-                <FormLabel htmlFor='date'>Start Date & Time</FormLabel>
+                <FormLabel htmlFor='date'>Start Date</FormLabel>
                 <Input
                   placeholder='Select Date'
                   size='md'
