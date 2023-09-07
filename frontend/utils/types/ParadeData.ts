@@ -6,5 +6,11 @@ export type ParadeData = {
   startDate: string,
   endDate?: string,
   attendances: Attendance[],
-  summary: Record<string, number>
+  summary: availabilityCount[]
 }
+
+export type availabilityCount = {
+  status: string,
+  count: number,
+}
+
