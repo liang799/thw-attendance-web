@@ -6,9 +6,10 @@ import { ReactQueryKey } from '@/utils/react-query-keys';
 import { useQuery } from 'react-query';
 import { ParadeListItem } from '@/utils/types/ParadeListItem';
 import { DateTime } from 'luxon';
+import GenericErrorDisplay from '@/components/GenericErrorDisplay';
 
 export default function ParadeHistory() {
-  const { data, isLoading } = useQuery<ParadeListItem[]>(ReactQueryKey.ALL_PARADES,
+  const { data, isLoading, error } = useQuery(ReactQueryKey.ALL_PARADES,
     () => {
       return ApiClient.get('/parades').then(res => res.data);
     },
@@ -24,9 +25,17 @@ export default function ParadeHistory() {
     );
   }
 
+  if (error) {
+    return (
+      <GenericErrorDisplay title="Error">
+        Something went wrong
+      </GenericErrorDisplay>
+    );
+  }
+
   return (
     <>
-      {data.map(parade => {
+      {data.map((parade: ParadeListItem) => {
         return (
           <Link href={`/parade/${parade.id}`} as={NextLink} key={parade.id}>
             <HorizontalCard>
