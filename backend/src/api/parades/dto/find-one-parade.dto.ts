@@ -27,17 +27,6 @@ export class FindOneParadeDto {
     this.summary = availabilitySummary;
   }
 
-  private tallyAttendance(attendances: Attendance[]): Record<string, number> {
-    const summary: Record<string, number> = {};
-
-    for (const attendance of attendances) {
-      const status = attendance.availability.status;
-      summary[status] = (summary[status] || 0) + 1;
-    }
-
-    return summary;
-  }
-
   private sortPeople(attendances: Attendance[]): Attendance[] {
     const branchesPriority: Record<string, number> = {};
 
