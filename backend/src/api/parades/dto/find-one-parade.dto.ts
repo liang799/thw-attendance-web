@@ -16,7 +16,9 @@ export class FindOneParadeDto {
 
   attendances: Attendance[];
 
-  summary: availabilityCount[]
+  summary: availabilityCount[];
+
+  strength: Strength[];
 
   constructor(parade: Parade, availabilitySummary: availabilityCount[]) {
     this.id = parade.id;
@@ -25,6 +27,7 @@ export class FindOneParadeDto {
     const rawAttendances = parade.attendances.getItems();
     this.attendances = this.sortPeople(rawAttendances);
     this.summary = availabilitySummary;
+    this.strength = this.calcStrength(this.attendances);
   }
 
   private sortPeople(attendances: Attendance[]): Attendance[] {
@@ -37,7 +40,50 @@ export class FindOneParadeDto {
     branchesPriority[BranchType.TRANSITION] = 5;
 
     return attendances.sort((a, b) => {
-      return branchesPriority[a.user.type] - branchesPriority[b.user.type]
-    })
+      return branchesPriority[a.user.type] - branchesPriority[b.user.type];
+    });
   }
+
+  private calcStrength(attendances: Attendance[]): Strength[] {
+    return Object.values(BranchType).map((value: BranchType) => {
+      const filtered = attendances.filter(attendance => attendance.user.type == value);
+      return new Strength(filtered, value);
+    });
+  }
+}
+
+class Strength {
+  private readonly attendances: Attendance[];
+  private type: BranchType;
+  private readonly present: number;
+  private readonly total: number;
+
+  constructor(filteredAttendances: Attendance[], type: BranchType) {
+    this.attendances = filteredAttendances;
+    this.present = this.calcPresent();
+    this.total = this.calcTotalAttendances();
+    this.type = type;
+  }
+
+  calcTotalAttendances() {
+    return this.attendances.length;
+  }
+
+  calcPresent() {
+    let present = 0;
+    for (const attendance of this.attendances) {
+      if (!attendance.isPresent()) continue;
+      ++present;
+    }
+    return present;
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      present: this.present,
+      total: this.total,
+    };
+  }
+
 }
