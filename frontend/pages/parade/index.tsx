@@ -1,15 +1,19 @@
 import HorizontalCard from '@/components/HorizontalCard';
-import { CardBody, Container, Heading, Link, Skeleton, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Button, CardBody, Container, Heading, Link, Skeleton, Stack, useColorModeValue } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { ReactQueryKey } from '@/utils/react-query-keys';
 import { ApiClient } from '@/utils/axios';
 import Navbar from '@/components/Navbar';
 import NextLink from 'next/link';
 import { useAuthentication } from '@/utils/auth';
+import { useRouter } from 'next/router';
+import { AddIcon } from '@chakra-ui/icons';
+import ParadeHistory from '@/components/history/ParadeHistory';
 
 export default function ParadeIndexPage() {
   useAuthentication();
 
+  const router = useRouter();
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const { data, isLoading, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
@@ -36,13 +40,18 @@ export default function ParadeIndexPage() {
         <Navbar />
         <Stack p={4} spacing='12px'>
           <Heading pb={4}>Parade State Tracker</Heading>
-          <Link href='/parade/create' as={NextLink}>
-            <HorizontalCard>
-              <CardBody>
-                <Heading size='md'>Create Parade</Heading>
-              </CardBody>
-            </HorizontalCard>
-          </Link>
+
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme='teal'
+            onClick={() => router.push('/parade/create')}
+            maxW={150}
+          >
+            New Parade
+          </Button>
+
+          <ParadeHistory/>
+
         </Stack>
       </Container>
     );
