@@ -5,6 +5,11 @@ import {
   HStack,
   Skeleton,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Tag,
   TagLabel,
   TagLeftIcon,
@@ -143,14 +148,75 @@ export default function ParadeIdPage() {
           >
             {hasCopied ? 'Copied!' : 'Copy'}
           </Button>
-          <StopParadeButton paradeId={data.id}/>
+          <StopParadeButton paradeId={data.id} />
         </HStack>
-        {data.attendances.map((attendance: Attendance) => {
-          return (
-            <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-          )
-        })
-        }
+        <Tabs>
+          <TabList>
+            <Tab>Commanders</Tab>
+            <Tab>S1 Branch</Tab>
+            <Tab>S3 Branch</Tab>
+            <Tab>S4 Branch</Tab>
+            <Tab>Transition</Tab>
+          </TabList>
+
+          <TabPanels>
+            <TabPanel>
+              {
+                data.attendances
+                  .filter(attendance => attendance.user.type == 'Commander')
+                  .map((attendance: Attendance) => {
+                    return (
+                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+                    );
+                  })
+              }
+            </TabPanel>
+            <TabPanel>
+              {
+                data.attendances
+                  .filter(attendance => attendance.user.type == 'S1 Branch')
+                  .map((attendance: Attendance) => {
+                    return (
+                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+                    );
+                  })
+              }
+            </TabPanel>
+            <TabPanel>
+              {
+                data.attendances
+                  .filter(attendance => attendance.user.type == 'S3 Branch')
+                  .map((attendance: Attendance) => {
+                    return (
+                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+                    );
+                  })
+              }
+            </TabPanel>
+            <TabPanel>
+              {
+                data.attendances
+                  .filter(attendance => attendance.user.type == 'S4 Branch')
+                  .map((attendance: Attendance) => {
+                    return (
+                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+                    );
+                  })
+              }
+            </TabPanel>
+            <TabPanel>
+              {
+                data.attendances
+                  .filter(attendance => attendance.user.type == 'Transition')
+                  .map((attendance: Attendance) => {
+                    return (
+                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+                    );
+                  })
+              }
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Stack>
     </Container>
   );
