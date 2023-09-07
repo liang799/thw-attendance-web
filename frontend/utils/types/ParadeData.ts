@@ -6,11 +6,17 @@ export type ParadeData = {
   startDate: string,
   endDate?: string,
   attendances: Attendance[],
-  summary: availabilityCount[]
+  summary: AvailabilityCount[],
+  strength: Strength[]
 }
 
-export type availabilityCount = {
+export type AvailabilityCount = {
   status: string,
   count: number,
+}
+export type Strength = {
+  type: string,
+  present: number,
+  total: number,
 }
 
