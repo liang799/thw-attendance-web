@@ -24,9 +24,9 @@ export class CreateAttendanceDto {
 
   @IsDateString()
   @IsOptional()
-  absentStartDate: string;
+  absentStartDate?: string;
 
   @IsDateString()
   @IsOptional()
-  absentEndDate: string;
+  absentEndDate?: string;
 }
