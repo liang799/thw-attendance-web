@@ -30,7 +30,7 @@ export class User {
     return attendance;
   }
 
-  createBlankAttendance(parade: Parade): Attendance {
+  createBlankTemplateAttendance(parade: Parade): Attendance {
     const attendance = new Attendance();
     attendance.user = this;
     attendance.availability = Availability.unknown();
