@@ -56,7 +56,7 @@ export class Availability {
   static unknown() {
     const availability = new Availability();
     availability.type = AvailabilityType.ABSENT;
-    availability.status = '';
+    availability.status = ''; // Not sure if I should use `NULL` instead
     return availability;
   }
 
