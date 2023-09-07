@@ -43,8 +43,8 @@ function generateAttendanceStatus(data: GetAttendanceData): string {
     case 'Present':
       return `${data.status}`;
     case 'MC':
-      if (!data.mcEndDate) return `${data.status} - No End date`;
-      const date = DateTime.fromISO(data.mcEndDate).toFormat('ddLLyy');
+      if (!data.absentEndDate) return `${data.status} - No End date`;
+      const date = DateTime.fromISO(data.absentEndDate).toFormat('ddLLyy');
       return `${data.status} - ${date}`;
     default:
       return data.status;

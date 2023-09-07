@@ -21,12 +21,12 @@ import { ApiClient } from "@/utils/axios";
 import { useQueryClient } from "react-query";
 
 const list = [
-  { availability: "No MC", status: "Present" },
+  { availability: "Expect Arrival", status: "Present" },
+  { availability: "Expect Arrival", status: "Late" },
   { availability: "Dispatch", status: "Dispatch" },
-  { availability: "No MC", status: "Late" },
-  { availability: "Might Have MC", status: "RSO/RSI" },
-  { availability: "Might Have MC", status: "MA (AM)" },
-  { availability: "Might Have MC", status: "MA (PM)" },
+  { availability: "Doctor", status: "RSO/RSI" },
+  { availability: "Doctor", status: "MA (AM)" },
+  { availability: "Doctor", status: "MA (PM)" },
   { availability: "Absent", status: "Off" },
   { availability: "Absent", status: "LVE/OL" },
   { availability: "Absent", status: "Course" },
@@ -71,8 +71,8 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
       data = {
         availability: list[selectedIndex].availability,
         status: list[selectedIndex].status,
-        mcStartDate: selectedDates[0],
-        mcEndDate: selectedDates[1],
+        absentStartDate: selectedDates[0],
+        absentEndDate: selectedDates[1],
         user: getUserId()
       };
     } else {

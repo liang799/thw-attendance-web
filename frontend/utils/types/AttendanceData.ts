@@ -3,8 +3,8 @@ import { UserData } from "@/utils/types/UserData";
 export type CreateAttendanceData = {
   availability: string,
   status: string,
-  mcStartDate?: Date,
-  mcEndDate?: Date,
+  absentStartDate?: Date,
+  absentEndDate?: Date,
   user: number,
   location?: string,
 }
@@ -12,8 +12,8 @@ export type CreateAttendanceData = {
 export type GetAttendanceData = {
   type: string,
   status: string,
-  mcStartDate?: string,
-  mcEndDate?: string,
+  absentStartDate?: string,
+  absentEndDate?: string,
   user: number,
   dispatchLocation?: string,
   location?: string,
