@@ -32,11 +32,13 @@ import { useAuthentication } from '@/utils/auth';
 import { ParadeData } from '@/utils/types/ParadeData';
 import StopParadeButton from '@/components/attendance/StopParadeButton';
 import AttendanceCard from '@/components/attendance/AttendanceCard';
+import { SearchBar } from '@/components/SearchBar';
 
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const [attendance, setAttendance] = useState<Attendance | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
   const { slug } = router.query;
@@ -151,6 +153,12 @@ export default function ParadeIdPage() {
           <StopParadeButton paradeId={data.id} />
         </HStack>
         <Tabs>
+
+          <SearchBar
+            py={4}
+            handleChange={(event) => setSearchText(event.target.value.toLowerCase())}
+          />
+
           <TabList
             overflowY='hidden'
             sx={{
@@ -172,6 +180,7 @@ export default function ParadeIdPage() {
               {
                 data.attendances
                   .filter(attendance => attendance.user.type == 'Commander')
+                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
                   .map((attendance: Attendance) => {
                     return (
                       <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
@@ -183,6 +192,7 @@ export default function ParadeIdPage() {
               {
                 data.attendances
                   .filter(attendance => attendance.user.type == 'S1 Branch')
+                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
                   .map((attendance: Attendance) => {
                     return (
                       <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
@@ -194,6 +204,7 @@ export default function ParadeIdPage() {
               {
                 data.attendances
                   .filter(attendance => attendance.user.type == 'S3 Branch')
+                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
                   .map((attendance: Attendance) => {
                     return (
                       <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
@@ -205,6 +216,7 @@ export default function ParadeIdPage() {
               {
                 data.attendances
                   .filter(attendance => attendance.user.type == 'S4 Branch')
+                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
                   .map((attendance: Attendance) => {
                     return (
                       <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
@@ -216,6 +228,7 @@ export default function ParadeIdPage() {
               {
                 data.attendances
                   .filter(attendance => attendance.user.type == 'Transition')
+                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
                   .map((attendance: Attendance) => {
                     return (
                       <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
