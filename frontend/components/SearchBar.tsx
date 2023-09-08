@@ -1,12 +1,9 @@
-import React, { ChangeEventHandler } from 'react';
+import React from 'react';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
+import { InputProps } from '@chakra-ui/input';
 
-type SearchBarProps = {
-  onChange: ChangeEventHandler<HTMLInputElement>; // Rename handleChange to onChange
-};
-
-export const SearchBar = ({ onChange }: SearchBarProps) => {
+export const SearchBar = ({ ...rest }: InputProps) => {
   return (
     <InputGroup borderRadius={5} size='sm'>
       <InputLeftElement pointerEvents='none'>
@@ -15,8 +12,7 @@ export const SearchBar = ({ onChange }: SearchBarProps) => {
 
       <Input
         type='text'
-        placeholder='Search...'
-        onChange={onChange} // Use the provided onChange prop
+        {...rest}
       />
     </InputGroup>
   );

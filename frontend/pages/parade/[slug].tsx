@@ -169,6 +169,7 @@ export default function ParadeIdPage() {
 
           <SearchBar
             py={4}
+            placeholder="Search name..."
             onChange={(event) => setSearchText(event.target.value.toLowerCase())}
           />
 
