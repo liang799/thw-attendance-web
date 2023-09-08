@@ -169,7 +169,7 @@ export default function ParadeIdPage() {
 
           <SearchBar
             py={4}
-            handleChange={(event) => setSearchText(event.target.value.toLowerCase())}
+            onChange={(event) => setSearchText(event.target.value.toLowerCase())}
           />
 
           <TabList
