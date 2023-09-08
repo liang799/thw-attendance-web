@@ -24,7 +24,7 @@ export function getUserId(): number {
 }
 
 export function setUserId(userId: number) {
-  secureLocalStorage.setItem('userId', userId);
+  secureLocalStorage.setItem('userId', String(userId));
 }
 
 export const useAuthentication = () => {

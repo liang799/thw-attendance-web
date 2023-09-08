@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -6,27 +7,41 @@ import {
   Heading,
   Input,
   Select,
+  Skeleton,
   Stack,
-  useColorModeValue, useToast
-} from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
-import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import { ApiClient } from "@/utils/axios";
+  Text,
+  useColorModeValue,
+  useToast,
+} from '@chakra-ui/react';
+import { ChangeEvent, useState } from 'react';
+import { RangeDatepicker } from 'chakra-dayzed-datepicker';
+import { ApiClient } from '@/utils/axios';
 import { getUserId, useAuthentication } from '@/utils/auth';
-import { CreateAttendanceData } from "@/utils/types/AttendanceData";
+import { CreateAttendanceData } from '@/utils/types/AttendanceData';
 import Navbar from '@/components/Navbar';
 import { attendanceOptions } from '@/config/attendanceOptions';
+import { useQuery, useQueryClient } from 'react-query';
+import { ReactQueryKey } from '@/utils/react-query-keys';
+import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 
 
 export default function SubmitAttendancePage() {
   useAuthentication();
 
   const toast = useToast();
+  const queryClient = useQueryClient();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
-  const [dispatchLocation, setDispatchLocation] = useState("");
+  const [dispatchLocation, setDispatchLocation] = useState('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
+
+  const { data, isLoading } = useQuery(ReactQueryKey.ATTENDANCE,
+    () => {
+      return ApiClient.get(`/ongoing-parade/users/${getUserId()}/attendance`)
+        .then(res => res.data);
+    },
+  );
 
   const onSubmit = async () => {
     let data: CreateAttendanceData;
@@ -35,7 +50,7 @@ export default function SubmitAttendancePage() {
         availability: attendanceOptions[selectedIndex].availability,
         status: attendanceOptions[selectedIndex].status,
         location: dispatchLocation,
-        user: getUserId()
+        user: getUserId(),
       };
     } else if (hasMcDates) {
       data = {
@@ -54,13 +69,14 @@ export default function SubmitAttendancePage() {
     }
 
     try {
-      await ApiClient.post("/attendances", data);
+      await ApiClient.post('/attendances', data);
+      queryClient.invalidateQueries({ queryKey: [ReactQueryKey.ATTENDANCE] });
       toast({
-        title: "Successful",
-        description: "You have submitted your attendance",
-        status: "success",
+        title: 'Successful',
+        description: 'You have submitted your attendance',
+        status: 'success',
         duration: 5000,
-        isClosable: true
+        isClosable: true,
       });
     } catch (error: any) {
       toast({
@@ -96,7 +112,13 @@ export default function SubmitAttendancePage() {
       <Navbar />
       <Stack p={4} spacing={4}>
         <Heading py={4}>Attendance</Heading>
-        <form>
+        <Skeleton isLoaded={!isLoading}>
+          <Text as='i'>
+            Last Submitted:
+            <AttendanceBadge attendance={data} />
+          </Text>
+        </Skeleton>
+        <Box as='form' bg={useColorModeValue('white', 'gray.700')} p={4}>
           <FormControl>
             <FormLabel>Status</FormLabel>
             <Select onChange={determineAdditionalInput}>
@@ -120,10 +142,10 @@ export default function SubmitAttendancePage() {
               />
             </FormControl>
           }
-          <Button mt={4} colorScheme="teal" onClick={onSubmit}>
+          <Button mt={4} colorScheme='teal' onClick={onSubmit}>
             Submit
           </Button>
-        </form>
+        </Box>
       </Stack>
     </Container>
   );
