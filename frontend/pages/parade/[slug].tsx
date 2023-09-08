@@ -105,6 +105,19 @@ export default function ParadeIdPage() {
     );
   }
 
+  const renderFilteredAttendances = (type: string) => {
+    return data.attendances
+      .filter((attendance) => attendance.user.type === type)
+      .filter((attendance) =>
+        searchText.length > 0
+          ? attendance.user.name.toLowerCase().includes(searchText)
+          : true
+      )
+      .map((attendance: Attendance) => (
+        <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+      ));
+  };
+
 
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
@@ -177,64 +190,19 @@ export default function ParadeIdPage() {
 
           <TabPanels>
             <TabPanel>
-              {
-                data.attendances
-                  .filter(attendance => attendance.user.type == 'Commander')
-                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
-                  .map((attendance: Attendance) => {
-                    return (
-                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-                    );
-                  })
-              }
+              {renderFilteredAttendances('Commander')}
             </TabPanel>
             <TabPanel>
-              {
-                data.attendances
-                  .filter(attendance => attendance.user.type == 'S1 Branch')
-                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
-                  .map((attendance: Attendance) => {
-                    return (
-                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-                    );
-                  })
-              }
+              {renderFilteredAttendances('S1 Branch')}
             </TabPanel>
             <TabPanel>
-              {
-                data.attendances
-                  .filter(attendance => attendance.user.type == 'S3 Branch')
-                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
-                  .map((attendance: Attendance) => {
-                    return (
-                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-                    );
-                  })
-              }
+              {renderFilteredAttendances('S3 Branch')}
             </TabPanel>
             <TabPanel>
-              {
-                data.attendances
-                  .filter(attendance => attendance.user.type == 'S4 Branch')
-                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
-                  .map((attendance: Attendance) => {
-                    return (
-                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-                    );
-                  })
-              }
+              {renderFilteredAttendances('S4 Branch')}
             </TabPanel>
             <TabPanel>
-              {
-                data.attendances
-                  .filter(attendance => attendance.user.type == 'Transition')
-                  .filter(attendance => searchText.length > 0 ? attendance.user.name.toLowerCase().includes(searchText) : true)
-                  .map((attendance: Attendance) => {
-                    return (
-                      <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
-                    );
-                  })
-              }
+              {renderFilteredAttendances('Transition')}
             </TabPanel>
           </TabPanels>
         </Tabs>
