@@ -14,6 +14,7 @@ import { UsersModule } from '../users/users.module';
     ParadesModule,
     UsersModule,
   ],
+  exports: [AttendancesService],
   providers: [AttendancesService, ParadeRepository],
 })
 export class AttendancesModule {}

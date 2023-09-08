@@ -76,4 +76,10 @@ export class AttendancesService {
     attendance.availability = Availability.unknown();
     return this.em.flush();
   }
+
+  async getLatestParadeUserAttendance(id: number) {
+    const parade = await this.paradeService.getLatestOngoingParade();
+    const user = await this.userService.findOne(id);
+    return this.repository.findOne({ user: user, parade: parade });
+  }
 }
