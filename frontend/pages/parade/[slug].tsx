@@ -123,7 +123,12 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      <AttendanceModal attendance={attendance} showModal={showModal} setShowModal={setShowModal} />
+      <AttendanceModal
+        attendanceId={attendance?.id}
+        person={attendance?.user.name}
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
 
       <Stack p={4} spacing={4}>
         <Heading pt={4}>Parade State Summary</Heading>
@@ -166,7 +171,6 @@ export default function ParadeIdPage() {
           <StopParadeButton paradeId={data.id} />
         </HStack>
         <Tabs>
-
           <SearchBar
             py={4}
             placeholder="Search name..."

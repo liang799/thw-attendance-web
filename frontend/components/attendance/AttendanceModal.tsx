@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from 'react';
 import {
   Button,
   FormControl,
@@ -12,33 +12,44 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  useToast
-} from "@chakra-ui/react";
-import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import { Attendance, CreateAttendanceData } from "@/utils/types/AttendanceData";
-import { getUserId } from "@/utils/auth";
-import { ApiClient } from "@/utils/axios";
-import { useQueryClient } from "react-query";
+  Skeleton,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+import { RangeDatepicker } from 'chakra-dayzed-datepicker';
+import { CreateAttendanceData } from '@/utils/types/AttendanceData';
+import { getUserId } from '@/utils/auth';
+import { ApiClient } from '@/utils/axios';
+import { useQuery, useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
+import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 
 
 type setterFunction = (showModal: boolean) => void;
 
 type AttendanceModalProps = {
-  attendance?: Attendance | null,
+  attendanceId?: number | undefined,
+  person?: string | undefined,
   showModal: boolean,
   setShowModal: setterFunction
 }
 
-export default function AttendanceModal({ attendance, showModal, setShowModal }: AttendanceModalProps) {
+export default function AttendanceModal({ attendanceId, person, showModal, setShowModal }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
-  const [dispatchLocation, setDispatchLocation] = useState("");
+  const [dispatchLocation, setDispatchLocation] = useState('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
   const finalRef = useRef(null);
   const queryClient = useQueryClient();
   const toast = useToast();
+
+  const { data, isLoading } = useQuery(`Get Attendance ${attendanceId}`,
+    () => {
+      return ApiClient.get(`/attendances/${attendanceId}`)
+        .then(res => res.data);
+    },
+  );
 
   const handleClose = () => {
     setHasMcDates(false);
@@ -72,7 +83,7 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
     }
 
     try {
-      await ApiClient.put(`/attendances/${attendance?.id}`, data);
+      await ApiClient.put(`/attendances/${attendanceId}`, data);
       await queryClient.invalidateQueries();
       toast({
         title: "Successful",
@@ -110,22 +121,17 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
     setHasDispatchLocation(false);
   }
 
-  function getPreviousResponse(): number {
-    const previousAttendanceIndex = attendanceOptions.findIndex(value => value.status === attendance?.availability.status)
-    return previousAttendanceIndex;
-  }
-
   return (
     <Modal finalFocusRef={finalRef} isOpen={showModal} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit Attendance for {attendance?.user.name}</ModalHeader>
+        <ModalHeader>Edit Attendance for {person}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form>
             <FormControl>
               <FormLabel>Status</FormLabel>
-              <Select onChange={determineAdditionalInput} defaultValue={getPreviousResponse()}>
+              <Select onChange={determineAdditionalInput}>
                 {attendanceOptions.map((data, index) => (
                   <option key={index} value={index}>{data.status}</option>
                 ))}
@@ -146,13 +152,20 @@ export default function AttendanceModal({ attendance, showModal, setShowModal }:
                 />
               </FormControl>
             }
-            <Button mt={4} colorScheme="teal" onClick={onSubmit}>
+            <Button mt={4} colorScheme='teal' onClick={onSubmit}>
               Submit
             </Button>
           </form>
         </ModalBody>
 
-        <ModalFooter />
+        <ModalFooter>
+          <Skeleton isLoaded={!isLoading}>
+            <Text>
+              Last Known:
+              <AttendanceBadge attendance={data} />
+            </Text>
+          </Skeleton>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
