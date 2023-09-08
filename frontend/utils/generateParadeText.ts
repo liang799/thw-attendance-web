@@ -14,6 +14,7 @@ export default function generateParadeText(paradeData: ParadeData): string {
     return branch;
   });
 
+
   return [
     `Parade State Summary`,
     `Node: THWHQ`,
@@ -24,6 +25,19 @@ export default function generateParadeText(paradeData: ParadeData): string {
     ...paradeData.summary.map((availability) => {
       return `${availability.status || 'Unknown'}: ${availability.count}`;
     }),
+
+    '',
+
+    'MC:',
+    ...paradeData.attendances
+      .filter(attendance => attendance.availability.status == 'MC')
+      .map((attendance) => {
+        if (attendance.availability?.absentEndDate == null) {
+          return `${attendance.user.name} - Unknown`;
+        }
+        const date = DateTime.fromISO(attendance.availability.absentEndDate).toFormat('ddLLyy');
+        return `${attendance.user.name} - ${date}`;
+      }),
 
     '',
 
