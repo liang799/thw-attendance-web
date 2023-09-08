@@ -1,6 +1,7 @@
 import {
   Button,
   Container,
+  Divider,
   Heading,
   HStack,
   Skeleton,
@@ -170,10 +171,14 @@ export default function ParadeIdPage() {
           </Button>
           <StopParadeButton paradeId={data.id} />
         </HStack>
+
+        <Divider />
+
+        <Heading mt={4} as='h2' size='md' colorScheme='gray'>Attendances</Heading>
         <Tabs>
           <SearchBar
             py={4}
-            placeholder="Search name..."
+            placeholder='Search name...'
             onChange={(event) => setSearchText(event.target.value.toLowerCase())}
           />
 
