@@ -50,7 +50,7 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
       {({ isOpen, onClose }) => (
         <>
           <PopoverTrigger>
-            <Button>{isOpen ? 'Close' : 'Stop Parade'}</Button>
+            <Button>{isOpen ? 'Cancel' : 'Stop Parade'}</Button>
           </PopoverTrigger>
           <Portal>
             <PopoverContent>
