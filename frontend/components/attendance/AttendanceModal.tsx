@@ -52,8 +52,11 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
   );
 
   const handleClose = () => {
+    setSelectedIndex(0);
+    setDispatchLocation('');
     setHasMcDates(false);
     setHasDispatchLocation(false);
+    setSelectedDates([new Date(), new Date()])
     setShowModal(false);
   };
 
