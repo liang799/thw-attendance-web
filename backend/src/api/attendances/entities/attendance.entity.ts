@@ -15,7 +15,7 @@ export class Attendance {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne()
+  @ManyToOne(() => User)
   user!: User;
 
   @Embedded(() => Availability)
