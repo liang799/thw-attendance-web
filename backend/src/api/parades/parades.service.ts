@@ -31,21 +31,20 @@ export class ParadesService {
     );
 
     if (prevParade) {
-      console.log(prevParade);
       const attendances = prevParade.attendances.getItems();
-      attendances.forEach(async (prevAttendance) => {
+      for (const prevAttendance of attendances) {
         if (prevAttendance.availability.absentEndDate == null) {
           const user = prevAttendance.user;
           const attendance = user.createBlankTemplateAttendance(parade);
           await this.em.persist(attendance);
-          return;
+          continue;
         }
         const attendance = new Attendance();
         attendance.availability = prevAttendance.availability;
         attendance.parade = parade;
         attendance.user = prevAttendance.user;
         await this.em.persist(attendance);
-      });
+      }
     }
 
     const users = await this.em.find(User, {});
