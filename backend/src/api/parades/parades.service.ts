@@ -8,6 +8,7 @@ import { FindOneParadeDto } from './dto/find-one-parade.dto';
 import { User } from '../users/entities/user.entity';
 import { EntityManager } from '@mikro-orm/mysql';
 import { Attendance } from '../attendances/entities/attendance.entity';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class ParadesService {
@@ -33,7 +34,10 @@ export class ParadesService {
     if (prevParade) {
       const attendances = prevParade.attendances.getItems();
       for (const prevAttendance of attendances) {
-        if (prevAttendance.availability.absentEndDate == null) {
+        const absentEndDate = prevAttendance.availability.absentEndDate;
+        const paradeDate = DateTime.fromISO(dto.startDate);
+        const endDate = DateTime.fromJSDate(absentEndDate)
+        if (!absentEndDate || endDate >= paradeDate) {
           const user = prevAttendance.user;
           const attendance = user.createBlankTemplateAttendance(parade);
           await this.em.persist(attendance);
