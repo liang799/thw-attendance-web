@@ -57,6 +57,7 @@ function generateAttendanceStatus(data: GetAttendanceData): string {
     case 'Dispatch':
       return `${data.status} - ${data.dispatchLocation}`;
     case 'Expect Arrival':
+    case 'Work From Home':
     case 'Doctor':
       return `${data.status}`;
     case 'Absent':
