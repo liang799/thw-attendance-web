@@ -16,7 +16,7 @@ export class ParadesService {
     private readonly repository: ParadeRepository,
     private readonly orm: MikroORM,
     private readonly em: EntityManager,
-  ) { }
+  ) {}
 
   @UseRequestContext()
   async create(dto: CreateParadeDto) {
@@ -36,7 +36,7 @@ export class ParadesService {
       for (const prevAttendance of attendances) {
         const absentEndDate = prevAttendance.availability.absentEndDate;
         const paradeDate = DateTime.fromISO(dto.startDate);
-        const endDate = DateTime.fromJSDate(absentEndDate)
+        const endDate = DateTime.fromJSDate(absentEndDate);
         if (!absentEndDate || endDate >= paradeDate) {
           const user = prevAttendance.user;
           const attendance = user.createBlankTemplateAttendance(parade);
