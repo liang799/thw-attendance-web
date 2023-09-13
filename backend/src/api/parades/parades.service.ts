@@ -31,13 +31,14 @@ export class ParadesService {
       },
     );
 
+
     if (prevParade) {
       const attendances = prevParade.attendances.getItems();
       for (const prevAttendance of attendances) {
         const absentEndDate = prevAttendance.availability.absentEndDate;
         const paradeDate = DateTime.fromISO(dto.startDate);
         const endDate = DateTime.fromJSDate(absentEndDate);
-        if (!absentEndDate || endDate >= paradeDate) {
+        if (!absentEndDate || endDate < paradeDate) {
           const user = prevAttendance.user;
           const attendance = user.createBlankTemplateAttendance(parade);
           await this.em.persist(attendance);
