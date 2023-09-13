@@ -3,4 +3,5 @@ export enum AttendanceStatus {
   DISPATCH = 'Dispatch',
   DOCTOR = 'Doctor',
   ABSENT = 'Absent',
+  WORK_FROM_HOME = 'WFH',
 }

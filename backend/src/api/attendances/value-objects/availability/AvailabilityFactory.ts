@@ -11,6 +11,8 @@ export default class AvailabilityFactory {
         return Availability.willBeInCamp(dto.status);
       case AttendanceStatus.DOCTOR:
         return Availability.seeDoctor(dto.status);
+      case AttendanceStatus.WORK_FROM_HOME:
+        return Availability.workFromHome();
       case AttendanceStatus.ABSENT:
         return Availability.absent(
           dto.status,

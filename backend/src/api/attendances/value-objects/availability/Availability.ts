@@ -53,6 +53,13 @@ export class Availability {
     return availability;
   }
 
+  static workFromHome() {
+    const availability = new Availability();
+    availability.type = AvailabilityType.PRESENT;
+    availability.status = 'Work From Home';
+    return availability;
+  }
+
   static unknown() {
     const availability = new Availability();
     availability.type = AvailabilityType.ABSENT;
