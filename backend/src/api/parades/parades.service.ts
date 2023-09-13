@@ -49,6 +49,7 @@ export class ParadesService {
         attendance.user = prevAttendance.user;
         await this.em.persist(attendance);
       }
+      return this.em.flush();
     }
 
     const users = await this.em.find(User, {});
