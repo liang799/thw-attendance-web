@@ -1,6 +1,6 @@
-import { Attendance, GetAttendanceData } from '@/utils/types/AttendanceData';
-import { DateTime } from 'luxon';
-import { Badge, Text } from '@chakra-ui/react';
+import { Attendance } from '@/utils/types/AttendanceData';
+import { Badge } from '@chakra-ui/react';
+import { generateAttendanceStatus } from '@/utils/generateAttendanceStatus';
 
 type AttendanceBadgeProps = {
   attendance: Attendance | null
@@ -28,20 +28,4 @@ export default function AttendanceBadge({ attendance }: AttendanceBadgeProps) {
       {generateAttendanceStatus(attendance.availability)}
     </Badge>
   );
-}
-
-function generateAttendanceStatus(data: GetAttendanceData) {
-  const availability = data.status;
-  switch (availability) {
-    case 'Dispatch':
-      return <Text>{`${data.status} - ${data.dispatchLocation}`}</Text>;
-    case 'Present':
-      return <Text>{`${data.status}`}</Text>;
-    case 'MC':
-      if (!data.absentEndDate) return <Text>{`${data.status} - No End date`}</Text>;
-      const date = DateTime.fromISO(data.absentEndDate).toFormat('ddLLyy');
-      return <Text>{`${data.status} - ${date}`}</Text>;
-    default:
-      return <Text>{data.status}</Text>;
-  }
 }

@@ -1,7 +1,6 @@
 import { ParadeData } from '@/utils/types/ParadeData';
 import { DateTime } from 'luxon';
-import { GetAttendanceData } from '@/utils/types/AttendanceData';
-import { attendanceOptions } from '@/config/attendanceOptions';
+import { generateAttendanceStatus } from '@/utils/generateAttendanceStatus';
 
 export default function generateParadeText(paradeData: ParadeData): string {
 
@@ -48,23 +47,4 @@ export default function generateParadeText(paradeData: ParadeData): string {
 
     '',
   ].join('\n');
-}
-
-function generateAttendanceStatus(data: GetAttendanceData): string {
-  const attendanceType = attendanceOptions.find(option => option.status == data.status)
-  if (!attendanceType) return '';
-  switch (attendanceType.availability) {
-    case 'Dispatch':
-      return `${data.status} - ${data.dispatchLocation}`;
-    case 'Expect Arrival':
-    case 'WFH':
-    case 'Doctor':
-      return `${data.status}`;
-    case 'Absent':
-      if (!data.absentEndDate) return `${data.status} - No End date`;
-      const date = DateTime.fromISO(data.absentEndDate).toFormat('ddLLyy');
-      return `${data.status} - ${date}`;
-    default:
-      return '';
-  }
 }
