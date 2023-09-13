@@ -7,8 +7,7 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
-  }
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('signup')
@@ -23,7 +22,10 @@ export class AuthController {
   }
 
   @Post('changePassword')
-  changePassword(@Headers('Authorization') authHeader: string, @Body() changePasswordDto: ChangePasswordDto) {
+  changePassword(
+    @Headers('Authorization') authHeader: string,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
     return this.authService.changePassword(authHeader, changePasswordDto);
   }
 }

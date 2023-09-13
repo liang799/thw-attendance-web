@@ -7,7 +7,6 @@ import { users } from './UserData';
 import 'dotenv/config';
 import { BranchType } from '../../api/users/types/BranchType';
 
-
 interface UserData {
   rank: string;
   name: string;
@@ -15,8 +14,8 @@ interface UserData {
 }
 
 interface GeneratedUsername {
-  user: UserData,
-  userName: string,
+  user: UserData;
+  userName: string;
 }
 
 export class UserSeeder extends Seeder {
@@ -45,7 +44,10 @@ export class UserSeeder extends Seeder {
     const usedIds = new Set();
 
     function generateUsername(user) {
-      const initials = user.name.split(' ').map(word => word[0]).join('');
+      const initials = user.name
+        .split(' ')
+        .map((word) => word[0])
+        .join('');
       let id;
       do {
         id = Math.floor(Math.random() * 100);
@@ -54,7 +56,7 @@ export class UserSeeder extends Seeder {
       return `${initials}${id}`;
     }
 
-    return users.map(user => ({
+    return users.map((user) => ({
       user: { ...user },
       userName: generateUsername(user),
     }));

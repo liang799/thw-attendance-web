@@ -1,5 +1,5 @@
-import { IsEnum, IsString } from "class-validator";
-import { BranchType } from "../types/BranchType";
+import { IsEnum, IsString } from 'class-validator';
+import { BranchType } from '../types/BranchType';
 
 export class CreateUserDto {
   @IsEnum(BranchType)

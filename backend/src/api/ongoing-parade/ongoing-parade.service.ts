@@ -6,9 +6,8 @@ import { AttendancesService } from '../attendances/attendances.service';
 export class OngoingParadeService {
   constructor(
     private readonly paradeService: ParadesService,
-  private readonly attendanceService: AttendancesService
-  ) {
-  }
+    private readonly attendanceService: AttendancesService,
+  ) {}
 
   getLatestOngoingParade() {
     return this.paradeService.getLatestOngoingParade();

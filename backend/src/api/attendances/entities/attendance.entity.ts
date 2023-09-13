@@ -8,7 +8,10 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { Parade } from '../../parades/entities/parade.entity';
 import { AttendanceRepository } from '../attendance.repository';
-import { Availability, AvailabilityType } from '../value-objects/availability/Availability';
+import {
+  Availability,
+  AvailabilityType,
+} from '../value-objects/availability/Availability';
 
 @Entity({ customRepository: () => AttendanceRepository })
 export class Attendance {

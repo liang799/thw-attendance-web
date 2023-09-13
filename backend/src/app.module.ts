@@ -10,7 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './api/auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { OngoingParadeModule } from './api/ongoing-parade/ongoing-parade.module';
-import { AuthModule } from "./api/auth/auth.module";
+import { AuthModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { AuthModule } from "./api/auth/auth.module";
     UsersModule,
     AttendancesModule,
     OngoingParadeModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

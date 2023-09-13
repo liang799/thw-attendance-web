@@ -3,8 +3,8 @@ import { Parade } from '../entities/parade.entity';
 import { BranchType } from '../../users/types/BranchType';
 
 interface availabilityCount {
-  status: string,
-  count: number,
+  status: string;
+  count: number;
 }
 
 export class FindOneParadeDto {
@@ -46,7 +46,9 @@ export class FindOneParadeDto {
 
   private calcStrength(attendances: Attendance[]): Strength[] {
     return Object.values(BranchType).map((value: BranchType) => {
-      const filtered = attendances.filter(attendance => attendance.user.type == value);
+      const filtered = attendances.filter(
+        (attendance) => attendance.user.type == value,
+      );
       return new Strength(filtered, value);
     });
   }
@@ -85,5 +87,4 @@ class Strength {
       total: this.total,
     };
   }
-
 }

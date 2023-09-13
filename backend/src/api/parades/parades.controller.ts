@@ -5,7 +5,8 @@ import {
   Body,
   Patch,
   Param,
-  Delete, BadRequestException,
+  Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { ParadesService } from './parades.service';
 import { CreateParadeDto } from './dto/create-parade.dto';
