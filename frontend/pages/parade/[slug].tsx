@@ -115,7 +115,11 @@ export default function ParadeIdPage() {
           : true
       )
       .map((attendance: Attendance) => (
-        <AttendanceCard key={attendance.id} attendance={attendance} handleClick={handleClick} />
+        <AttendanceCard
+          key={attendance.id}
+          attendance={attendance}
+          handleClick={handleClick}
+        />
       ));
   };
 
