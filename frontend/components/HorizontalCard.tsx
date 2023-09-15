@@ -1,4 +1,4 @@
-import { Card, Image, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Card, Stack, useColorModeValue } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 interface HorizontalCardProps {
