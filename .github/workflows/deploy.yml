@@ -36,5 +36,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "comfortable-rhino-34"
-          entrypoint: "dist/index.js" # 📝 Update the entrypoint if necessary
+          entrypoint: "dist/main.js" # 📝 Update the entrypoint if necessary
           root: "backend" # 📝 Update the root if necessary
