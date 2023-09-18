@@ -27,11 +27,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: lts/*
-
-      - name: Changing Directory to backend
-        run: "cd backend"
         
       - name: Build step
+        working-directory: backend
         run: "npm install && npm run build" # 📝 Update the build command(s) if necessary
 
       - name: Upload to Deno Deploy
