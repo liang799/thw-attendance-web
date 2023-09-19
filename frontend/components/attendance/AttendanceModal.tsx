@@ -48,7 +48,7 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
     () => {
       return ApiClient.get(`/attendances/${attendanceId}`)
         .then(res => res.data);
-    },
+    }, { enabled: showModal },
   );
 
   const handleClose = () => {
