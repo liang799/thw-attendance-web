@@ -22,6 +22,9 @@ export class User {
   @Property()
   name: string;
 
+  @Property()
+  hasLeftNode: boolean = false;
+
   submitAttendance(availability: Availability, parade: Parade): Attendance {
     const attendance = new Attendance();
     attendance.user = this;
