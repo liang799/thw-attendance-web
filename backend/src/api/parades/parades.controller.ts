@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ParadesService } from './parades.service';
 import { CreateParadeDto } from './dto/create-parade.dto';
@@ -27,21 +27,18 @@ export class ParadesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    if (!Number(id)) throw new BadRequestException();
-    return this.paradesService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.paradesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateParadeDto: UpdateParadeDto) {
-    if (!Number(id)) throw new BadRequestException();
     return this.paradesService.update(+id, updateParadeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    if (!Number(id)) throw new BadRequestException();
-    return this.paradesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.paradesService.remove(id);
   }
 
   @Post(':id/attendance')

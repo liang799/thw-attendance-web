@@ -8,6 +8,7 @@ import {
   Put,
   HttpStatus,
   HttpCode,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AttendancesService } from './attendances.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
@@ -29,8 +30,8 @@ export class AttendancesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.attendancesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.attendancesService.findOne(id);
   }
 
   @Put(':id')
