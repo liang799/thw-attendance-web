@@ -3,7 +3,7 @@ import { Badge } from '@chakra-ui/react';
 import { generateAttendanceStatus } from '@/utils/generateAttendanceStatus';
 
 type AttendanceBadgeProps = {
-  attendance: Attendance | null
+  attendance?: Attendance | undefined | null
 }
 
 export default function AttendanceBadge({ attendance }: AttendanceBadgeProps) {
