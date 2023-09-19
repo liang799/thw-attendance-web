@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateParadeDto } from './dto/create-parade.dto';
 import { UpdateParadeDto } from './dto/update-parade.dto';
 import { ParadeRepository } from './parade.repository';
@@ -20,6 +20,9 @@ export class ParadesService {
 
   @UseRequestContext()
   async create(dto: CreateParadeDto) {
+    const ongoingParade = await this.repository.findOne({ endDate: null });
+    if (ongoingParade) throw new ConflictException();
+
     const parade = new Parade(new Date(dto.startDate));
     await this.em.persist(parade);
 
