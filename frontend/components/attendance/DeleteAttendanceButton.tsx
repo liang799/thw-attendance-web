@@ -5,9 +5,10 @@ import ConfirmationButton from '@/components/ConfirmationButton';
 
 type ButtonProps = {
   attendanceId?: number | undefined,
+  handleClose: () => void
 }
 
-export default function DeleteAttendanceButton({ attendanceId }: ButtonProps) {
+export default function DeleteAttendanceButton({ attendanceId, handleClose }: ButtonProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -25,6 +26,8 @@ export default function DeleteAttendanceButton({ attendanceId }: ButtonProps) {
     try {
       await ApiClient.delete(`/attendances/${attendanceId}`);
       queryClient.invalidateQueries();
+      handleClose();
+      onClose();
       toast({
         title: 'Successful',
         description: 'Deleted Attendance',

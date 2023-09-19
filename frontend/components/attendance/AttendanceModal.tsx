@@ -161,7 +161,7 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
               <Button colorScheme='teal' onClick={onSubmit}>
                 Submit
               </Button>
-              <DeleteAttendanceButton attendanceId={attendanceId} />
+              <DeleteAttendanceButton attendanceId={attendanceId} handleClose={handleClose}/>
             </HStack>
           </form>
         </ModalBody>
