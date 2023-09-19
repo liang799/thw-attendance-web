@@ -15,9 +15,10 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { setAccessToken, setUserId } from "@/utils/auth";
+import { getAccessToken, getUserId, setAccessToken, setUserId } from '@/utils/auth';
 import PasswordInput from "@/components/PasswordInput";
 import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
 
 const schema = yup.object({
   userName: yup.string().required(),
@@ -49,6 +50,16 @@ export default function LoginPage() {
       });
     }
   };
+
+  useEffect(() => {
+    const token = getAccessToken();
+    const userId = getUserId();
+
+    if (token && userId) {
+      router.push('/parade'); // Replace with the desired redirect path
+    }
+  }, []);
+
 
   return (
     <Container maxW="container.xl" minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
