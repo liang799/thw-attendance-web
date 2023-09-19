@@ -56,6 +56,7 @@ export default function ParadeIdPage() {
       onSuccess: data => {
         setValue(generateParadeText(data));
       },
+      enabled: !!slug
     },
   );
 
