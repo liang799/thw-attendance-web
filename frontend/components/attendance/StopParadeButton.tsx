@@ -1,19 +1,7 @@
-import {
-  Button,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
-  Stack,
-  Text,
-  useToast,
-} from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import { ApiClient } from '@/utils/axios';
 import { useQueryClient } from 'react-query';
+import ConfirmationButton from '@/components/ConfirmationButton';
 
 type StopParadeButtonProps = {
   paradeId: number
@@ -46,29 +34,8 @@ export default function StopParadeButton({ paradeId }: StopParadeButtonProps) {
     }
   };
   return (
-    <Popover closeOnBlur={false}>
-      {({ isOpen, onClose }) => (
-        <>
-          <PopoverTrigger>
-            <Button>{isOpen ? 'Cancel' : 'Stop Parade'}</Button>
-          </PopoverTrigger>
-          <Portal>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
-              <PopoverCloseButton />
-              <PopoverBody>
-                <Stack spacing={4}>
-                  <Text colorScheme='grey'>
-                    Press the button below again to continue.
-                  </Text>
-                  <Button colorScheme='red' onClick={() => handleClick(onClose)}>Stop Parade</Button>
-                </Stack>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
-        </>
-      )}
-    </Popover>
+    <ConfirmationButton handleClick={handleClick}>
+      Stop Parade
+    </ConfirmationButton>
   );
 }
