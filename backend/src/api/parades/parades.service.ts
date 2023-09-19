@@ -57,6 +57,7 @@ export class ParadesService {
     const users = await this.em.find(User, {});
     if (!users) return this.em.persistAndFlush(parade);
     for (const user of users) {
+      if (user.hasLeftNode) continue;
       const attendance = user.createBlankTemplateAttendance(parade);
       await this.em.persist(attendance);
     }
