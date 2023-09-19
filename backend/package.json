@@ -17,7 +17,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "setup-db": "mikro-orm schema:fresh --run --seed",
+    "setup-db:dev": "mikro-orm schema:fresh --run --seed",
     "debug-orm": "mikro-orm debug",
     "docs": "npx @compodoc/compodoc -p tsconfig.json -s",
     "create-migration": "mikro-orm migration:create",
