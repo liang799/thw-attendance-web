@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { EntityManager, MikroORM, UseRequestContext } from '@mikro-orm/core';
 import { AttendanceRepository } from './attendance.repository';
-import { Availability } from './value-objects/availability/Availability';
 import { ParadesService } from '../parades/parades.service';
 import { UsersService } from '../users/users.service';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
@@ -73,8 +72,7 @@ export class AttendancesService {
   async remove(id: number): Promise<void> {
     const attendance = await this.repository.findOne(id);
     if (!attendance) throw new NotFoundException();
-    attendance.availability = Availability.unknown();
-    return this.em.flush();
+    return this.em.remove(attendance).flush();
   }
 
   async getLatestParadeUserAttendance(id: number) {

@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -17,12 +18,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
-import { CreateAttendanceData } from '@/utils/types/AttendanceData';
+import { Attendance, CreateAttendanceData } from '@/utils/types/AttendanceData';
 import { getUserId } from '@/utils/auth';
 import { ApiClient } from '@/utils/axios';
 import { useQuery, useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
+import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
 
 
 type setterFunction = (showModal: boolean) => void;
@@ -44,7 +46,7 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const { data, isLoading } = useQuery(`Get Attendance ${attendanceId}`,
+  const { data, isLoading } = useQuery<Attendance>(`Get Attendance ${attendanceId}`,
     () => {
       return ApiClient.get(`/attendances/${attendanceId}`)
         .then(res => res.data);
@@ -155,9 +157,12 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
                 />
               </FormControl>
             }
-            <Button mt={4} colorScheme='teal' onClick={onSubmit}>
-              Submit
-            </Button>
+            <HStack mt={4} spacing={4}>
+              <Button colorScheme='teal' onClick={onSubmit}>
+                Submit
+              </Button>
+              <DeleteAttendanceButton attendanceId={attendanceId} />
+            </HStack>
           </form>
         </ModalBody>
 

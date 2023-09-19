@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   ButtonProps,
   Popover,
@@ -14,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 
 type ConfirmationButtonProps = {
-  handleClick: (onClose: () => void) => Promise<void> | void;
+  handleClick: (onClose: () => void) => Promise<void> | void,
 } & ButtonProps
 
 export default function ConfirmationButton({ handleClick, ...props }: ConfirmationButtonProps) {
@@ -28,19 +29,27 @@ export default function ConfirmationButton({ handleClick, ...props }: Confirmati
             </Button>
           </PopoverTrigger>
           <Portal>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
-              <PopoverCloseButton />
-              <PopoverBody>
-                <Stack spacing={4}>
-                  <Text colorScheme='grey'>
-                    Press the button below again to continue.
-                  </Text>
-                  <Button colorScheme='red' onClick={() => handleClick(onClose)}>{props.children}</Button>
-                </Stack>
-              </PopoverBody>
-            </PopoverContent>
+            <Box
+              sx={{
+                '& .chakra-popover__popper': {
+                  zIndex: 'popover',
+                },
+              }}
+            >
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <Stack spacing={4}>
+                    <Text colorScheme='grey'>
+                      Press the button below again to continue.
+                    </Text>
+                    <Button colorScheme='red' onClick={() => handleClick(onClose)}>{props.children}</Button>
+                  </Stack>
+                </PopoverBody>
+              </PopoverContent>
+            </Box>
           </Portal>
         </>
       )}

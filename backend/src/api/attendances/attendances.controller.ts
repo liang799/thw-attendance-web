@@ -44,7 +44,7 @@ export class AttendancesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.attendancesService.remove(+id);
   }
 }
