@@ -52,11 +52,13 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    const token = getAccessToken();
-    const userId = getUserId();
-
-    if (token && userId) {
-      router.push('/parade'); // Replace with the desired redirect path
+    try {
+      getAccessToken();
+      getUserId();
+      console.info('Redirect user as he is logged in');
+      router.push('/parade');
+    } catch (e) {
+      console.info('User is not logged in. Do not redirect');
     }
   }, []);
 

@@ -12,8 +12,11 @@ export const ApiClient = axios.create({
 ApiClient.interceptors.request.use(
   (config) => {
     const newConfig = { ...config };
-    if (getAccessToken()) {
-      newConfig.headers.Authorization = `Bearer ${getAccessToken()}`;
+    try {
+      const token = getAccessToken();
+      newConfig.headers.Authorization = `Bearer ${token}`;
+    } catch (e) {
+      console.info('Cant get JWT token');
     }
     return newConfig;
   },

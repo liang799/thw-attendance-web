@@ -6,7 +6,10 @@ import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
 
 export function getAccessToken(): string {
-  return `${secureLocalStorage.getItem('token')}`;
+  const token = secureLocalStorage.getItem('token');
+  console.log(token)
+  if (!token) throw new Error('Cannot get token');
+  return String(token);
 }
 
 export function setAccessToken(token: string) {
@@ -40,6 +43,7 @@ export const useAuthentication = () => {
           duration: 9000,
           isClosable: true,
         });
+        clearLocalStorage();
         return router.push('/');
       }
       return Promise.reject(error);
