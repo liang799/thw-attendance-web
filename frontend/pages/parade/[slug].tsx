@@ -43,18 +43,18 @@ export default function ParadeIdPage() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
   const { slug } = router.query;
-  const { onCopy, value, hasCopied, setValue } = useClipboard('');
+  const { onCopy, hasCopied, setValue: setClipboardText } = useClipboard('');
   const toast = useToast();
 
   useAuthentication();
 
-  const { data, isError, isLoading } = useQuery<ParadeData>(`Get Parade ${slug}`,
+  const { data: paradeData, isError, isLoading } = useQuery<ParadeData>(`Get Parade ${slug}`,
     () => {
       return ApiClient.get(`/parades/${slug}`)
         .then(res => res.data);
     }, {
       onSuccess: data => {
-        setValue(generateParadeText(data));
+        setClipboardText(generateParadeText(data));
       },
       enabled: !!slug
     },
@@ -85,7 +85,7 @@ export default function ParadeIdPage() {
       });
       return;
     }
-    setValue(generateParadeText(data));
+    setClipboardText(generateParadeText(data));
     onCopy();
     toast({
       title: 'Copied!',
@@ -96,7 +96,7 @@ export default function ParadeIdPage() {
     });
   };
 
-  if (isLoading || !data || !slug) {
+  if (isLoading || !paradeData || !slug) {
     return (
       <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
         <Navbar />
@@ -109,7 +109,7 @@ export default function ParadeIdPage() {
   }
 
   const renderFilteredAttendances = (type: string) => {
-    return data.attendances
+    return paradeData.attendances
       .filter((attendance) => attendance.user.type === type)
       .filter((attendance) =>
         searchText.length > 0
@@ -154,9 +154,9 @@ export default function ParadeIdPage() {
             colorScheme='green'
           >
             <TagLeftIcon boxSize='12px' as={TimeIcon} />
-            <TagLabel>{DateTime.fromISO(data.startDate).toFormat('dd MMM yyyy')}</TagLabel>
+            <TagLabel>{DateTime.fromISO(paradeData.startDate).toFormat('dd MMM yyyy')}</TagLabel>
           </Tag>
-          {data.endDate &&
+          {paradeData.endDate &&
             <Tag
               size='md'
               colorScheme='red'
@@ -170,12 +170,12 @@ export default function ParadeIdPage() {
           <Button
             colorScheme='teal'
             leftIcon={<CopyIcon />}
-            onClick={() => copyToClipboard(data)}
+            onClick={() => copyToClipboard(paradeData)}
             width='200px'
           >
             {hasCopied ? 'Copied!' : 'Copy'}
           </Button>
-          <StopParadeButton paradeId={data.id} />
+          <StopParadeButton paradeId={paradeData.id} />
         </HStack>
 
         <Divider />
