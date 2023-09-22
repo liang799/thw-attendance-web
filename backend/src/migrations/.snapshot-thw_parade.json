@@ -61,17 +61,18 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('Commander','Transition','S1 Branch','S3 Branch','S4 Branch')",
+          "type": "enum('Commander','S1 Branch','S3 Branch','S4 Branch','Media Team','Transition')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "enumItems": [
             "Commander",
-            "Transition",
             "S1 Branch",
             "S3 Branch",
-            "S4 Branch"
+            "S4 Branch",
+            "Media Team",
+            "Transition"
           ],
           "mappedType": "enum"
         },
