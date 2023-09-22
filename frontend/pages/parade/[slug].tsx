@@ -75,7 +75,7 @@ export default function ParadeIdPage() {
   };
 
   const copyToClipboard = (data: ParadeData) => {
-    if (!value) {
+    if (!data) {
       toast({
         title: 'Error',
         description: 'Unable to copy parade state. Please try again',
@@ -85,6 +85,7 @@ export default function ParadeIdPage() {
       });
       return;
     }
+    setValue(generateParadeText(data));
     onCopy();
     toast({
       title: 'Copied!',
