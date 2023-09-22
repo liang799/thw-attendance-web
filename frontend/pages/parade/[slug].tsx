@@ -200,6 +200,7 @@ export default function ParadeIdPage() {
             <Tab>S1 Branch</Tab>
             <Tab>S3 Branch</Tab>
             <Tab>S4 Branch</Tab>
+            <Tab>Media Team</Tab>
             <Tab>Transition</Tab>
           </TabList>
 
@@ -215,6 +216,9 @@ export default function ParadeIdPage() {
             </TabPanel>
             <TabPanel>
               {renderFilteredAttendances('S4 Branch')}
+            </TabPanel>
+            <TabPanel>
+              {renderFilteredAttendances('Media Team')}
             </TabPanel>
             <TabPanel>
               {renderFilteredAttendances('Transition')}
