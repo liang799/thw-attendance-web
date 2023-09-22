@@ -1,6 +1,6 @@
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../entities/parade.entity';
-import { BranchType } from '../../users/types/BranchType';
+import { UserType } from '../../users/types/UserType';
 
 interface availabilityCount {
   status: string;
@@ -33,11 +33,12 @@ export class FindOneParadeDto {
   private sortPeople(attendances: Attendance[]): Attendance[] {
     const branchesPriority: Record<string, number> = {};
 
-    branchesPriority[BranchType.COMMANDER] = 0;
-    branchesPriority[BranchType.S1] = 1;
-    branchesPriority[BranchType.S3] = 2;
-    branchesPriority[BranchType.S4] = 4;
-    branchesPriority[BranchType.TRANSITION] = 5;
+    branchesPriority[UserType.COMMANDER] = 0;
+    branchesPriority[UserType.S1] = 1;
+    branchesPriority[UserType.S3] = 2;
+    branchesPriority[UserType.S4] = 4;
+    branchesPriority[UserType.MEDIA] = 5;
+    branchesPriority[UserType.TRANSITION] = 6;
 
     return attendances.sort((a, b) => {
       return branchesPriority[a.user.type] - branchesPriority[b.user.type];
@@ -45,7 +46,7 @@ export class FindOneParadeDto {
   }
 
   private calcStrength(attendances: Attendance[]): Strength[] {
-    return Object.values(BranchType).map((value: BranchType) => {
+    return Object.values(UserType).map((value: UserType) => {
       const filtered = attendances.filter(
         (attendance) => attendance.user.type == value,
       );
@@ -56,11 +57,11 @@ export class FindOneParadeDto {
 
 class Strength {
   private readonly attendances: Attendance[];
-  private type: BranchType;
+  private type: UserType;
   private readonly present: number;
   private readonly total: number;
 
-  constructor(filteredAttendances: Attendance[], type: BranchType) {
+  constructor(filteredAttendances: Attendance[], type: UserType) {
     this.attendances = filteredAttendances;
     this.present = this.calcPresent();
     this.total = this.calcTotalAttendances();

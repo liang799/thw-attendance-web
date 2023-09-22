@@ -5,12 +5,12 @@ import { Auth } from '../../api/auth/entities/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { users } from './UserData';
 import 'dotenv/config';
-import { BranchType } from '../../api/users/types/BranchType';
+import { UserType } from '../../api/users/types/UserType';
 
 interface UserData {
   rank: string;
   name: string;
-  type: BranchType;
+  type: UserType;
 }
 
 interface GeneratedUsername {
