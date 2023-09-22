@@ -3,6 +3,8 @@ import { DateTime } from 'luxon';
 import { generateAttendanceStatus } from '@/utils/generateAttendanceStatus';
 
 export default function generateParadeText(paradeData: ParadeData): string {
+  const paradeDate = DateTime.fromISO(paradeData.startDate);
+  const paradeDateWithTiming = includeParadeTiming(paradeDate);
 
   const branches = paradeData.strength.map(strength => {
     let branch = `${strength.type}: ${strength.present}/${strength.total}\n`;
@@ -18,7 +20,7 @@ export default function generateParadeText(paradeData: ParadeData): string {
   return [
     `Parade State Summary`,
     `Node: THWHQ`,
-    `Time: ${DateTime.fromISO(paradeData.startDate).toFormat('dd MMM yyyy, HHmm')}`,
+    `Time: ${paradeDateWithTiming.toFormat('dd MMM yyyy, HHmm')}`,
 
     '',
 
@@ -47,4 +49,13 @@ export default function generateParadeText(paradeData: ParadeData): string {
 
     '',
   ].join('\n');
+}
+
+function includeParadeTiming(paradeDate: DateTime): DateTime {
+  const currentTime = DateTime.local();
+  const isMorning = currentTime.hour < 12;
+  if (isMorning) {
+    return paradeDate.set({ hour: 8, minute: 0 });
+  }
+  return paradeDate.set({ hour: 13, minute: 30 });
 }
