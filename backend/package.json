@@ -21,6 +21,7 @@
     "debug-orm": "mikro-orm debug",
     "docs": "npx @compodoc/compodoc -p tsconfig.json -s",
     "create-migration": "mikro-orm migration:create",
+    "pending-migration": "mikro-orm migration:pending",
     "migrate-latest": "mikro-orm migration:up",
     "rollback-migration": "mikro-orm migration:down"
   },
