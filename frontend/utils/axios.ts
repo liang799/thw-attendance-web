@@ -18,7 +18,7 @@ ApiClient.interceptors.response.use(
   error => {
     if (error.response && error.response.status > 500) {
       currentBaseUrlIndex = (currentBaseUrlIndex + 1) % baseUrls.length;
-      ApiClient.defaults.baseURL = baseUrls[currentBaseUrlIndex];
+      ApiClient.defaults.baseURL = baseUrls[currentBaseUrlIndex];               // TODO: Do not mutate `ApiClient`
       console.info(`Switched to base URL: ${baseUrls[currentBaseUrlIndex]}`);
     }
     return Promise.reject(error);
