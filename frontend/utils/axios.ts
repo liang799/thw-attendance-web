@@ -16,8 +16,8 @@ let currentBaseUrlIndex = 0;
 ApiClient.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && error.response.status > 500) {
-      currentBaseUrlIndex = (currentBaseUrlIndex + 1) % baseUrls.length;
+    if (error.response && error.response.status > 500 || !error.response) {     // > 500 http code || missing CORS
+      currentBaseUrlIndex = (currentBaseUrlIndex + 1) % baseUrls.length;        // Cycles through array. If end of array, reset
       ApiClient.defaults.baseURL = baseUrls[currentBaseUrlIndex];               // TODO: Do not mutate `ApiClient`
       console.info(`Switched to base URL: ${baseUrls[currentBaseUrlIndex]}`);
     }
