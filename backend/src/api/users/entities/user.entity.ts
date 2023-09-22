@@ -3,7 +3,7 @@ import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Parade } from '../../parades/entities/parade.entity';
 import { UserRepository } from '../user.repostiory';
 import { Availability } from '../../attendances/value-objects/availability/Availability';
-import { BranchType } from '../types/BranchType';
+import { UserType } from '../types/UserType';
 
 @Entity({
   customRepository: () => UserRepository,
@@ -12,9 +12,9 @@ export class User {
   @PrimaryKey()
   id!: number;
 
-  @Enum(() => BranchType)
+  @Enum(() => UserType)
   @Index()
-  type!: BranchType;
+  type!: UserType;
 
   @Property()
   rank: string;
