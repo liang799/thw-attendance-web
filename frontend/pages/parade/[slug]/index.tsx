@@ -27,7 +27,7 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
+import { CopyIcon, EditIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { ParadeData } from '@/utils/types/ParadeData';
@@ -56,7 +56,7 @@ export default function ParadeIdPage() {
       onSuccess: data => {
         setClipboardText(generateParadeText(data));
       },
-      enabled: !!slug
+      enabled: !!slug,
     },
   );
 
@@ -114,7 +114,7 @@ export default function ParadeIdPage() {
       .filter((attendance) =>
         searchText.length > 0
           ? attendance.user.name.toLowerCase().includes(searchText)
-          : true
+          : true,
       )
       .map((attendance: Attendance) => (
         <AttendanceCard
@@ -180,7 +180,17 @@ export default function ParadeIdPage() {
 
         <Divider />
 
-        <Heading mt={4} as='h2' size='md' colorScheme='gray'>Attendances</Heading>
+        <HStack mt={4}>
+          <Heading as='h2' size='md' colorScheme='gray'>Attendances</Heading>
+          <Button
+            leftIcon={<EditIcon />}
+            size='sm'
+            onClick={() => router.push(`/parade/${slug}/bulkedit`)}
+          >
+            Bulk Edit
+          </Button>
+        </HStack>
+
         <Tabs>
           <SearchBar
             py={4}
