@@ -1,14 +1,14 @@
-import * as React from "react";
-import { Table, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import * as React from 'react';
+import { chakra, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import {
-  useReactTable,
+  ColumnDef,
   flexRender,
   getCoreRowModel,
-  ColumnDef,
+  getSortedRowModel,
   SortingState,
-  getSortedRowModel
-} from "@tanstack/react-table";
+  useReactTable,
+} from '@tanstack/react-table';
 
 export type DataTableProps<Data extends object> = {
   data: Data[];
@@ -27,8 +27,8 @@ export function DataTable<Data extends object>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
-      sorting
-    }
+      sorting,
+    },
   });
 
   return (
@@ -67,7 +67,7 @@ export function DataTable<Data extends object>({
       </Thead>
       <Tbody>
         {table.getRowModel().rows.map((row) => (
-          <Tr key={row.id}>
+          <Tr key={row.id} bgColor={row.getIsSelected() ? 'blue.400': ''}>
             {row.getVisibleCells().map((cell) => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
               const meta: any = cell.column.columnDef.meta;
