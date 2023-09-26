@@ -2,7 +2,6 @@ import {
   Button,
   Checkbox,
   Container,
-  Editable,
   Heading,
   HStack,
   Menu,
@@ -21,6 +20,7 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '@/components/DataTable';
 import { ArrowForwardIcon, CheckCircleIcon, ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import Navbar from '@/components/Navbar';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export default function BulkEdit() {
   const router = useRouter();
@@ -63,17 +63,21 @@ export default function BulkEdit() {
       ),
       footer: props => props.column.id,
     },
-    columnHelper.accessor(row => `${row.user.rank} ${row.user.name}`, {
+    {
       header: 'User',
       id: 'user',
-    }),
-    columnHelper.accessor(row => `${row.availability.status}`, {
-      cell: props => (
-        <Editable>{`${props}`}</Editable>
-      ),
-      id: 'test',
-      header: 'jaklds',
-    }),
+      accessorFn: row => `${row.user.rank} ${row.user.name}`,
+    },
+    {
+      header: 'Status',
+      id: 'status',
+      accessorFn: row => row.availability.status,
+    },
+    {
+      header: 'Remarks',
+      id: 'remarks',
+      accessorFn: row => row.availability.absentEndDate || row.availability.dispatchLocation,
+    },
   ];
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
@@ -86,7 +90,11 @@ export default function BulkEdit() {
               With Selected
             </MenuButton>
             <MenuList>
-              <MenuItem icon={<CheckCircleIcon />}>Mark Present</MenuItem>
+              <MenuItem
+                icon={<CheckCircleIcon />}
+              >
+                Mark Present
+              </MenuItem>
               <MenuItem icon={<EditIcon />}>Set as...</MenuItem>
               <MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>
               <MenuItem icon={<DeleteIcon />}>Delete</MenuItem>
@@ -95,6 +103,7 @@ export default function BulkEdit() {
           <Button colorScheme='green'>Save</Button>
         </HStack>
         <DataTable data={paradeData.attendances} columns={columns} />
+        <ScrollToTop />
       </Stack>
     </Container>
   );
