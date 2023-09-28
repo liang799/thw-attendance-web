@@ -42,8 +42,9 @@ export default function BulkEdit() {
     const updatedList = selectedStringIndexes.map((stringIndex) => {
       console.log(`stringIndex: ${stringIndex}`);
       const index = parseInt(stringIndex);
-      if (!data) {
-        throw new Error('??????');
+      if (!data || !paradeData) {
+        toast({ description: "something went wrong"})
+        return;
       }
       const attendance = paradeData.attendances[index];
       let copy = JSON.parse(JSON.stringify(data));
