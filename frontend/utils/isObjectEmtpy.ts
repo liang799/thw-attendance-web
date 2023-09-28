@@ -1,4 +1,4 @@
-export const isObjectEmpty = (objectName) => {
+export const isObjectEmpty = (objectName: Object) => {
   return (
     objectName &&
     Object.keys(objectName).length === 0 &&
