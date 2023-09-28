@@ -42,6 +42,13 @@ export class AttendancesController {
     return this.attendancesService.update(+id, updateAttendanceDto);
   }
 
+  @Put()
+  bulkUpdate(
+    @Body() updateAttendanceDto: UpdateAttendanceDto[],
+  ) {
+    return this.attendancesService.bulkUpdate(updateAttendanceDto);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
