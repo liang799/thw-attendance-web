@@ -187,7 +187,7 @@ export default function ParadeIdPage() {
             size='sm'
             onClick={() => router.push(`/parade/${slug}/bulkedit`)}
           >
-            Bulk Edit
+            Bulk Edit (Beta)
           </Button>
         </HStack>
 
