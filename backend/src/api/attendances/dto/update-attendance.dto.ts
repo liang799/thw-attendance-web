@@ -10,4 +10,8 @@ export class UpdateAttendanceDto extends PartialType(CreateAttendanceDto) {
 
   @IsEnum(AttendanceStatus)
   availability: AttendanceStatus;
+
+  @IsInt()
+  @IsOptional()
+  id: number;
 }

@@ -9,23 +9,32 @@ import {
   MenuItem,
   MenuList,
   Stack,
-  useColorModeValue,
+  useColorModeValue, useToast,
 } from '@chakra-ui/react';
 import { ParadeData } from '@/utils/types/ParadeData';
 import { ApiClient } from '@/utils/axios';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { Attendance } from '@/utils/types/AttendanceData';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { useQuery, useQueryClient } from 'react-query';
+import { Attendance, CreateAttendanceData } from '@/utils/types/AttendanceData';
+import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/DataTable';
 import { ArrowForwardIcon, CheckCircleIcon, ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import Navbar from '@/components/Navbar';
 import ScrollToTop from '@/components/ScrollToTop';
+import { useEffect, useState } from 'react';
+import { attendanceOptions } from '@/config/attendanceOptions';
 
 export default function BulkEdit() {
   const router = useRouter();
   const { slug } = router.query;
   const bgColor = useColorModeValue('gray.50', 'gray.800');
+  const [rowSelection, setRowSelection] = useState({})
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  useEffect(() => {
+    console.log(rowSelection)
+  }, [rowSelection])
 
   const { data: paradeData, isError, isLoading } = useQuery<ParadeData>(`Get Parade ${slug}`,
     () => {
@@ -39,7 +48,6 @@ export default function BulkEdit() {
   if (isError) return <Heading>Error</Heading>;
   if (isLoading || !slug || !paradeData) return <Heading>Loading</Heading>;
 
-  const columnHelper = createColumnHelper<Attendance>();
   const columns: ColumnDef<Attendance>[] = [
     {
       id: 'select',
@@ -79,6 +87,42 @@ export default function BulkEdit() {
       accessorFn: row => row.availability.absentEndDate || row.availability.dispatchLocation,
     },
   ];
+
+  async function markSelectedAsPresent(paradeData: ParadeData) {
+    const selectedAttendancesIndexes = Object.keys(rowSelection) as number[];
+    const updatedList = selectedAttendancesIndexes.map((index) => {
+      const attendance = paradeData.attendances[index];
+      // let data: CreateAttendanceData;
+      const present = attendanceOptions.find(option => option.status === "Present")
+      const data: CreateAttendanceData = {
+        id: attendance.id,
+        user: attendance.user.id,
+        availability: present.availability,
+        status: present.status,
+      };
+      return data;
+    });
+    try {
+      await ApiClient.put(`/attendances`, updatedList);
+      await queryClient.invalidateQueries();
+      toast({
+        title: "Successful",
+        description: "Updated Attendances",
+        status: "success",
+        duration: 5000,
+        isClosable: true
+      });
+    } catch (e) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      });
+    }
+  }
+
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
@@ -90,9 +134,7 @@ export default function BulkEdit() {
               With Selected
             </MenuButton>
             <MenuList>
-              <MenuItem
-                icon={<CheckCircleIcon />}
-              >
+              <MenuItem icon={<CheckCircleIcon />} onClick={() => markSelectedAsPresent(paradeData)}>
                 Mark Present
               </MenuItem>
               <MenuItem icon={<EditIcon />}>Set as...</MenuItem>
@@ -102,7 +144,12 @@ export default function BulkEdit() {
           </Menu>
           <Button colorScheme='green'>Save</Button>
         </HStack>
-        <DataTable data={paradeData.attendances} columns={columns} />
+        <DataTable
+          data={paradeData.attendances}
+          columns={columns}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+        />
         <ScrollToTop />
       </Stack>
     </Container>
