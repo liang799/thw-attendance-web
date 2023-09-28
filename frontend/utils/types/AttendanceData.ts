@@ -7,6 +7,7 @@ export type CreateAttendanceData = {
   absentEndDate?: Date,
   user: number,
   location?: string,
+  id?: number,
 }
 
 export type GetAttendanceData = {
