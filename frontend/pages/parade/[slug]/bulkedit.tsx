@@ -38,6 +38,7 @@ export default function BulkEdit() {
   const toast = useToast();
 
   useEffect(() => {
+    if (isObjectEmpty(rowSelection)) return;
     const selectedStringIndexes = Object.keys(rowSelection);
     const updatedList = selectedStringIndexes.map((stringIndex) => {
       console.log(`stringIndex: ${stringIndex}`);
