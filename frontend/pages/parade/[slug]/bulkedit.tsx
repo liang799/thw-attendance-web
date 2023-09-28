@@ -19,23 +19,60 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Attendance, CreateAttendanceData } from '@/utils/types/AttendanceData';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/DataTable';
-import { ArrowForwardIcon, CheckCircleIcon, ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, ChevronDownIcon, EditIcon } from '@chakra-ui/icons';
 import Navbar from '@/components/Navbar';
 import ScrollToTop from '@/components/ScrollToTop';
 import { useEffect, useState } from 'react';
 import { attendanceOptions } from '@/config/attendanceOptions';
+import BulkEditAttendanceModal from '@/components/bulkedit/AttendanceModal';
+import { isObjectEmpty } from '@/utils/isObjectEmtpy';
 
 export default function BulkEdit() {
   const router = useRouter();
   const { slug } = router.query;
   const bgColor = useColorModeValue('gray.50', 'gray.800');
-  const [rowSelection, setRowSelection] = useState({})
+  const [rowSelection, setRowSelection] = useState({});
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [data, setData] = useState<CreateAttendanceData>();
   const queryClient = useQueryClient();
   const toast = useToast();
 
   useEffect(() => {
-    console.log(rowSelection)
-  }, [rowSelection])
+    const selectedStringIndexes = Object.keys(rowSelection);
+    const updatedList = selectedStringIndexes.map((stringIndex) => {
+      console.log(`stringIndex: ${stringIndex}`);
+      const index = parseInt(stringIndex);
+      if (!data) {
+        throw new Error('??????');
+      }
+      const attendance = paradeData.attendances[index];
+      let copy = JSON.parse(JSON.stringify(data));
+      copy.id = attendance.id;
+      copy.user = attendance.user.id;
+      return copy;
+    });
+    console.log(updatedList);
+    ApiClient.put(`/attendances`, updatedList)
+      .then(() => queryClient.invalidateQueries())
+      .then(() => {
+        toast({
+          title: 'Successful',
+          description: 'Updated Attendances',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch(e => {
+        toast({
+          title: 'Error',
+          description: 'Something went wrong',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }, [data]);
 
   const { data: paradeData, isError, isLoading } = useQuery<ParadeData>(`Get Parade ${slug}`,
     () => {
@@ -90,6 +127,16 @@ export default function BulkEdit() {
   ];
 
   async function markSelectedAsPresent(paradeData: ParadeData) {
+    if (isObjectEmpty(rowSelection)) {
+      toast({
+        title: 'Invalid target(s)',
+        description: 'Please select users',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     const selectedStringIndexes = Object.keys(rowSelection);
     const updatedList = selectedStringIndexes.map((stringIndex) => {
       const index = parseInt(stringIndex);
@@ -116,13 +163,27 @@ export default function BulkEdit() {
       });
     } catch (e) {
       toast({
-        title: "Error",
-        description: "Something went wrong",
-        status: "error",
+        title: 'Error',
+        description: 'Something went wrong',
+        status: 'error',
         duration: 5000,
-        isClosable: true
+        isClosable: true,
       });
     }
+  }
+
+  async function bulkEditAttendance(paradeData: ParadeData) {
+    if (isObjectEmpty(rowSelection)) {
+      toast({
+        title: 'Invalid target(s)',
+        description: 'Please select users',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    setShowModal(true);
   }
 
   return (
@@ -130,6 +191,7 @@ export default function BulkEdit() {
       <Navbar />
       <Stack>
         <Heading pt={4} px={4}>Bulk Edit</Heading>
+        <BulkEditAttendanceModal showModal={showModal} setShowModal={setShowModal} setData={setData} />
         <HStack px={4} pb={2}>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -139,12 +201,14 @@ export default function BulkEdit() {
               <MenuItem icon={<CheckCircleIcon />} onClick={() => markSelectedAsPresent(paradeData)}>
                 Mark Present
               </MenuItem>
-              <MenuItem icon={<EditIcon />}>Set as...</MenuItem>
-              <MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>
-              <MenuItem icon={<DeleteIcon />}>Delete</MenuItem>
+              <MenuItem icon={<EditIcon />} onClick={() => bulkEditAttendance(paradeData)}>
+                Set as...
+              </MenuItem>
+              {/*<MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>*/}
+              {/*<MenuItem icon={<DeleteIcon />}>Delete</MenuItem>*/}
             </MenuList>
           </Menu>
-          <Button colorScheme='green'>Save</Button>
+          {/*<Button colorScheme='green'>Save</Button>*/}
         </HStack>
         <DataTable
           data={paradeData.attendances}
