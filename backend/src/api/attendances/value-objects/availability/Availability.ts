@@ -14,13 +14,13 @@ export class Availability {
   type!: AvailabilityType;
 
   @Property({ nullable: true })
-  dispatchLocation?: string;
+  dispatchLocation: string = null;
 
   @Property({ nullable: true })
-  absentStartDate?: Date;
+  absentStartDate: Date = null;
 
   @Property({ nullable: true })
-  absentEndDate?: Date;
+  absentEndDate: Date = null;
 
   static willBeInCamp(status: string) {
     const availability = new Availability();

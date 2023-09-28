@@ -7,6 +7,7 @@ import { UsersService } from '../users/users.service';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { Attendance } from './entities/attendance.entity';
 import AvailabilityFactory from './value-objects/availability/AvailabilityFactory';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AttendancesService {
@@ -67,6 +68,20 @@ export class AttendancesService {
     await this.em.flush();
     return attendance;
   }
+
+  @UseRequestContext()
+  async bulkUpdate(dtos: UpdateAttendanceDto[]) {
+    const factory = new AvailabilityFactory();
+    const attendances = dtos.map((dto) => {
+      const attendance = new Attendance();
+      attendance.id = dto.id;
+      attendance.availability = factory.createAvailability(dto);
+      attendance.user = this.em.getReference(User, dto.user, { wrapped: true });
+      return attendance;
+    });
+    return this.repository.upsertMany(attendances);
+  }
+
 
   @UseRequestContext()
   async remove(id: number): Promise<void> {
