@@ -9,7 +9,8 @@ import {
   MenuItem,
   MenuList,
   Stack,
-  useColorModeValue, useToast,
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { ParadeData } from '@/utils/types/ParadeData';
 import { ApiClient } from '@/utils/axios';
@@ -89,11 +90,12 @@ export default function BulkEdit() {
   ];
 
   async function markSelectedAsPresent(paradeData: ParadeData) {
-    const selectedAttendancesIndexes = Object.keys(rowSelection) as number[];
-    const updatedList = selectedAttendancesIndexes.map((index) => {
+    const selectedStringIndexes = Object.keys(rowSelection);
+    const updatedList = selectedStringIndexes.map((stringIndex) => {
+      const index = parseInt(stringIndex);
       const attendance = paradeData.attendances[index];
-      // let data: CreateAttendanceData;
-      const present = attendanceOptions.find(option => option.status === "Present")
+      const present = attendanceOptions.find(option => option.status === 'Present');
+      if (!present) throw new Error('Please fix attendance config file!');
       const data: CreateAttendanceData = {
         id: attendance.id,
         user: attendance.user.id,
