@@ -102,7 +102,7 @@ export default function EditUserPage() {
   }
 
   return (
-    <Container p={4} maxW='container.xl' minH='100vh' bg={useColorModeValue('gray.50', 'gray.800')}>
+    <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
       <Stack p={5}>
         <Heading pb={4}>Personal Info</Heading>
