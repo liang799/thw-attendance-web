@@ -133,6 +133,7 @@ export default function ParadeIdPage() {
       <AttendanceModal
         attendanceId={attendance?.id}
         person={attendance?.user.name}
+        personId={attendance?.user.id}
         showModal={showModal}
         setShowModal={setShowModal}
       />

@@ -5,6 +5,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -25,6 +26,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
+import NextLink from 'next/link';
 
 
 type setterFunction = (showModal: boolean) => void;
@@ -33,10 +35,17 @@ type AttendanceModalProps = {
   attendanceId?: number | undefined,
   person?: string | undefined,
   showModal: boolean,
-  setShowModal: setterFunction
+  setShowModal: setterFunction,
+  personId?: number | undefined,
 }
 
-export default function AttendanceModal({ attendanceId, person, showModal, setShowModal }: AttendanceModalProps) {
+export default function AttendanceModal({
+                                          attendanceId,
+                                          person,
+                                          showModal,
+                                          setShowModal,
+                                          personId,
+                                        }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
@@ -130,7 +139,12 @@ export default function AttendanceModal({ attendanceId, person, showModal, setSh
     <Modal finalFocusRef={finalRef} isOpen={showModal} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit Attendance for {person}</ModalHeader>
+        <ModalHeader>
+          Edit Attendance for {' '}
+          <Link as={NextLink} color='teal.500' href={`/user/${personId}`}>
+            {person}
+          </Link>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form>
