@@ -30,7 +30,7 @@ import * as yup from 'yup';
 
 const schema = yup.object({
   userType: yup.string().required(),
-  hasLeftNode: yup.boolean(),
+  hasLeftNode: yup.boolean().required(),
 });
 
 export type FormData = {
@@ -57,27 +57,28 @@ export default function EditUserPage() {
     },
   );
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      const updateData = { hasLeftNode: data.hasLeftNode, type: data.userType };
-      await ApiClient.patch(`/users/${slug}`, updateData);
-      await queryClient.invalidateQueries();
-      toast({
-        title: 'Success',
-        description: 'Updated Personal Info',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
+  const onSubmit = (data: FormData) => {
+    const updateData = { hasLeftNode: data.hasLeftNode, type: data.userType };
+    ApiClient.patch(`/users/${slug}`, updateData)
+      .then(() => queryClient.invalidateQueries())
+      .then(() => {
+        toast({
+          title: 'Success',
+          description: 'Updated Personal Info',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error: any) => {
+        toast({
+          title: error.name,
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
       });
-    } catch (error: any) {
-      toast({
-        title: error.name,
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
   };
 
   if (isLoading || !slug || !userInfo) {
