@@ -75,7 +75,7 @@ export default function ParadeIndexPage() {
         <Link href={`/parade/${data.id}`} as={NextLink}>
           <HorizontalCard>
             <CardBody>
-              <Heading size='md'>Overview</Heading>
+              <Heading size='md'>Parade Overview</Heading>
             </CardBody>
           </HorizontalCard>
         </Link>
