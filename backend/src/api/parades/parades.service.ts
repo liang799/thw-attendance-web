@@ -58,7 +58,6 @@ export class ParadesService {
       })
       .forEach(async (user) => {
         const attendance = user.createBlankTemplateAttendance(parade);
-        attendance.user = user;
         await this.em.persist(attendance);
       });
 

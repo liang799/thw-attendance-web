@@ -80,6 +80,14 @@ export default function ParadeIndexPage() {
           </HorizontalCard>
         </Link>
 
+        <Link href={`/user/create`} as={NextLink}>
+          <HorizontalCard>
+            <CardBody>
+              <Heading size='md'>Create User</Heading>
+            </CardBody>
+          </HorizontalCard>
+        </Link>
+
       </Stack>
     </Container>
   );

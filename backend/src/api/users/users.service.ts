@@ -9,6 +9,7 @@ import {
 } from '@mikro-orm/core';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repostiory';
+import { Parade } from '../parades/entities/parade.entity';
 
 @Injectable()
 export class UsersService {
@@ -16,15 +17,22 @@ export class UsersService {
     private readonly repository: UserRepository,
     private readonly orm: MikroORM,
     private readonly em: EntityManager,
-  ) {}
+  ) { }
 
   @UseRequestContext()
-  create(dto: CreateUserDto) {
-    const entity = new User();
-    entity.rank = dto.rank;
-    entity.name = dto.name;
-    entity.type = dto.type;
-    return this.em.persistAndFlush(entity);
+  async create(dto: CreateUserDto) {
+    const user = new User();
+    user.rank = dto.rank;
+    user.name = dto.name;
+    user.type = dto.type;
+    await this.em.persist(user);
+
+    const prevParade = await this.em.findOne(Parade, { endDate: null })
+    if (prevParade) {
+      const attendance = user.createBlankTemplateAttendance(prevParade);
+      await this.em.persist(attendance);
+    }
+    return this.em.flush();
   }
 
   @UseRequestContext()
