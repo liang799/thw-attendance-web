@@ -36,50 +36,49 @@ export class ParadesService {
     );
 
 
-    if (prevParade) {
-      const attendances = prevParade.attendances
-        .filter(prevAttendance => !prevAttendance.user.hasLeftNode)
-
+    if (!prevParade) {
       const users = await this.em.find(User, { hasLeftNode: false });
-      users
-        .filter(user => {
-          const hasUser = attendances.some(prevAttendance => prevAttendance.user.id === user.id);
-          const isNewUser = !hasUser;
-          return isNewUser;
-        })
-        .forEach(async (user) => {
-          const attendance = user.createBlankTemplateAttendance(parade);
-          attendance.user = user;
-          await this.em.persist(attendance);
-        });
-
-      attendances.forEach(async (prevAttendance) => {
-        const absentEndDate = prevAttendance.availability.absentEndDate;
-        const paradeDate = DateTime.fromISO(dto.startDate);
-        const endDate = DateTime.fromJSDate(absentEndDate);
-        if (!absentEndDate || endDate < paradeDate) {
-          const user = prevAttendance.user;
-          const attendance = user.createBlankTemplateAttendance(parade);
-          await this.em.persist(attendance);
-          return;
-        }
-        const attendance = new Attendance();
-        attendance.availability = prevAttendance.availability;
-        attendance.parade = parade;
-        attendance.user = prevAttendance.user;
+      if (!users) return this.em.persistAndFlush(parade);
+      for (const user of users) {
+        const attendance = user.createBlankTemplateAttendance(parade);
         await this.em.persist(attendance);
-      });
-
+      }
       return this.em.flush();
     }
 
-    const users = await this.em.find(User, {});
-    if (!users) return this.em.persistAndFlush(parade);
-    for (const user of users) {
-      if (user.hasLeftNode) continue;
-      const attendance = user.createBlankTemplateAttendance(parade);
+    const attendances = prevParade.attendances
+      .filter(prevAttendance => !prevAttendance.user.hasLeftNode)
+
+    const users = await this.em.find(User, { hasLeftNode: false });
+    users
+      .filter(user => {
+        const hasUser = attendances.some(prevAttendance => prevAttendance.user.id === user.id);
+        const isNewUser = !hasUser;
+        return isNewUser;
+      })
+      .forEach(async (user) => {
+        const attendance = user.createBlankTemplateAttendance(parade);
+        attendance.user = user;
+        await this.em.persist(attendance);
+      });
+
+    attendances.forEach(async (prevAttendance) => {
+      const absentEndDate = prevAttendance.availability.absentEndDate;
+      const paradeDate = DateTime.fromISO(dto.startDate);
+      const endDate = DateTime.fromJSDate(absentEndDate);
+      if (!absentEndDate || endDate < paradeDate) {
+        const user = prevAttendance.user;
+        const attendance = user.createBlankTemplateAttendance(parade);
+        await this.em.persist(attendance);
+        return;
+      }
+      const attendance = new Attendance();
+      attendance.availability = prevAttendance.availability;
+      attendance.parade = parade;
+      attendance.user = prevAttendance.user;
       await this.em.persist(attendance);
-    }
+    });
+
     return this.em.flush();
   }
 
