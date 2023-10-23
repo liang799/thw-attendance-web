@@ -50,7 +50,7 @@ export default function ParadeIndexPage() {
             New Parade
           </Button>
 
-          <ParadeHistory/>
+          <ParadeHistory />
 
         </Stack>
       </Container>
@@ -87,7 +87,6 @@ export default function ParadeIndexPage() {
             </CardBody>
           </HorizontalCard>
         </Link>
-
       </Stack>
     </Container>
   );

@@ -7,10 +7,13 @@ import {
   FormLabel,
   Heading,
   Input,
+  Link,
+  Text,
   Stack,
   useColorModeValue,
   useToast
 } from "@chakra-ui/react";
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
@@ -84,6 +87,9 @@ export default function LoginPage() {
             </Button>
           </form>
         </Stack>
+        <Link mt={5} href='https://thw-excel-generator.vercel.app/' isExternal>
+          Related - Telegram Parade States to Excel <ExternalLinkIcon mx='2px' />
+        </Link>
       </Flex>
     </Container>
   );
