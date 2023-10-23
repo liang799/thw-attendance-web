@@ -9,6 +9,7 @@ import { User } from '../users/entities/user.entity';
 import { EntityManager } from '@mikro-orm/mysql';
 import { Attendance } from '../attendances/entities/attendance.entity';
 import { DateTime } from 'luxon';
+import { Availability } from '../attendances/value-objects/availability/Availability';
 
 @Injectable()
 export class ParadesService {
@@ -16,7 +17,7 @@ export class ParadesService {
     private readonly repository: ParadeRepository,
     private readonly orm: MikroORM,
     private readonly em: EntityManager,
-  ) {}
+  ) { }
 
   @UseRequestContext()
   async create(dto: CreateParadeDto) {
@@ -36,9 +37,23 @@ export class ParadesService {
 
 
     if (prevParade) {
-      const attendances = prevParade.attendances.getItems();
-      for (const prevAttendance of attendances) {
-        if (prevAttendance.user.hasLeftNode) continue;
+      const attendances = prevParade.attendances
+        .filter(prevAttendance => !prevAttendance.user.hasLeftNode)
+
+      const users = await this.em.find(User, { hasLeftNode: false });
+      users
+        .filter(user => {
+          const hasUser = attendances.some(prevAttendance => prevAttendance.user.id === user.id);
+          const isNewUser = !hasUser;
+          return isNewUser;
+        })
+        .forEach(async (user) => {
+          const attendance = user.createBlankTemplateAttendance(parade);
+          attendance.user = user;
+          await this.em.persist(attendance);
+        });
+
+      attendances.forEach(async (prevAttendance) => {
         const absentEndDate = prevAttendance.availability.absentEndDate;
         const paradeDate = DateTime.fromISO(dto.startDate);
         const endDate = DateTime.fromJSDate(absentEndDate);
@@ -46,14 +61,15 @@ export class ParadesService {
           const user = prevAttendance.user;
           const attendance = user.createBlankTemplateAttendance(parade);
           await this.em.persist(attendance);
-          continue;
+          return;
         }
         const attendance = new Attendance();
         attendance.availability = prevAttendance.availability;
         attendance.parade = parade;
         attendance.user = prevAttendance.user;
         await this.em.persist(attendance);
-      }
+      });
+
       return this.em.flush();
     }
 
