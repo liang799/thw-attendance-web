@@ -27,6 +27,7 @@ import { attendanceOptions } from '@/config/attendanceOptions';
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
 import NextLink from 'next/link';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 
 type setterFunction = (showModal: boolean) => void;
@@ -142,7 +143,7 @@ export default function AttendanceModal({
         <ModalHeader>
           Edit Attendance for {' '}
           <Link as={NextLink} color='teal.500' href={`/user/${personId}`}>
-            {person}
+            {person} <ExternalLinkIcon mx='2px' />
           </Link>
         </ModalHeader>
         <ModalCloseButton />
