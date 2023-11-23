@@ -14,7 +14,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Skeleton,
   Text,
   useToast,
 } from '@chakra-ui/react';
@@ -22,26 +21,20 @@ import { RangeDatepicker } from 'chakra-dayzed-datepicker';
 import { Attendance, CreateAttendanceData } from '@/utils/types/AttendanceData';
 import { getUserId } from '@/utils/auth';
 import { ApiClient } from '@/utils/axios';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
 import NextLink from 'next/link';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { ParadeIdPageStatus } from '@/pages/parade/[slug]';
 
 
 type AttendanceModalProps = {
   attendance: Attendance | null,
-  showModal: boolean,
-  setPageStatus: (status: ParadeIdPageStatus) => void,
+  handleClose: () => void,
 }
 
-export default function AttendanceModal({
-  attendance,
-  showModal,
-  setPageStatus,
-}: AttendanceModalProps) {
+export default function AttendanceModal({ attendance, handleClose }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
@@ -50,15 +43,6 @@ export default function AttendanceModal({
   const finalRef = useRef(null);
   const queryClient = useQueryClient();
   const toast = useToast();
-
-  const handleClose = () => {
-    // setSelectedIndex(0);
-    // setDispatchLocation('');
-    // setHasMcDates(false);
-    // setHasDispatchLocation(false);
-    // setSelectedDates([new Date(), new Date()])
-    setPageStatus(ParadeIdPageStatus.IDLE);
-  };
 
   const onSubmit = async () => {
     let data: CreateAttendanceData;
@@ -87,7 +71,6 @@ export default function AttendanceModal({
 
     try {
       await ApiClient.put(`/attendances/${attendance?.id}`, data);
-      await queryClient.invalidateQueries();
       toast({
         title: "Successful",
         description: "You have submitted your attendance",
@@ -95,6 +78,7 @@ export default function AttendanceModal({
         duration: 5000,
         isClosable: true
       });
+      await queryClient.invalidateQueries();
     } catch (error: any) {
       toast({
         title: error.name,
@@ -125,7 +109,7 @@ export default function AttendanceModal({
   }
 
   return (
-    <Modal finalFocusRef={finalRef} isOpen={showModal} onClose={handleClose}>
+    <Modal finalFocusRef={finalRef} isOpen={true} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -171,8 +155,9 @@ export default function AttendanceModal({
 
         <ModalFooter>
           <Text>
+            {/* Might be outdated */}
             Last Known:
-            <AttendanceBadge attendance={attendance} />
+            <AttendanceBadge attendance={attendance} /> 
           </Text>
         </ModalFooter>
       </ModalContent>

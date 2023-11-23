@@ -36,7 +36,7 @@ import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 
 
-export enum ParadeIdPageStatus {
+enum PageStatus {
   IDLE,         // Default
   BULK_EDITING, // TODO
   EDITING       // Show Edit Modal
@@ -46,7 +46,7 @@ export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [searchText, setSearchText] = useState<string>('');
-  const [pageStatus, setPageStatus] = useState<ParadeIdPageStatus>(ParadeIdPageStatus.IDLE);
+  const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.IDLE);
   const router = useRouter();
   const { slug } = router.query;
   const { onCopy, hasCopied, setValue: setClipboardText } = useClipboard('');
@@ -77,7 +77,7 @@ export default function ParadeIdPage() {
 
   const handleClick = (attendance: Attendance) => {
     setAttendance(attendance);
-    setPageStatus(ParadeIdPageStatus.EDITING);
+    setPageStatus(PageStatus.EDITING);
   };
 
   const copyToClipboard = (data: ParadeData) => {
@@ -136,10 +136,9 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      {pageStatus === ParadeIdPageStatus.EDITING && <AttendanceModal
+      {pageStatus === PageStatus.EDITING && <AttendanceModal
         attendance={attendance}
-        showModal={true}
-        setPageStatus={setPageStatus}
+        handleClose={() => setPageStatus(PageStatus.IDLE)}
       />}
 
       <Stack p={4} spacing={4}>
