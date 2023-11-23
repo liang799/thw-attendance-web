@@ -59,11 +59,11 @@ export default function ParadeIdPage() {
       return ApiClient.get(`/parades/${slug}`)
         .then(res => res.data);
     }, {
-      onSuccess: data => {
-        setClipboardText(generateParadeText(data));
-      },
-      enabled: !!slug,
+    onSuccess: data => {
+      setClipboardText(generateParadeText(data));
     },
+    enabled: !!slug,
+  },
   );
 
   if (isError) {
@@ -126,7 +126,7 @@ export default function ParadeIdPage() {
         <AttendanceCard
           key={attendance.id}
           attendance={attendance}
-          handleClick={handleClick}
+          handleClick={() => handleClick(attendance)}
         />
       ));
   };
@@ -136,13 +136,11 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      <AttendanceModal
-        attendanceId={attendance?.id}
-        person={attendance?.user.name}
-        personId={attendance?.user.id}
-        showModal={pageStatus === ParadeIdPageStatus.EDITING}
+      {pageStatus === ParadeIdPageStatus.EDITING && <AttendanceModal
+        attendance={attendance}
+        showModal={true}
         setPageStatus={setPageStatus}
-      />
+      />}
 
       <Stack p={4} spacing={4}>
         <Heading pt={4}>Parade State Summary</Heading>

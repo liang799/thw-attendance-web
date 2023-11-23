@@ -32,20 +32,16 @@ import { ParadeIdPageStatus } from '@/pages/parade/[slug]';
 
 
 type AttendanceModalProps = {
-  attendanceId?: number | undefined,
-  person?: string | undefined,
+  attendance: Attendance | null,
   showModal: boolean,
   setPageStatus: (status: ParadeIdPageStatus) => void,
-  personId?: number | undefined,
 }
 
 export default function AttendanceModal({
-                                          attendanceId,
-                                          person,
-                                          showModal,
-                                          setPageStatus,
-                                          personId,
-                                        }: AttendanceModalProps) {
+  attendance,
+  showModal,
+  setPageStatus,
+}: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hasMcDates, setHasMcDates] = useState(false);
   const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
@@ -55,19 +51,12 @@ export default function AttendanceModal({
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const { data, isLoading } = useQuery<Attendance>(`Get Attendance ${attendanceId}`,
-    () => {
-      return ApiClient.get(`/attendances/${attendanceId}`)
-        .then(res => res.data);
-    }, { enabled: showModal },
-  );
-
   const handleClose = () => {
-    setSelectedIndex(0);
-    setDispatchLocation('');
-    setHasMcDates(false);
-    setHasDispatchLocation(false);
-    setSelectedDates([new Date(), new Date()])
+    // setSelectedIndex(0);
+    // setDispatchLocation('');
+    // setHasMcDates(false);
+    // setHasDispatchLocation(false);
+    // setSelectedDates([new Date(), new Date()])
     setPageStatus(ParadeIdPageStatus.IDLE);
   };
 
@@ -97,7 +86,7 @@ export default function AttendanceModal({
     }
 
     try {
-      await ApiClient.put(`/attendances/${attendanceId}`, data);
+      await ApiClient.put(`/attendances/${attendance?.id}`, data);
       await queryClient.invalidateQueries();
       toast({
         title: "Successful",
@@ -141,8 +130,8 @@ export default function AttendanceModal({
       <ModalContent>
         <ModalHeader>
           Edit Attendance for {' '}
-          <Link as={NextLink} color='teal.500' href={`/user/${personId}`}>
-            {person} <ExternalLinkIcon mx='2px' />
+          <Link as={NextLink} color='teal.500' href={`/user/${attendance?.user.id}`}>
+            {attendance?.user.name} <ExternalLinkIcon mx='2px' />
           </Link>
         </ModalHeader>
         <ModalCloseButton />
@@ -175,18 +164,16 @@ export default function AttendanceModal({
               <Button colorScheme='teal' onClick={onSubmit}>
                 Submit
               </Button>
-              <DeleteAttendanceButton attendanceId={attendanceId} handleClose={handleClose}/>
+              <DeleteAttendanceButton attendanceId={attendance?.id} handleClose={handleClose} />
             </HStack>
           </form>
         </ModalBody>
 
         <ModalFooter>
-          <Skeleton isLoaded={!isLoading}>
-            <Text>
-              Last Known:
-              <AttendanceBadge attendance={data} />
-            </Text>
-          </Skeleton>
+          <Text>
+            Last Known:
+            <AttendanceBadge attendance={attendance} />
+          </Text>
         </ModalFooter>
       </ModalContent>
     </Modal>
