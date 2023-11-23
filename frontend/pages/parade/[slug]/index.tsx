@@ -36,11 +36,17 @@ import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 
 
+export enum ParadeIdPageStatus {
+  IDLE,         // Default
+  BULK_EDITING, // TODO
+  EDITING       // Show Edit Modal
+}
+
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [searchText, setSearchText] = useState<string>('');
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [pageStatus, setPageStatus] = useState<ParadeIdPageStatus>(ParadeIdPageStatus.IDLE);
   const router = useRouter();
   const { slug } = router.query;
   const { onCopy, hasCopied, setValue: setClipboardText } = useClipboard('');
@@ -71,7 +77,7 @@ export default function ParadeIdPage() {
 
   const handleClick = (attendance: Attendance) => {
     setAttendance(attendance);
-    setShowModal(true);
+    setPageStatus(ParadeIdPageStatus.EDITING);
   };
 
   const copyToClipboard = (data: ParadeData) => {
@@ -134,8 +140,8 @@ export default function ParadeIdPage() {
         attendanceId={attendance?.id}
         person={attendance?.user.name}
         personId={attendance?.user.id}
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showModal={pageStatus === ParadeIdPageStatus.EDITING}
+        setPageStatus={setPageStatus}
       />
 
       <Stack p={4} spacing={4}>

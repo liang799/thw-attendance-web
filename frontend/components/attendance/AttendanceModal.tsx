@@ -28,15 +28,14 @@ import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
 import NextLink from 'next/link';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { ParadeIdPageStatus } from '@/pages/parade/[slug]';
 
-
-type setterFunction = (showModal: boolean) => void;
 
 type AttendanceModalProps = {
   attendanceId?: number | undefined,
   person?: string | undefined,
   showModal: boolean,
-  setShowModal: setterFunction,
+  setPageStatus: (status: ParadeIdPageStatus) => void,
   personId?: number | undefined,
 }
 
@@ -44,7 +43,7 @@ export default function AttendanceModal({
                                           attendanceId,
                                           person,
                                           showModal,
-                                          setShowModal,
+                                          setPageStatus,
                                           personId,
                                         }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -69,7 +68,7 @@ export default function AttendanceModal({
     setHasMcDates(false);
     setHasDispatchLocation(false);
     setSelectedDates([new Date(), new Date()])
-    setShowModal(false);
+    setPageStatus(ParadeIdPageStatus.IDLE);
   };
 
   const onSubmit = async () => {
