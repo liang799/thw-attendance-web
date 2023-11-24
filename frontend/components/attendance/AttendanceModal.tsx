@@ -117,6 +117,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
       setUiStatus(UiStatus.INPUTTING_DISPATCH_LOC)
       return;
     }
+    setUiStatus(UiStatus.SELECTING_DROPDOWN)
   }
 
   return (
