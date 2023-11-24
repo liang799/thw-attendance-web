@@ -73,6 +73,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
           absentEndDate: selectedDates[1],
           user: getUserId()
         };
+        break;
       default:
         data = {
           availability: attendanceOptions[selectedIndex].availability,
@@ -110,14 +111,19 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
     setSelectedIndex(value);
 
     if (attendanceOptions[value].availability === "Absent") {
-      setUiStatus(UiStatus.INPUTTING_MC_DATES)
+      setUiStatus(UiStatus.INPUTTING_MC_DATES);
       return;
     }
     if (attendanceOptions[value].availability === "Dispatch") {
-      setUiStatus(UiStatus.INPUTTING_DISPATCH_LOC)
+      setUiStatus(UiStatus.INPUTTING_DISPATCH_LOC);
       return;
     }
-    setUiStatus(UiStatus.SELECTING_DROPDOWN)
+    setUiStatus(UiStatus.SELECTING_DROPDOWN);
+  }
+
+  if (uiStatus === UiStatus.SUCCESS || uiStatus === UiStatus.ERROR) {
+    handleClose();
+    return <></>;
   }
 
   return (
@@ -168,22 +174,10 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
         </ModalBody>
 
         <ModalFooter>
-          {uiStatus !== UiStatus.SUCCESS && uiStatus !== UiStatus.ERROR &&
-            <Text>
-              Last Known:
-              <AttendanceBadge attendance={attendance} />
-            </Text>
-          }
-          {uiStatus === UiStatus.SUCCESS &&
-            <Text>
-              <Badge colorScheme='green'>Update: Success</Badge>
-            </Text>
-          }
-          {uiStatus === UiStatus.ERROR &&
-            <Text>
-              <Badge colorScheme='red'>Update: Failure</Badge>
-            </Text>
-          }
+          <Text>
+            Last Known:
+            <AttendanceBadge attendance={attendance} />
+          </Text>
         </ModalFooter>
       </ModalContent>
     </Modal>
