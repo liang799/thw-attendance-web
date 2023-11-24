@@ -14,6 +14,8 @@ type AttendanceCardProps = {
 
 export default function AttendanceCard({ attendance, isBulkEditing, handleClick, ...props }: AttendanceCardProps) {
   const [isChecked, setChecked] = useState(false);
+  const checkedBackgroundColor = useColorModeValue('blue.100', 'blue.700');
+  const backgroundColor = useColorModeValue('white', 'gray.700');
 
   const handleCardClick = () => {
     if (isBulkEditing) {
@@ -25,7 +27,7 @@ export default function AttendanceCard({ attendance, isBulkEditing, handleClick,
   return (
     <Card
       direction={{ base: 'column', sm: 'row' }}
-      bg={isChecked ? useColorModeValue('blue.100', 'blue.700') : useColorModeValue('white', 'gray.700')}
+      bg={isChecked ? checkedBackgroundColor : backgroundColor}
       overflow='hidden'
       variant='outline'
       onClick={handleCardClick}
