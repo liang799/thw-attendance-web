@@ -19,8 +19,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
-import { Attendance, CreateAttendanceData } from '@/utils/types/AttendanceData';
-import { getUserId } from '@/utils/auth';
+import { Attendance, UpdateAttendanceData } from '@/utils/types/AttendanceData';
 import { ApiClient } from '@/utils/axios';
 import { useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
@@ -55,14 +54,13 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
 
   const onSubmit = async () => {
     setUiStatus(UiStatus.SUBMITTING);
-    let data: CreateAttendanceData;
+    let data: UpdateAttendanceData;
     switch (uiStatus) {
       case UiStatus.INPUTTING_DISPATCH_LOC:
         data = {
           availability: attendanceOptions[selectedIndex].availability,
           status: attendanceOptions[selectedIndex].status,
           location: dispatchLocation,
-          user: getUserId()
         };
         break;
       case UiStatus.INPUTTING_MC_DATES:
@@ -71,14 +69,12 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
           status: attendanceOptions[selectedIndex].status,
           absentStartDate: selectedDates[0],
           absentEndDate: selectedDates[1],
-          user: getUserId()
         };
         break;
       default:
         data = {
           availability: attendanceOptions[selectedIndex].availability,
           status: attendanceOptions[selectedIndex].status,
-          user: getUserId()
         };
         break;
     }
