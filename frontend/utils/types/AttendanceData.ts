@@ -10,6 +10,15 @@ export type CreateAttendanceData = {
   id?: number,
 }
 
+export type UpdateAttendanceData = {
+  availability: string,
+  status: string,
+  absentStartDate?: Date,
+  absentEndDate?: Date,
+  location?: string,
+  id?: number,
+}
+
 export type GetAttendanceData = {
   type: string,
   status: string,
