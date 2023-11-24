@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Container,
   Divider,
   Heading,
@@ -77,7 +78,7 @@ export default function ParadeIdPage() {
 
   const handleClick = (attendance: Attendance) => {
     setAttendance(attendance);
-    setPageStatus(PageStatus.EDITING);
+    if (pageStatus !== PageStatus.BULK_EDITING) setPageStatus(PageStatus.EDITING);
   };
 
   const copyToClipboard = (data: ParadeData) => {
@@ -126,6 +127,9 @@ export default function ParadeIdPage() {
         <AttendanceCard
           key={attendance.id}
           attendance={attendance}
+          isBulkEditing={
+            pageStatus === PageStatus.BULK_EDITING
+          }
           handleClick={() => handleClick(attendance)}
         />
       ));
