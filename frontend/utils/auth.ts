@@ -20,9 +20,10 @@ export function clearLocalStorage() {
   secureLocalStorage.clear();
 }
 
-export function getUserId(): number {
+export function getUserId(): number | null {
   const userIdString = secureLocalStorage.getItem('userId');
-  if (!userIdString) throw new Error('Cannot get User Id');
+  if (!userIdString) return null;
+  console.log(`userId: ${userIdString}`);
   return +userIdString;
 }
 

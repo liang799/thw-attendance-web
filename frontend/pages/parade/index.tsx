@@ -5,7 +5,7 @@ import { ReactQueryKey } from '@/utils/react-query-keys';
 import { ApiClient } from '@/utils/axios';
 import Navbar from '@/components/Navbar';
 import NextLink from 'next/link';
-import { useAuthentication } from '@/utils/auth';
+import { getUserId, useAuthentication } from '@/utils/auth';
 import { useRouter } from 'next/router';
 import { AddIcon } from '@chakra-ui/icons';
 import ParadeHistory from '@/components/history/ParadeHistory';
@@ -64,13 +64,15 @@ export default function ParadeIndexPage() {
       <Stack p={4} spacing='12px'>
         <Heading py={4}>Parade State Tracker</Heading>
 
-        <Link href='/submit-attendance' as={NextLink}>
-          <HorizontalCard>
-            <CardBody>
-              <Heading size='md'>Submit Attendance</Heading>
-            </CardBody>
-          </HorizontalCard>
-        </Link>
+        {getUserId() &&
+          <Link href='/submit-attendance' as={NextLink}>
+            <HorizontalCard>
+              <CardBody>
+                <Heading size='md'>Submit Attendance</Heading>
+              </CardBody>
+            </HorizontalCard>
+          </Link>
+        }
 
         <Link href={`/parade/${data.id}`} as={NextLink}>
           <HorizontalCard>

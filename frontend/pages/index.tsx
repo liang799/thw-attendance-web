@@ -8,7 +8,6 @@ import {
   Heading,
   Input,
   Link,
-  Text,
   Stack,
   useColorModeValue,
   useToast
@@ -18,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { ApiClient } from "@/utils/axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAccessToken, getUserId, setAccessToken, setUserId } from '@/utils/auth';
+import { getAccessToken, setAccessToken, setUserId } from '@/utils/auth';
 import PasswordInput from "@/components/PasswordInput";
 import { useRouter } from "next/navigation";
 import { useEffect } from 'react';
@@ -57,7 +56,6 @@ export default function LoginPage() {
   useEffect(() => {
     try {
       getAccessToken();
-      getUserId();
       console.info('Redirect user as he is logged in');
       router.push('/parade');
     } catch (e) {

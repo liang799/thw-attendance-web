@@ -49,15 +49,12 @@ const NavLink = (props: Props) => {
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  const { isLoading, data } = useQuery("repoData", () =>
+  const { isLoading, data } = useQuery("User ID", () =>
     ApiClient.get(`/users/${getUserId()}`).then(res =>
       res.data
-    ), {
-    refetchOnWindowFocus: false
-  }
+    ), { refetchOnWindowFocus: false, enabled: !!getUserId() }
   );
   const logout = () => {
     clearLocalStorage();

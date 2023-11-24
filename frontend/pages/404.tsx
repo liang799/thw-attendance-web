@@ -1,12 +1,12 @@
-import { Box, Heading, Text, Button } from "@chakra-ui/react";
+import { Box, Heading, Text, Button, getToken } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { getUserId } from "@/utils/auth";
+import { getAccessToken } from "@/utils/auth";
 
 export default function NotFound() {
   const router = useRouter();
   const handleClick = () => {
     try {
-      getUserId();
+      getAccessToken();
       router.push("/parade");
     } catch (e) {
       router.push("/");
