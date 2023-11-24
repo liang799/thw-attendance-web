@@ -27,7 +27,7 @@ export default function AttendanceCard({ attendance, isBulkEditing, handleClick,
   return (
     <Card
       direction={{ base: 'column', sm: 'row' }}
-      bg={isChecked ? checkedBackgroundColor : backgroundColor}
+      bg={isBulkEditing && isChecked ? checkedBackgroundColor : backgroundColor}
       overflow='hidden'
       variant='outline'
       onClick={handleCardClick}

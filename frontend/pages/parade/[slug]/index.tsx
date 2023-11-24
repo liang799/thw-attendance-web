@@ -7,6 +7,7 @@ import {
   HStack,
   Skeleton,
   Stack,
+  Switch,
   Tab,
   TabList,
   TabPanel,
@@ -35,6 +36,7 @@ import { ParadeData } from '@/utils/types/ParadeData';
 import StopParadeButton from '@/components/attendance/StopParadeButton';
 import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
+import CustomSwitch from '@/components/CustomSwitch';
 
 
 enum PageStatus {
@@ -189,14 +191,11 @@ export default function ParadeIdPage() {
         <Divider />
 
         <HStack mt={4}>
-          <Heading as='h2' size='md' colorScheme='gray'>Attendances</Heading>
-          <Button
-            leftIcon={<EditIcon />}
-            size='sm'
-            onClick={() => router.push(`/parade/${slug}/bulkedit`)}
-          >
-            Bulk Edit (Beta)
-          </Button>
+          <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
+          <CustomSwitch
+            whenEnabled={() => setPageStatus(PageStatus.BULK_EDITING)}
+            whenDisabled={() => setPageStatus(PageStatus.IDLE)}
+          />
         </HStack>
 
         <Tabs>
