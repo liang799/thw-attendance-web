@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import {
+  Badge,
   Button,
   FormControl,
   FormLabel,
@@ -34,10 +35,17 @@ type AttendanceModalProps = {
   handleClose: () => void,
 }
 
+enum UiStatus {
+  SELECTING_DROPDOWN,
+  INPUTTING_DISPATCH_LOC,
+  INPUTTING_MC_DATES,
+  SUCCESS,
+  ERROR,
+}
+
 export default function AttendanceModal({ attendance, handleClose }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [hasMcDates, setHasMcDates] = useState(false);
-  const [hasDispatchLocation, setHasDispatchLocation] = useState(false);
+  const [uiStatus, setUiStatus] = useState(UiStatus.SELECTING_DROPDOWN);
   const [dispatchLocation, setDispatchLocation] = useState('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
   const finalRef = useRef(null);
@@ -46,31 +54,35 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
 
   const onSubmit = async () => {
     let data: CreateAttendanceData;
-    if (hasDispatchLocation) {
-      data = {
-        availability: attendanceOptions[selectedIndex].availability,
-        status: attendanceOptions[selectedIndex].status,
-        location: dispatchLocation,
-        user: getUserId()
-      };
-    } else if (hasMcDates) {
-      data = {
-        availability: attendanceOptions[selectedIndex].availability,
-        status: attendanceOptions[selectedIndex].status,
-        absentStartDate: selectedDates[0],
-        absentEndDate: selectedDates[1],
-        user: getUserId()
-      };
-    } else {
-      data = {
-        availability: attendanceOptions[selectedIndex].availability,
-        status: attendanceOptions[selectedIndex].status,
-        user: getUserId()
-      };
+    switch (uiStatus) {
+      case UiStatus.INPUTTING_DISPATCH_LOC:
+        data = {
+          availability: attendanceOptions[selectedIndex].availability,
+          status: attendanceOptions[selectedIndex].status,
+          location: dispatchLocation,
+          user: getUserId()
+        };
+        break;
+      case UiStatus.INPUTTING_MC_DATES:
+        data = {
+          availability: attendanceOptions[selectedIndex].availability,
+          status: attendanceOptions[selectedIndex].status,
+          absentStartDate: selectedDates[0],
+          absentEndDate: selectedDates[1],
+          user: getUserId()
+        };
+      default:
+        data = {
+          availability: attendanceOptions[selectedIndex].availability,
+          status: attendanceOptions[selectedIndex].status,
+          user: getUserId()
+        };
+        break;
     }
 
     try {
       await ApiClient.put(`/attendances/${attendance?.id}`, data);
+      setUiStatus(UiStatus.SUCCESS);
       toast({
         title: "Successful",
         description: "You have submitted your attendance",
@@ -80,6 +92,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
       });
       await queryClient.invalidateQueries();
     } catch (error: any) {
+      setUiStatus(UiStatus.ERROR);
       toast({
         title: error.name,
         description: error.message,
@@ -95,17 +108,13 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
     setSelectedIndex(value);
 
     if (attendanceOptions[value].availability === "Absent") {
-      setHasMcDates(true);
-      setHasDispatchLocation(false);
+      setUiStatus(UiStatus.INPUTTING_MC_DATES)
       return;
     }
     if (attendanceOptions[value].availability === "Dispatch") {
-      setHasDispatchLocation(true);
-      setHasMcDates(false);
+      setUiStatus(UiStatus.INPUTTING_DISPATCH_LOC)
       return;
     }
-    setHasMcDates(false);
-    setHasDispatchLocation(false);
   }
 
   return (
@@ -129,13 +138,13 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
                 ))}
               </Select>
             </FormControl>
-            {hasDispatchLocation &&
+            {uiStatus === UiStatus.INPUTTING_DISPATCH_LOC &&
               <FormControl>
                 <FormLabel>Dispatch location</FormLabel>
                 <Input onChange={(event) => setDispatchLocation(event.target.value)} />
               </FormControl>
             }
-            {hasMcDates &&
+            {uiStatus === UiStatus.INPUTTING_MC_DATES &&
               <FormControl>
                 <FormLabel>MC Dates</FormLabel>
                 <RangeDatepicker
@@ -154,11 +163,22 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
         </ModalBody>
 
         <ModalFooter>
-          <Text>
-            {/* Might be outdated */}
-            Last Known:
-            <AttendanceBadge attendance={attendance} /> 
-          </Text>
+          {uiStatus !== UiStatus.SUCCESS && uiStatus !== UiStatus.ERROR &&
+            <Text>
+              Last Known:
+              <AttendanceBadge attendance={attendance} />
+            </Text>
+          }
+          {uiStatus === UiStatus.SUCCESS &&
+            <Text>
+              <Badge colorScheme='green'>Update: Success</Badge>
+            </Text>
+          }
+          {uiStatus === UiStatus.ERROR &&
+            <Text>
+              <Badge colorScheme='red'>Update: Failure</Badge>
+            </Text>
+          }
         </ModalFooter>
       </ModalContent>
     </Modal>
