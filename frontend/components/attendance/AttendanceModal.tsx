@@ -36,9 +36,10 @@ type AttendanceModalProps = {
 }
 
 enum UiStatus {
-  SELECTING_DROPDOWN,
+  SELECTING_DROPDOWN,     // Default
   INPUTTING_DISPATCH_LOC,
   INPUTTING_MC_DATES,
+  SUBMITTING,             // User Submit form
   SUCCESS,
   ERROR,
 }
@@ -53,6 +54,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
   const toast = useToast();
 
   const onSubmit = async () => {
+    setUiStatus(UiStatus.SUBMITTING);
     let data: CreateAttendanceData;
     switch (uiStatus) {
       case UiStatus.INPUTTING_DISPATCH_LOC:
@@ -154,10 +156,12 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
               </FormControl>
             }
             <HStack mt={4} spacing={4}>
-              <Button colorScheme='teal' onClick={onSubmit}>
+              <Button isLoading={uiStatus === UiStatus.SUBMITTING} colorScheme='teal' onClick={onSubmit}>
                 Submit
               </Button>
-              <DeleteAttendanceButton attendanceId={attendance?.id} handleClose={handleClose} />
+              {uiStatus !== UiStatus.SUBMITTING &&
+                <DeleteAttendanceButton attendanceId={attendance?.id} handleClose={handleClose} />
+              }
             </HStack>
           </form>
         </ModalBody>
