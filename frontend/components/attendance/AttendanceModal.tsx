@@ -174,10 +174,12 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
         </ModalBody>
 
         <ModalFooter>
-          <Text>
-            Last Known:
-            <AttendanceBadge attendance={attendance} />
-          </Text>
+          {uiStatus !== UiStatus.SUBMITTING &&
+            <Text>
+              Last Known:
+              <AttendanceBadge attendance={attendance} />
+            </Text>
+          }
         </ModalFooter>
       </ModalContent>
     </Modal>
