@@ -3,11 +3,13 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 type initialStateType = {
   selected: Attendance[],
+  lastClicked: Attendance | null,
   status: string,
 };
 
 const initialState: initialStateType = {
   selected: [],
+  lastClicked: null,
   status: 'idle',
 };
 
@@ -29,10 +31,17 @@ export const attendanceSlice = createSlice({
       );
       state.status = 'selecting';
     },
+    clickCard: (state, action: PayloadAction<Attendance>) => {
+      return {
+        ...state,
+        lastClicked: action.payload,
+        status: 'editing',
+      };
+    },
   },
 });
 
-export const { select, deselect } = attendanceSlice.actions;
+export const { select, deselect, clickCard } = attendanceSlice.actions;
 
 
 export default attendanceSlice.reducer;

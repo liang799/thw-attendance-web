@@ -1,11 +1,12 @@
 import { Attendance } from "@/utils/types/AttendanceData";
-import attendanceSlice, { deselect, select } from "./attendance.slice";
+import attendanceSlice, { clickCard, deselect, select } from "./attendance.slice";
 
 describe('attendance editor reducer', () => {
 
   it('should handle initial state', () => {
     expect(attendanceSlice(undefined, { type: 'unknown' })).toEqual({
       selected: [],
+      lastClicked: null,
       status: 'idle',
     });
   });
@@ -14,10 +15,12 @@ describe('attendance editor reducer', () => {
   it('should handle zero selection', () => {
     const initialState = {
       selected: [],
+      lastClicked: null,
       status: 'idle',
     }
     expect(attendanceSlice(initialState, select([]))).toEqual({
       selected: [],
+      lastClicked: null,
       status: 'selecting',
     });
   });
@@ -25,6 +28,7 @@ describe('attendance editor reducer', () => {
   it('should handle single selection', () => {
     const initialState = {
       selected: [],
+      lastClicked: null,
       status: 'idle',
     }
     const attendace: Attendance = {
@@ -36,6 +40,7 @@ describe('attendance editor reducer', () => {
     }
     expect(attendanceSlice(initialState, select([attendace]))).toEqual({
       selected: [attendace],
+      lastClicked: null,
       status: 'selecting',
     });
   });
@@ -53,6 +58,7 @@ describe('attendance editor reducer', () => {
           submittedAt: new Date()
         }
       ],
+      lastClicked: null,
       status: 'selecting',
     }
     const attendances: Attendance[] = [
@@ -95,6 +101,7 @@ describe('attendance editor reducer', () => {
           submittedAt: date,
         }
       ],
+      lastClicked: null,
       status: 'selecting',
     });
   });
@@ -118,6 +125,7 @@ describe('attendance editor reducer', () => {
           submittedAt: date,
         }
       ],
+      lastClicked: null,
       status: 'selecting',
     }
     const deselected = [{
@@ -137,6 +145,7 @@ describe('attendance editor reducer', () => {
           submittedAt: date,
         },
       ],
+      lastClicked: null,
       status: 'selecting',
     });
   });
@@ -160,10 +169,12 @@ describe('attendance editor reducer', () => {
           submittedAt: date,
         }
       ],
+      lastClicked: null,
       status: 'selecting',
     }
     expect(attendanceSlice(initial, deselect(initial.selected))).toEqual({
       selected: [],
+      lastClicked: null,
       status: 'selecting',
     });
   });
@@ -180,9 +191,56 @@ describe('attendance editor reducer', () => {
           submittedAt: date,
         },
       ],
+      lastClicked: null,
       status: 'selecting',
     }
     expect(attendanceSlice(initial, deselect([])))
       .toEqual(initial);
   });
+
+  it('should remember last clicked', () => {
+    const initialState = {
+      selected: [],
+      lastClicked: null,
+      status: 'idle',
+    }
+    const attendace = {
+      id: 2,
+      user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
+      availability: { type: "", status: "", user: 0 },
+      parade: 1,
+      submittedAt: new Date(),
+    }
+    expect(attendanceSlice(initialState, clickCard(attendace))).toEqual({
+      selected: [],
+      lastClicked: attendace,
+      status: 'editing',
+    });
+  })
+
+  it('should replace last clicked', () => {
+    const initialState = {
+      selected: [],
+      lastClicked: {
+        id: 2,
+        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
+        availability: { type: "", status: "", user: 0 },
+        parade: 1,
+        submittedAt: new Date(),
+      },
+      status: 'idle',
+    }
+    const attendace = {
+      id: 5,
+      user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
+      availability: { type: "", status: "", user: 0 },
+      parade: 1,
+      submittedAt: new Date(),
+    }
+    expect(attendanceSlice(initialState, clickCard(attendace))).toEqual({
+      selected: [],
+      lastClicked: attendace,
+      status: 'editing',
+    });
+  })
 });

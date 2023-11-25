@@ -44,24 +44,31 @@ import StopParadeButton from '@/components/attendance/StopParadeButton';
 import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 import CustomSwitch from '@/components/CustomSwitch';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from '@/lib/store';
+import { clickCard, select } from '@/lib/features/editing-attendance/attendance.slice';
 
 
-enum PageStatus {
+
+enum PageStatus { // Todo migrate all these to redux
   IDLE,         // Default
   BULK_EDITING, // TODO
-  EDITING       // Show Edit Modal
+  EDITING       // Migrated to Redux
 }
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const [isMdScreenAndLarger] = useMediaQuery('(min-width: 800px)');
-  const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [searchText, setSearchText] = useState<string>('');
   const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.IDLE);
   const router = useRouter();
   const { slug } = router.query;
   const { onCopy, hasCopied, setValue: setClipboardText } = useClipboard('');
   const toast = useToast();
+
+  const uiState = useSelector((state: AppState) => state.attendanceSlice);
+  const dispatch = useDispatch();
+  const isEditing = uiState.status === "editing";
 
   useAuthentication();
 
@@ -87,7 +94,7 @@ export default function ParadeIdPage() {
   }
 
   const handleClick = (attendance: Attendance) => {
-    setAttendance(attendance);
+    dispatch(clickCard(attendance));
     if (pageStatus !== PageStatus.BULK_EDITING) setPageStatus(PageStatus.EDITING);
   };
 
@@ -150,9 +157,9 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      {pageStatus === PageStatus.EDITING &&
+      {isEditing &&
         <AttendanceModal
-          attendance={attendance}
+          attendance={uiState.lastClicked}
           handleClose={() => setPageStatus(PageStatus.IDLE)}
         />
       }
