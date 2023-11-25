@@ -1,8 +1,9 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
+import attendanceSlice from "./features/editing-attendance/attendance.slice";
 
 const makeStore = () => configureStore({
-  reducer: {},
+  reducer: { attendanceSlice },
   devTools: true,
 });
 

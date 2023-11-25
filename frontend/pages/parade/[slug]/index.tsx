@@ -150,10 +150,12 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      {pageStatus === PageStatus.EDITING && <AttendanceModal
-        attendance={attendance}
-        handleClose={() => setPageStatus(PageStatus.IDLE)}
-      />}
+      {pageStatus === PageStatus.EDITING &&
+        <AttendanceModal
+          attendance={attendance}
+          handleClose={() => setPageStatus(PageStatus.IDLE)}
+        />
+      }
 
       <Stack p={4} spacing={4}>
         <Heading pt={4}>Parade State Summary</Heading>
