@@ -13,6 +13,7 @@ const initialState: initialStateType = {
   status: 'idle',
 };
 
+/* Redux Toolkit uses Immer under the hood. As such, it is safe to write in this manner */
 export const attendanceSlice = createSlice({
   name: 'attendance',
   initialState,
@@ -43,11 +44,17 @@ export const attendanceSlice = createSlice({
       state.selected = [];
       state.currentlyEditing = null;
       state.status = 'idle';
+    },
+    enterAttendanceCreation: (state) => {
+      state.status = 'creating';
+    },
+    exitAttendanceCreation: (state) => {
+      state.status = 'idle';
     }
   },
 });
 
-export const { select, deselect, enterSingleEdit, exitSingleEdit, enableSelection, disableSelection } = attendanceSlice.actions;
+export const { select, deselect, enterSingleEdit, exitSingleEdit, enableSelection, disableSelection, enterAttendanceCreation, exitAttendanceCreation } = attendanceSlice.actions;
 
 
 export default attendanceSlice.reducer;

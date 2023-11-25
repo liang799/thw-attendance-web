@@ -30,7 +30,7 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
+import { AddIcon, CopyIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { ParadeData } from '@/utils/types/ParadeData';
@@ -39,8 +39,9 @@ import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '@/lib/store';
-import { disableSelection, enableSelection, enterSingleEdit, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
+import { disableSelection, enableSelection, enterAttendanceCreation, enterSingleEdit, exitAttendanceCreation, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
 import BulkEditCommands from '@/components/attendance/BulkEditCommands';
+import CreateAttendaceModal from '@/components/attendance/CreateAttendanceModal';
 
 
 export default function ParadeIdPage() {
@@ -56,6 +57,8 @@ export default function ParadeIdPage() {
   const dispatch = useDispatch();
   const isEditing = uiState.status === "editing";
   const isBulkEditing = uiState.status === "selecting";
+  const isIdle = uiState.status === "idle";
+  const isCreating = uiState.status === "creating";
 
   useAuthentication();
 
@@ -250,6 +253,15 @@ export default function ParadeIdPage() {
             </TabPanel>
           </TabPanels>
         </Tabs>
+
+        {isIdle &&
+          <Button leftIcon={<AddIcon />} onClick={() => dispatch(enterAttendanceCreation())}>
+            New Attendance
+          </Button>
+        }
+        {isCreating &&
+          <CreateAttendaceModal handleClose={() => dispatch(exitAttendanceCreation())} />
+        }
       </Stack>
     </Container >
   );

@@ -1,5 +1,5 @@
 import { Attendance } from "@/utils/types/AttendanceData";
-import attendanceSlice, { deselect, disableSelection, exitSingleEdit, enableSelection, enterSingleEdit, select } from "./attendance.slice";
+import attendanceSlice, { deselect, disableSelection, exitSingleEdit, enableSelection, enterSingleEdit, select, enterAttendanceCreation, exitAttendanceCreation } from "./attendance.slice";
 
 describe('attendance editor reducer', () => {
 
@@ -265,6 +265,32 @@ describe('attendance editor reducer', () => {
       status: 'editing',
     }
     expect(attendanceSlice(initialState, exitSingleEdit())).toEqual({
+      selected: [],
+      currentlyEditing: null,
+      status: 'idle',
+    });
+  });
+
+  it('should switch to attendance creation mode', () => {
+    const initialState = {
+      selected: [],
+      currentlyEditing: null,
+      status: 'idle',
+    }
+    expect(attendanceSlice(initialState, enterAttendanceCreation())).toEqual({
+      selected: [],
+      currentlyEditing: null,
+      status: 'creating',
+    });
+  });
+
+  it('should exit from attendance creation mode', () => {
+    const initialState = {
+      selected: [],
+      currentlyEditing: null,
+      status: 'creating',
+    }
+    expect(attendanceSlice(initialState, exitAttendanceCreation())).toEqual({
       selected: [],
       currentlyEditing: null,
       status: 'idle',
