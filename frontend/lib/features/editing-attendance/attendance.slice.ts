@@ -18,11 +18,8 @@ export const attendanceSlice = createSlice({
   initialState,
   reducers: {
     select: (state, action: PayloadAction<Attendance[]>) => {
-      return {
-        ...state,
-        selected: [...state.selected, ...action.payload],
-        status: 'selecting',
-      };
+      state.selected = state.selected.concat(action.payload);
+      state.status = 'selecting';
     },
     deselect: (state, action: PayloadAction<Attendance[]>) => {
       // Filter out the deselected attendance entries
@@ -32,31 +29,20 @@ export const attendanceSlice = createSlice({
       state.status = 'selecting';
     },
     enterSingleEdit: (state, action: PayloadAction<Attendance>) => {
-      return {
-        ...state,
-        currentlyEditing: action.payload,
-        status: 'editing',
-      };
+      state.currentlyEditing = action.payload;
+      state.status = 'editing';
     },
     exitSingleEdit: (state) => {
-      return {
-        ...state,
-        currentlyEditing: null,
-        status: 'idle',
-      };
+      state.currentlyEditing = null;
+      state.status = 'idle';
     },
     enableSelection: (state) => {
-      return {
-        ...state,
-        status: 'selecting',
-      };
+      state.status = "selecting";
     },
     disableSelection: (state) => {
-      return {
-        ...state,
-        selected: [],
-        status: 'idle',
-      };
+      state.selected = [];
+      state.currentlyEditing = null;
+      state.status = 'idle';
     }
   },
 });

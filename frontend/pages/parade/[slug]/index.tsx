@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Checkbox,
   Container,
   Divider,
   Flex,
@@ -86,11 +84,6 @@ export default function ParadeIdPage() {
     );
   }
 
-  const handleClick = (attendance: Attendance) => {
-    if (isBulkEditing) return;
-    dispatch(enterSingleEdit(attendance));
-  };
-
   const copyToClipboard = (data: ParadeData) => {
     if (!data) {
       toast({
@@ -137,8 +130,6 @@ export default function ParadeIdPage() {
         <AttendanceCard
           key={attendance.id}
           attendance={attendance}
-          isBulkEditing={isBulkEditing}
-          handleClick={() => handleClick(attendance)}
         />
       ));
   };
@@ -206,9 +197,12 @@ export default function ParadeIdPage() {
           }>
           <HStack>
             <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
-            <CustomSwitch
-              whenEnabled={() => dispatch(enableSelection())}
-              whenDisabled={() => dispatch(disableSelection())}
+            <Switch
+              isChecked={isBulkEditing}
+              onChange={() => {
+                if (isBulkEditing) return dispatch(disableSelection());
+                dispatch(enableSelection());
+              }}
             />
           </HStack>
 

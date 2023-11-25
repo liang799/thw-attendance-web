@@ -4,24 +4,35 @@ import { Avatar, Box, Card, CardBody, CardProps, Checkbox, Flex, Text, useColorM
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import { EditIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deselect, enterSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
+import { AppState } from '@/lib/store';
 
 
 type AttendanceCardProps = {
   attendance: Attendance,
-  isBulkEditing: boolean,
-  handleClick: (attendance: Attendance) => void
 } & CardProps
 
-export default function AttendanceCard({ attendance, isBulkEditing, handleClick, ...props }: AttendanceCardProps) {
-  const [isChecked, setChecked] = useState(false);
+export default function AttendanceCard({ attendance, ...props }: AttendanceCardProps) {
   const checkedBackgroundColor = useColorModeValue('blue.100', 'blue.700');
   const backgroundColor = useColorModeValue('white', 'gray.700');
 
+  const uiState = useSelector((state: AppState) => state.attendanceSlice);
+  const dispatch = useDispatch();
+  const isBulkEditing = uiState.status === "selecting";
+  const isChecked = uiState.selected.some(selected => selected.id === attendance.id);
+
   const handleCardClick = () => {
-    if (isBulkEditing) {
-      setChecked(!isChecked);
+    if (!isBulkEditing) {
+      dispatch(enterSingleEdit(attendance));
+      return;
     }
-    handleClick(attendance);
+
+    if (isChecked) {
+      dispatch(deselect([attendance]));
+      return;
+    }
+    dispatch(select([attendance]));
   };
 
   return (
