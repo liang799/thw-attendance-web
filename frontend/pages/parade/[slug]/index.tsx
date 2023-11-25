@@ -1,10 +1,16 @@
 import {
+  Box,
   Button,
   Checkbox,
   Container,
   Divider,
+  Flex,
   Heading,
   HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Skeleton,
   Stack,
   Switch,
@@ -18,6 +24,7 @@ import {
   TagLeftIcon,
   useClipboard,
   useColorModeValue,
+  useMediaQuery,
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -29,7 +36,7 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CopyIcon, EditIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, ChevronDownIcon, CopyIcon, EditIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { ParadeData } from '@/utils/types/ParadeData';
@@ -47,6 +54,7 @@ enum PageStatus {
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
+  const [isMdScreenAndLarger] = useMediaQuery('(min-width: 800px)');
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [searchText, setSearchText] = useState<string>('');
   const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.IDLE);
@@ -190,13 +198,38 @@ export default function ParadeIdPage() {
 
         <Divider />
 
-        <HStack mt={4}>
-          <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
-          <CustomSwitch
-            whenEnabled={() => setPageStatus(PageStatus.BULK_EDITING)}
-            whenDisabled={() => setPageStatus(PageStatus.IDLE)}
-          />
-        </HStack>
+        <Flex mt={4} ml={0}
+          style={
+            isMdScreenAndLarger ?
+              { justifyContent: 'space-between', alignItems: 'center' } :
+              { flexDirection: 'column' }
+          }>
+          <HStack>
+            <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
+            <CustomSwitch
+              whenEnabled={() => setPageStatus(PageStatus.BULK_EDITING)}
+              whenDisabled={() => setPageStatus(PageStatus.IDLE)}
+            />
+          </HStack>
+
+          {pageStatus === PageStatus.BULK_EDITING && (
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mt={isMdScreenAndLarger ? 0 : 2}>
+                With Selected
+              </MenuButton>
+              <MenuList>
+                <MenuItem icon={<CheckCircleIcon />} onClick={() => { }}>
+                  Mark Present
+                </MenuItem>
+                <MenuItem icon={<EditIcon />} onClick={() => { }}>
+                  Set as...
+                </MenuItem>
+                {/*<MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>*/}
+                {/*<MenuItem icon={<DeleteIcon />}>Delete</MenuItem>*/}
+              </MenuList>
+            </Menu>
+          )}
+        </Flex>
 
         <Tabs>
           <SearchBar
@@ -244,6 +277,6 @@ export default function ParadeIdPage() {
           </TabPanels>
         </Tabs>
       </Stack>
-    </Container>
+    </Container >
   );
 }
