@@ -37,7 +37,7 @@ export class UsersService {
 
   @UseRequestContext()
   findAll() {
-    return this.repository.find({ hasLeftNode: false });
+    return this.repository.findAll();
   }
 
   @UseRequestContext()

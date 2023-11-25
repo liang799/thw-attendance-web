@@ -73,9 +73,11 @@ export default function CreateAttendaceModal({ handleClose }: AttendanceModalPro
               <FormControl>
                 <FormLabel>Select user:</FormLabel>
                 <Select placeholder="=== Select user ===" onChange={(event) => setUserId(+event.target.value)} >
-                  {users?.map((data, index) => (
-                    <option key={index} value={data.id}>{data.name}</option>
-                  ))}
+                  {users
+                    ?.filter(user => !user.hasLeftNode)
+                    .map((data, index) => (
+                      <option key={index} value={data.id}>{data.name}</option>
+                    ))}
                 </Select>
               </FormControl>
 
