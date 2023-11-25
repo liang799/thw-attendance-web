@@ -42,7 +42,7 @@ export default function AttendanceCard({ attendance, isBulkEditing, handleClick,
                 <Avatar />
               }
               {isBulkEditing &&
-                <Checkbox isChecked={isChecked} />
+                <Checkbox as='div' isChecked={isChecked} />
               }
               <Box ml='3'>
                 <Text fontWeight='bold'>
