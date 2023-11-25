@@ -5,10 +5,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Skeleton,
   Stack,
   Switch,
@@ -34,17 +30,17 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import AttendanceModal from '@/components/attendance/AttendanceModal';
 import Navbar from '@/components/Navbar';
-import { CheckCircleIcon, ChevronDownIcon, CopyIcon, EditIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
+import { CopyIcon, InfoIcon, LockIcon, TimeIcon } from '@chakra-ui/icons';
 import generateParadeText from '@/utils/generateParadeText';
 import { useAuthentication } from '@/utils/auth';
 import { ParadeData } from '@/utils/types/ParadeData';
 import StopParadeButton from '@/components/attendance/StopParadeButton';
 import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
-import CustomSwitch from '@/components/CustomSwitch';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '@/lib/store';
 import { disableSelection, enableSelection, enterSingleEdit, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
+import BulkEditCommands from '@/components/attendance/BulkEditCommands';
 
 
 export default function ParadeIdPage() {
@@ -206,23 +202,7 @@ export default function ParadeIdPage() {
             />
           </HStack>
 
-          {isBulkEditing && (
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mt={isMdScreenAndLarger ? 0 : 2}>
-                With Selected
-              </MenuButton>
-              <MenuList>
-                <MenuItem icon={<CheckCircleIcon />} onClick={() => { }}>
-                  Mark Present
-                </MenuItem>
-                <MenuItem icon={<EditIcon />} onClick={() => { }}>
-                  Set as...
-                </MenuItem>
-                {/*<MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>*/}
-                {/*<MenuItem icon={<DeleteIcon />}>Delete</MenuItem>*/}
-              </MenuList>
-            </Menu>
-          )}
+          {isBulkEditing && <BulkEditCommands mt={isMdScreenAndLarger ? 0 : 2} />}
         </Flex>
 
         <Tabs>
