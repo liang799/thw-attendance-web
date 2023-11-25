@@ -46,21 +46,13 @@ import { SearchBar } from '@/components/SearchBar';
 import CustomSwitch from '@/components/CustomSwitch';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '@/lib/store';
-import { clickCard, select } from '@/lib/features/editing-attendance/attendance.slice';
+import { disableSelection, enableSelection, enterSingleEdit, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
 
-
-
-enum PageStatus { // Todo migrate all these to redux
-  IDLE,         // Default
-  BULK_EDITING, // TODO
-  EDITING       // Migrated to Redux
-}
 
 export default function ParadeIdPage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const [isMdScreenAndLarger] = useMediaQuery('(min-width: 800px)');
   const [searchText, setSearchText] = useState<string>('');
-  const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.IDLE);
   const router = useRouter();
   const { slug } = router.query;
   const { onCopy, hasCopied, setValue: setClipboardText } = useClipboard('');
@@ -69,6 +61,7 @@ export default function ParadeIdPage() {
   const uiState = useSelector((state: AppState) => state.attendanceSlice);
   const dispatch = useDispatch();
   const isEditing = uiState.status === "editing";
+  const isBulkEditing = uiState.status === "selecting";
 
   useAuthentication();
 
@@ -94,8 +87,8 @@ export default function ParadeIdPage() {
   }
 
   const handleClick = (attendance: Attendance) => {
-    dispatch(clickCard(attendance));
-    if (pageStatus !== PageStatus.BULK_EDITING) setPageStatus(PageStatus.EDITING);
+    if (isBulkEditing) return;
+    dispatch(enterSingleEdit(attendance));
   };
 
   const copyToClipboard = (data: ParadeData) => {
@@ -144,9 +137,7 @@ export default function ParadeIdPage() {
         <AttendanceCard
           key={attendance.id}
           attendance={attendance}
-          isBulkEditing={
-            pageStatus === PageStatus.BULK_EDITING
-          }
+          isBulkEditing={isBulkEditing}
           handleClick={() => handleClick(attendance)}
         />
       ));
@@ -159,8 +150,8 @@ export default function ParadeIdPage() {
 
       {isEditing &&
         <AttendanceModal
-          attendance={uiState.lastClicked}
-          handleClose={() => setPageStatus(PageStatus.IDLE)}
+          attendance={uiState.currentlyEditing}
+          handleClose={() => dispatch(exitSingleEdit())}
         />
       }
 
@@ -216,12 +207,12 @@ export default function ParadeIdPage() {
           <HStack>
             <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
             <CustomSwitch
-              whenEnabled={() => setPageStatus(PageStatus.BULK_EDITING)}
-              whenDisabled={() => setPageStatus(PageStatus.IDLE)}
+              whenEnabled={() => dispatch(enableSelection())}
+              whenDisabled={() => dispatch(disableSelection())}
             />
           </HStack>
 
-          {pageStatus === PageStatus.BULK_EDITING && (
+          {isBulkEditing && (
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mt={isMdScreenAndLarger ? 0 : 2}>
                 With Selected
