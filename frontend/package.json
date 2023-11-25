@@ -17,7 +17,7 @@
     "@hookform/resolvers": "^3.1.1",
     "@reduxjs/toolkit": "^1.9.6",
     "@tanstack/react-table": "^8.10.1",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "chakra-dayzed-datepicker": "^0.2.9",
     "date-fns": "^2.30.0",
     "dayzed": "^3.2.3",
