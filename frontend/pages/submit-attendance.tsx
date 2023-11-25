@@ -40,17 +40,25 @@ export default function SubmitAttendancePage() {
     () => {
       return ApiClient.get(`/ongoing-parade/users/${getUserId()}/attendance`)
         .then(res => res.data);
-    },
+    }, { enabled: !!getUserId() }
   );
 
   const onSubmit = async () => {
     let data: CreateAttendanceData;
+    const currentUser = getUserId();
+    if (!currentUser) {
+      return toast({ 
+        status: "error",
+        title: "Cannot retrieve user's ID" 
+      });
+    }
+
     if (hasDispatchLocation) {
       data = {
         availability: attendanceOptions[selectedIndex].availability,
         status: attendanceOptions[selectedIndex].status,
         location: dispatchLocation,
-        user: getUserId(),
+        user: currentUser,
       };
     } else if (hasMcDates) {
       data = {
@@ -58,13 +66,13 @@ export default function SubmitAttendancePage() {
         status: attendanceOptions[selectedIndex].status,
         absentStartDate: selectedDates[0],
         absentEndDate: selectedDates[1],
-        user: getUserId()
+        user: currentUser,
       };
     } else {
       data = {
         availability: attendanceOptions[selectedIndex].availability,
         status: attendanceOptions[selectedIndex].status,
-        user: getUserId()
+        user: currentUser,
       };
     }
 
