@@ -9,18 +9,21 @@ import { getUserId, useAuthentication } from '@/utils/auth';
 import { useRouter } from 'next/router';
 import { AddIcon } from '@chakra-ui/icons';
 import ParadeHistory from '@/components/history/ParadeHistory';
+import { useState } from 'react';
+import GenericErrorDisplay from '@/components/GenericErrorDisplay';
 
 export default function ParadeIndexPage() {
   useAuthentication();
 
   const router = useRouter();
   const bgColor = useColorModeValue('gray.50', 'gray.800');
-  const { data, isLoading, isError } = useQuery(ReactQueryKey.LATEST_PARADE,
+  const { data, isLoading, isError, status } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
       return ApiClient.get('/ongoing-parade')
         .then(res => res.data);
-    }, { retry: false },
+    },
   );
+  const isNotOngoing = status === 'success' && !data;   // Might return 204 (No content) or 304 (Not modified)
 
   if (isLoading) {
     return (
@@ -35,6 +38,14 @@ export default function ParadeIndexPage() {
   }
 
   if (isError) {
+    return (
+      <GenericErrorDisplay title='Error'>
+        Something went wrong
+      </GenericErrorDisplay>
+    );
+  }
+
+  if (isNotOngoing) {
     return (
       <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
         <Navbar />
