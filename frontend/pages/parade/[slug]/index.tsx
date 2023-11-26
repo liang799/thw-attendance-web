@@ -197,7 +197,7 @@ export default function ParadeIdPage() {
               { flexDirection: 'column' }
           }>
           <HStack>
-            <Heading as='h2' size='md' colorScheme='gray'>Attendances Bulk Edit</Heading>
+            <Heading as='h2' size='md' colorScheme='gray'>Attendance Bulk Editor</Heading>
             <Switch
               isChecked={isBulkEditing}
               onChange={() => {
