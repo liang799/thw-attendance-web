@@ -6,13 +6,14 @@ import { useQuery, useQueryClient } from "react-query";
 import { UserData } from "@/utils/types/UserData";
 import { ApiClient } from "@/utils/axios";
 import GenericErrorDisplay from "../GenericErrorDisplay";
-import { CreateAttendanceData } from "@/utils/types/AttendanceData";
+import { Attendance, CreateAttendanceData } from "@/utils/types/AttendanceData";
 
 type AttendanceModalProps = {
   handleClose: () => void,
+  existingAttendances: Attendance[],
 }
 
-export default function CreateAttendaceModal({ handleClose }: AttendanceModalProps) {
+export default function CreateAttendaceModal({ handleClose, existingAttendances }: AttendanceModalProps) {
   const finalRef = useRef(null);
   const [userId, setUserId] = useState(0);
   const toast = useToast();
@@ -57,6 +58,13 @@ export default function CreateAttendaceModal({ handleClose }: AttendanceModalPro
     }
   };
 
+  const hasSubmittedAttendance = (userId: number) => {
+    return existingAttendances.some((attendance) => attendance.user.id === userId);
+  };
+  const filteredUsers = users
+    ?.filter(user => !user.hasLeftNode)
+    .filter(user => !hasSubmittedAttendance(user.id))
+
   return (
     <Modal finalFocusRef={finalRef} isOpen={true} onClose={handleClose}>
       <ModalOverlay />
@@ -69,22 +77,25 @@ export default function CreateAttendaceModal({ handleClose }: AttendanceModalPro
             <GenericErrorDisplay title="Error">Something went wrong</GenericErrorDisplay>
           }
           <Skeleton isLoaded={!isLoading}>
-            <Stack>
-              <FormControl>
-                <FormLabel>Select user:</FormLabel>
-                <Select placeholder="=== Select user ===" onChange={(event) => setUserId(+event.target.value)} >
-                  {users
-                    ?.filter(user => !user.hasLeftNode)
-                    .map((data, index) => (
-                      <option key={index} value={data.id}>{data.name}</option>
-                    ))}
-                </Select>
-              </FormControl>
+            {(filteredUsers && filteredUsers.length > 0) ?
+              <Stack>
+                <FormControl>
+                  <FormLabel>Select user:</FormLabel>
+                  <Select placeholder="=== Select user ===" onChange={(event) => setUserId(+event.target.value)} >
+                    {filteredUsers
+                      .map((data, index) => (
+                        <option key={index} value={data.id}>{data.name}</option>
+                      ))}
+                  </Select>
+                </FormControl>
+                <Button colorScheme='teal' onClick={onSubmit}>
+                  Create Attendance
+                </Button>
+              </Stack>
+              :
+              <Text>No missing user attendance</Text>
+            }
 
-              <Button colorScheme='teal' onClick={onSubmit}>
-                Create Attendance
-              </Button>
-            </Stack>
           </Skeleton>
         </ModalBody>
 

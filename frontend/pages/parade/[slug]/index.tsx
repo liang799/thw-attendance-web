@@ -260,7 +260,10 @@ export default function ParadeIdPage() {
           </Button>
         }
         {isCreating &&
-          <CreateAttendaceModal handleClose={() => dispatch(exitAttendanceCreation())} />
+          <CreateAttendaceModal
+            handleClose={() => dispatch(exitAttendanceCreation())}
+            existingAttendances={paradeData.attendances}
+          />
         }
       </Stack>
     </Container >
