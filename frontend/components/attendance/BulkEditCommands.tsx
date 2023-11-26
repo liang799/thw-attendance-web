@@ -1,4 +1,5 @@
 import { attendanceOptions } from "@/config/attendanceOptions";
+import { deselectAll, enterBulkEditing } from "@/lib/features/editing-attendance/attendance.slice";
 import { AppState } from "@/lib/store";
 import { ApiClient } from "@/utils/axios";
 import { CreateAttendanceData, UpdateAttendanceData } from "@/utils/types/AttendanceData";
@@ -38,6 +39,7 @@ export default function BulkEditCommands({ ...props }: ButtonProps) {
     try {
       await ApiClient.put(`/attendances`, updatedList);
       await queryClient.invalidateQueries();
+      dispatch(deselectAll());
       toast({
         title: "Successful",
         description: "Updated Attendances",
@@ -65,7 +67,7 @@ export default function BulkEditCommands({ ...props }: ButtonProps) {
         <MenuItem icon={<CheckCircleIcon />} onClick={() => markSelectedAsPresent()}>
           Mark Present
         </MenuItem>
-        {/* <MenuItem icon={<EditIcon />} onClick={() => { }}> Set as...  </MenuItem> */}
+        <MenuItem icon={<EditIcon />} onClick={() => dispatch(enterBulkEditing())}> Set as...  </MenuItem>
         {/*<MenuItem icon={<ArrowForwardIcon />}>Move to branch...</MenuItem>*/}
         {/*<MenuItem icon={<DeleteIcon />}>Delete</MenuItem>*/}
       </MenuList>

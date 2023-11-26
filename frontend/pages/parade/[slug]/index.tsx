@@ -39,9 +39,10 @@ import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '@/lib/store';
-import { disableSelection, enableSelection, enterAttendanceCreation, enterSingleEdit, exitAttendanceCreation, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
+import { disableSelection, enableSelection, enterAttendanceCreation, enterSingleEdit, exitAttendanceCreation, exitBulkEditing, exitSingleEdit, select } from '@/lib/features/editing-attendance/attendance.slice';
 import BulkEditCommands from '@/components/attendance/BulkEditCommands';
 import CreateAttendaceModal from '@/components/attendance/CreateAttendanceModal';
+import BulkEditingModalv2 from '@/components/attendance/BulkEditingModal';
 
 
 export default function ParadeIdPage() {
@@ -57,6 +58,7 @@ export default function ParadeIdPage() {
   const dispatch = useDispatch();
   const isEditing = uiState.status === "editing";
   const isBulkEditing = uiState.status === "selecting";
+  const showBulkEditingModal = uiState.editSelected === true;
   const isIdle = uiState.status === "idle";
   const isCreating = uiState.status === "creating";
 
@@ -210,6 +212,9 @@ export default function ParadeIdPage() {
               mt={isMdScreenAndLarger ? 0 : 2}
               colorScheme={uiState.selected.length > 0 ? 'blue' : undefined}
             />
+          }
+          {showBulkEditingModal &&
+            <BulkEditingModalv2 handleClose={() => dispatch(exitBulkEditing())} />
           }
         </Flex>
 

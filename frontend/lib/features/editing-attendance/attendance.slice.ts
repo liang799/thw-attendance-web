@@ -3,12 +3,14 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 type initialStateType = {
   selected: Attendance[],
+  editSelected: boolean,
   currentlyEditing: Attendance | null,
-  status: 'idle' | 'selecting' | 'editing' | string,
+  status: 'idle' | 'selecting' | 'editing' | 'creating' | string,
 };
 
 const initialState: initialStateType = {
   selected: [],
+  editSelected: false,
   currentlyEditing: null,
   status: 'idle',
 };
@@ -28,6 +30,9 @@ export const attendanceSlice = createSlice({
         (selectedEntry) => !action.payload.some((deselectedEntry) => deselectedEntry.id === selectedEntry.id)
       );
       state.status = 'selecting';
+    },
+    deselectAll: (state) => {
+      state.selected = [];
     },
     enterSingleEdit: (state, action: PayloadAction<Attendance>) => {
       state.currentlyEditing = action.payload;
@@ -50,11 +55,32 @@ export const attendanceSlice = createSlice({
     },
     exitAttendanceCreation: (state) => {
       state.status = 'idle';
-    }
+    },
+    enterBulkEditing: (state) => {
+      if (state.selected.length > 0) {
+        state.editSelected = true;
+      }
+    },
+    exitBulkEditing: (state) => {
+      state.editSelected = false;
+      state.selected = [];
+    },
   },
 });
 
-export const { select, deselect, enterSingleEdit, exitSingleEdit, enableSelection, disableSelection, enterAttendanceCreation, exitAttendanceCreation } = attendanceSlice.actions;
+export const {
+  select,
+  deselect,
+  deselectAll,
+  enterSingleEdit,
+  exitSingleEdit,
+  enableSelection,
+  disableSelection,
+  enterAttendanceCreation,
+  exitAttendanceCreation,
+  enterBulkEditing,
+  exitBulkEditing,
+} = attendanceSlice.actions;
 
 
 export default attendanceSlice.reducer;
