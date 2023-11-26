@@ -205,7 +205,12 @@ export default function ParadeIdPage() {
             />
           </HStack>
 
-          {isBulkEditing && <BulkEditCommands mt={isMdScreenAndLarger ? 0 : 2} />}
+          {isBulkEditing &&
+            <BulkEditCommands
+              mt={isMdScreenAndLarger ? 0 : 2}
+              colorScheme={uiState.selected.length > 0 ? 'blue' : undefined}
+            />
+          }
         </Flex>
 
         <Tabs>

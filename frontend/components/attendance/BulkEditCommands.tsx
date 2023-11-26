@@ -3,11 +3,9 @@ import { AppState } from "@/lib/store";
 import { ApiClient } from "@/utils/axios";
 import { CreateAttendanceData, UpdateAttendanceData } from "@/utils/types/AttendanceData";
 import { ChevronDownIcon, CheckCircleIcon, EditIcon } from "@chakra-ui/icons";
-import { Menu, MenuButton, Button, MenuList, MenuItem, useMediaQuery, MenuButtonProps, useToast } from "@chakra-ui/react";
+import { Menu, MenuButton, Button, MenuList, MenuItem, useMediaQuery, MenuButtonProps, useToast, ButtonProps } from "@chakra-ui/react";
 import { useQueryClient } from "react-query";
 import { useSelector, useDispatch } from "react-redux";
-
-type ButtonProps = {} & MenuButtonProps
 
 export default function BulkEditCommands({ ...props }: ButtonProps) {
   const uiState = useSelector((state: AppState) => state.attendanceSlice);
@@ -73,8 +71,4 @@ export default function BulkEditCommands({ ...props }: ButtonProps) {
       </MenuList>
     </Menu>
   );
-}
-
-function toast(arg0: { title: string; description: string; status: string; duration: number; isClosable: boolean; }) {
-  throw new Error("Function not implemented.");
 }
