@@ -40,6 +40,7 @@ export default function CreateAttendaceModal({ handleClose, existingAttendances 
     try {
       await ApiClient.post('/attendances', data);
       await queryClient.invalidateQueries();
+      handleClose();
       toast({
         title: 'Successful',
         description: 'Created / Updated Attendance!',
