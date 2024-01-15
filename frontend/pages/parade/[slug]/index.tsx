@@ -1,4 +1,5 @@
 import {
+  Text,
   Button,
   Container,
   Divider,
@@ -135,6 +136,21 @@ export default function ParadeIdPage() {
       ));
   };
 
+  const uniqueTypes = uiState.selected
+    .reduce((userTypes, attendance) => {
+      userTypes.add(attendance.user.type)
+      return userTypes;
+    }, new Set());
+  const tabsWithAttendanceSelection = Array.from(uniqueTypes);
+
+  const determineTabTitle = (originalTitle: string) => {
+    console.log(tabsWithAttendanceSelection);
+    if (!tabsWithAttendanceSelection.includes(originalTitle)) {
+      return originalTitle;
+    }
+    return <Text as='b'>{originalTitle}</Text>;
+  }
+
 
   return (
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
@@ -234,12 +250,12 @@ export default function ParadeIdPage() {
               },
             }}
           >
-            <Tab>Commanders</Tab>
-            <Tab>S1 Branch</Tab>
-            <Tab>S3 Branch</Tab>
-            <Tab>S4 Branch</Tab>
-            <Tab>Media Team</Tab>
-            <Tab>Transition</Tab>
+            <Tab>{determineTabTitle('Commander')}</Tab>
+            <Tab>{determineTabTitle('S1 Branch')}</Tab>
+            <Tab>{determineTabTitle('S3 Branch')}</Tab>
+            <Tab>{determineTabTitle('S4 Branch')}</Tab>
+            <Tab>{determineTabTitle('Media Team')}</Tab>
+            <Tab>{determineTabTitle('Transition')}</Tab>
           </TabList>
 
           <TabPanels>
