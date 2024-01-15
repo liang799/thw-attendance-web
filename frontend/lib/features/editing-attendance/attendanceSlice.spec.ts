@@ -1,5 +1,5 @@
 import { Attendance } from "@/utils/types/AttendanceData";
-import attendanceSlice, { deselect, disableSelection, exitSingleEdit, enableSelection, enterSingleEdit, select, enterAttendanceCreation, exitAttendanceCreation, enterBulkEditing, exitBulkEditing, deselectAll } from "./attendance.slice";
+import attendanceSlice, { deselect, disableSelection, exitSingleEdit, enableSelection, enterSingleEdit, select, enterAttendanceCreation, exitAttendanceCreation, enterBulkEditing, exitBulkEditing, deselectAll, setTabIndex } from "./attendance.slice";
 
 describe('attendance editor reducer', () => {
 
@@ -8,6 +8,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     });
   });
@@ -17,6 +18,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     };
 
@@ -24,6 +26,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
 
@@ -41,6 +44,7 @@ describe('attendance editor reducer', () => {
       }],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     };
 
@@ -48,6 +52,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     });
   });
@@ -57,12 +62,14 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     }
     expect(attendanceSlice(initialState, select([]))).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -72,6 +79,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     }
     const attendace: Attendance = {
@@ -85,6 +93,7 @@ describe('attendance editor reducer', () => {
       selected: [attendace],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -104,6 +113,7 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     const attendances: Attendance[] = [
@@ -148,6 +158,7 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -173,6 +184,7 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     const deselected = [{
@@ -194,6 +206,7 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -219,12 +232,14 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initial, deselect(initial.selected))).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -243,6 +258,7 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initial, deselect([])))
@@ -270,12 +286,14 @@ describe('attendance editor reducer', () => {
       ],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initial, deselectAll())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   });
@@ -285,6 +303,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     }
     const attendace = {
@@ -298,6 +317,7 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: attendace,
+      tabIndex: 0,
       status: 'editing',
     });
   })
@@ -313,12 +333,14 @@ describe('attendance editor reducer', () => {
         parade: 1,
         submittedAt: new Date(),
       },
+      tabIndex: 0,
       status: 'editing',
     }
     expect(attendanceSlice(initialState, exitSingleEdit())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     });
   });
@@ -328,12 +350,14 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     }
     expect(attendanceSlice(initialState, enterAttendanceCreation())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'creating',
     });
   });
@@ -343,12 +367,14 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'creating',
     }
     expect(attendanceSlice(initialState, exitAttendanceCreation())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'idle',
     });
   });
@@ -358,27 +384,31 @@ describe('attendance editor reducer', () => {
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initialState, enterBulkEditing())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   })
 
   it('should enter bulk editing mode when selection is not empty', () => {
+    const sumbmittedDate = new Date();
     const initialState = {
       selected: [{
         id: 2,
         user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
         availability: { type: "", status: "", user: 0 },
         parade: 1,
-        submittedAt: new Date(),
+        submittedAt: sumbmittedDate,
       }],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initialState, enterBulkEditing())).toEqual({
@@ -387,10 +417,11 @@ describe('attendance editor reducer', () => {
         user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
         availability: { type: "", status: "", user: 0 },
         parade: 1,
-        submittedAt: new Date(),
+        submittedAt: sumbmittedDate
       }],
       editSelected: true,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     });
   })
@@ -406,13 +437,32 @@ describe('attendance editor reducer', () => {
       }],
       editSelected: true,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
     }
     expect(attendanceSlice(initialState, exitBulkEditing())).toEqual({
       selected: [],
       editSelected: false,
       currentlyEditing: null,
+      tabIndex: 0,
       status: 'selecting',
+    });
+  })
+
+  it('should set tab index', () => {
+    const initialState = {
+      selected: [],
+      editSelected: false,
+      currentlyEditing: null,
+      tabIndex: 0,
+      status: 'idle',
+    }
+    expect(attendanceSlice(initialState, setTabIndex(1))).toEqual({
+      selected: [],
+      editSelected: false,
+      currentlyEditing: null,
+      tabIndex: 1,
+      status: 'idle',
     });
   })
 });

@@ -5,6 +5,7 @@ type initialStateType = {
   selected: Attendance[],
   editSelected: boolean,
   currentlyEditing: Attendance | null,
+  tabIndex: number,
   status: 'idle' | 'selecting' | 'editing' | 'creating' | string,
 };
 
@@ -12,6 +13,7 @@ const initialState: initialStateType = {
   selected: [],
   editSelected: false,
   currentlyEditing: null,
+  tabIndex: 0,
   status: 'idle',
 };
 
@@ -65,6 +67,9 @@ export const attendanceSlice = createSlice({
       state.editSelected = false;
       state.selected = [];
     },
+    setTabIndex: (state, action: PayloadAction<number>) => {
+      state.tabIndex = action.payload;
+    },
   },
 });
 
@@ -80,6 +85,7 @@ export const {
   exitAttendanceCreation,
   enterBulkEditing,
   exitBulkEditing,
+  setTabIndex,
 } = attendanceSlice.actions;
 
 
