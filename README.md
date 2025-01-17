@@ -25,5 +25,8 @@ Make a copy of `.env.example` & rename it to `.env`
 ![image](https://github.com/user-attachments/assets/f577eb18-ac39-4401-ab61-3cd43c2b3dc5)
 ![image](https://github.com/user-attachments/assets/d932d32a-6863-40ed-9715-9ec78648db8c)
 
+![image](https://github.com/user-attachments/assets/c68b05c3-e45b-453a-8537-adc9620eb5de)
+
+
 
 
