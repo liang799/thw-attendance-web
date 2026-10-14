@@ -35,3 +35,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 src/seeders/users/UserData.ts
+
+# Local database CA certificate
+/ca.pem
