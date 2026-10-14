@@ -1,468 +1,177 @@
-import { Attendance } from "@/utils/types/AttendanceData";
-import attendanceSlice, { deselect, disableSelection, exitSingleEdit, enableSelection, enterSingleEdit, select, enterAttendanceCreation, exitAttendanceCreation, enterBulkEditing, exitBulkEditing, deselectAll, setTabIndex } from "./attendance.slice";
+import { Attendance } from '@/utils/types/AttendanceData';
+import attendanceReducer, {
+  AttendanceEditorState,
+  AttendanceState,
+  deselect,
+  deselectAll,
+  disableSelection,
+  enableSelection,
+  enterAttendanceCreation,
+  enterBulkEditing,
+  enterSingleEdit,
+  exitAttendanceCreation,
+  exitBulkEditing,
+  exitSingleEdit,
+  select,
+  setTabIndex,
+} from './attendance.slice';
+
+const first: Attendance = {
+  id: 1,
+  user: { id: 1, type: 'S1 Branch', rank: '', name: 'First', hasLeftNode: false },
+  availability: { type: 'Expect Arrival', status: 'Present', user: 1 },
+  parade: 1,
+  submittedAt: new Date('2024-01-01T00:00:00Z'),
+};
+const second: Attendance = {
+  ...first,
+  id: 2,
+  user: { ...first.user, id: 2, name: 'Second' },
+  availability: { ...first.availability, user: 2 },
+};
+
+function stateWith(editor: AttendanceEditorState): AttendanceState {
+  return { editor, tabIndex: 2 };
+}
 
 describe('attendance editor reducer', () => {
-
-  it('should handle initial state', () => {
-    expect(attendanceSlice(undefined, { type: 'unknown' })).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
+  it('starts idle without a selection or editing target', () => {
+    expect(attendanceReducer(undefined, { type: 'unknown' })).toEqual({
+      editor: { status: 'idle' },
       tabIndex: 0,
-      status: 'idle',
     });
   });
 
-  it('should enable selection', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    };
+  it('opens and closes single editing with a required target', () => {
+    const idle = stateWith({ status: 'idle' });
+    const editing = attendanceReducer(idle, enterSingleEdit(first));
 
-    expect(attendanceSlice(initialState, enableSelection())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
-
-  })
-
-  it('should clear selection array when selection is disabled', () => {
-    const initialState = {
-      selected: [{
-        editSelected: false,
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: new Date(),
-      }],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    };
-
-    expect(attendanceSlice(initialState, disableSelection())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    });
+    expect(editing).toEqual(stateWith({ status: 'editing', attendance: first }));
+    expect(attendanceReducer(editing, exitSingleEdit())).toEqual(idle);
   });
 
-  it('should handle zero selection', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    }
-    expect(attendanceSlice(initialState, select([]))).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+  it('opens and closes attendance creation', () => {
+    const idle = stateWith({ status: 'idle' });
+    const creating = attendanceReducer(idle, enterAttendanceCreation());
+
+    expect(creating).toEqual(stateWith({ status: 'creating' }));
+    expect(attendanceReducer(creating, exitAttendanceCreation())).toEqual(idle);
   });
 
-  it('should handle single selection', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    }
-    const attendace: Attendance = {
-      id: 1,
-      user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-      availability: { type: "", status: "", user: 0 },
-      parade: 1,
-      submittedAt: new Date(),
-    }
-    expect(attendanceSlice(initialState, select([attendace]))).toEqual({
-      selected: [attendace],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+  it('starts selection empty and removes its data when disabled', () => {
+    const idle = stateWith({ status: 'idle' });
+    const selecting = attendanceReducer(idle, enableSelection());
+    const selected = attendanceReducer(selecting, select([first, second]));
+
+    expect(selecting).toEqual(stateWith({ status: 'selecting', selected: [] }));
+    expect(selected).toEqual(stateWith({ status: 'selecting', selected: [first, second] }));
+    expect(attendanceReducer(selected, disableSelection())).toEqual(idle);
   });
 
-  it('should handle multiple selection', () => {
-    const date = new Date();
+  it('keeps selection unique by attendance ID across repeated events', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [first] });
+    const selected = attendanceReducer(selecting, select([{ ...first }, second, second]));
 
-    const initialState = {
-      selected: [
-        {
-          id: 1,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: new Date()
-        }
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    const attendances: Attendance[] = [
-      {
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: date,
-      },
-      {
-        id: 3,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: date,
-      }
-    ]
-    expect(attendanceSlice(initialState, select(attendances))).toEqual({
-      selected: [
-        {
-          id: 1,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-        {
-          id: 3,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        }
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+    expect(selected).toEqual(stateWith({ status: 'selecting', selected: [first, second] }));
   });
 
-  it('should handle single deselection', () => {
-    const date = new Date();
-    const initial = {
-      selected: [
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-        {
-          id: 3,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        }
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    const deselected = [{
-      id: 3,
-      user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-      availability: { type: "", status: "", user: 0 },
-      parade: 1,
-      submittedAt: date,
-    }]
-    expect(attendanceSlice(initial, deselect(deselected))).toEqual({
-      selected: [
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+  it('deselects by ID rather than object identity and stays in selection mode', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [first, second] });
+    const remaining = attendanceReducer(selecting, deselect([{ ...first }]));
+
+    expect(remaining).toEqual(stateWith({ status: 'selecting', selected: [second] }));
+    expect(attendanceReducer(remaining, deselect([second]))).toEqual(
+      stateWith({ status: 'selecting', selected: [] }),
+    );
   });
 
-  it('should handle multiple deselection', () => {
-    const date = new Date();
-    const initial = {
-      selected: [
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-        {
-          id: 3,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        }
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initial, deselect(initial.selected))).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+  it('clears all selections without leaving selection mode', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [first, second] });
+
+    expect(attendanceReducer(selecting, deselectAll())).toEqual(
+      stateWith({ status: 'selecting', selected: [] }),
+    );
   });
 
-  it('should handle zero deselection', () => {
-    const date = new Date();
-    const initial = {
-      selected: [
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initial, deselect([])))
-      .toEqual(initial);
+  it('does not change the selection for empty selection events', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [first] });
+
+    expect(attendanceReducer(selecting, select([]))).toEqual(selecting);
+    expect(attendanceReducer(selecting, deselect([]))).toEqual(selecting);
   });
 
-  it('should clear all selection', () => {
-    const date = new Date();
-    const initial = {
-      selected: [
-        {
-          id: 2,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        },
-        {
-          id: 3,
-          user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-          availability: { type: "", status: "", user: 0 },
-          parade: 1,
-          submittedAt: date,
-        }
-      ],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initial, deselectAll())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
+  it('refuses to open bulk editing with an empty selection', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [] });
+
+    expect(attendanceReducer(selecting, enterBulkEditing())).toBe(selecting);
   });
 
-  it('should store attendance when entering single editing mode', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    }
-    const attendace = {
-      id: 2,
-      user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-      availability: { type: "", status: "", user: 0 },
-      parade: 1,
-      submittedAt: new Date(),
-    }
-    expect(attendanceSlice(initialState, enterSingleEdit(attendace))).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: attendace,
-      tabIndex: 0,
-      status: 'editing',
-    });
-  })
+  it('preserves the targets in bulk editing and clears them on close', () => {
+    const selecting = stateWith({ status: 'selecting', selected: [first, second] });
+    const bulkEditing = attendanceReducer(selecting, enterBulkEditing());
 
-  it('should clear last clicked when exiting single editing mode', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: {
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: new Date(),
-      },
-      tabIndex: 0,
-      status: 'editing',
-    }
-    expect(attendanceSlice(initialState, exitSingleEdit())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    });
+    expect(bulkEditing).toEqual(stateWith({ status: 'bulkEditing', selected: [first, second] }));
+    expect(attendanceReducer(bulkEditing, exitBulkEditing())).toEqual(
+      stateWith({ status: 'selecting', selected: [] }),
+    );
   });
 
-  it('should switch to attendance creation mode', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    }
-    expect(attendanceSlice(initialState, enterAttendanceCreation())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'creating',
-    });
+  it('cannot reopen bulk editing after closing it until targets are selected again', () => {
+    let state = stateWith({ status: 'idle' });
+    state = attendanceReducer(state, enableSelection());
+    state = attendanceReducer(state, select([first]));
+    state = attendanceReducer(state, enterBulkEditing());
+    state = attendanceReducer(state, exitBulkEditing());
+
+    expect(attendanceReducer(state, enterBulkEditing())).toBe(state);
+
+    state = attendanceReducer(state, disableSelection());
+    state = attendanceReducer(state, enterSingleEdit(second));
+    expect(state).toEqual(stateWith({ status: 'editing', attendance: second }));
   });
 
-  it('should exit from attendance creation mode', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'creating',
+  it.each([
+    {
+      state: stateWith({ status: 'idle' }),
+      actions: [select([first]), deselect([first]), deselectAll(), disableSelection(),
+        enterBulkEditing(), exitBulkEditing(), exitSingleEdit(), exitAttendanceCreation()],
+    },
+    {
+      state: stateWith({ status: 'selecting', selected: [first] }),
+      actions: [enableSelection(), enterSingleEdit(second), enterAttendanceCreation(),
+        exitBulkEditing(), exitSingleEdit(), exitAttendanceCreation()],
+    },
+    {
+      state: stateWith({ status: 'editing', attendance: first }),
+      actions: [select([second]), deselect([first]), deselectAll(), enableSelection(),
+        disableSelection(), enterSingleEdit(second), enterAttendanceCreation(),
+        enterBulkEditing(), exitBulkEditing(), exitAttendanceCreation()],
+    },
+    {
+      state: stateWith({ status: 'bulkEditing', selected: [first] }),
+      actions: [select([second]), deselect([first]), deselectAll(), enableSelection(),
+        disableSelection(), enterSingleEdit(second), enterAttendanceCreation(),
+        enterBulkEditing(), exitSingleEdit(), exitAttendanceCreation()],
+    },
+    {
+      state: stateWith({ status: 'creating' }),
+      actions: [select([first]), deselect([first]), deselectAll(), enableSelection(),
+        disableSelection(), enterSingleEdit(first), enterAttendanceCreation(),
+        enterBulkEditing(), exitBulkEditing(), exitSingleEdit()],
+    },
+  ])('ignores unrelated events while $state.editor.status', ({ state, actions }) => {
+    for (const action of actions) {
+      expect(attendanceReducer(state, action)).toBe(state);
     }
-    expect(attendanceSlice(initialState, exitAttendanceCreation())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    });
   });
 
-  it('should not enter bulk editing mode when no attendances are selected', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initialState, enterBulkEditing())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
-  })
-
-  it('should enter bulk editing mode when selection is not empty', () => {
-    const sumbmittedDate = new Date();
-    const initialState = {
-      selected: [{
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: sumbmittedDate,
-      }],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initialState, enterBulkEditing())).toEqual({
-      selected: [{
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: sumbmittedDate
-      }],
-      editSelected: true,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
-  })
-
-  it('should clear selection when exiting bulk editing', () => {
-    const initialState = {
-      selected: [{
-        id: 2,
-        user: { id: 1, type: "", rank: "", name: "", hasLeftNode: false },
-        availability: { type: "", status: "", user: 0 },
-        parade: 1,
-        submittedAt: new Date(),
-      }],
-      editSelected: true,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    }
-    expect(attendanceSlice(initialState, exitBulkEditing())).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'selecting',
-    });
-  })
-
-  it('should set tab index', () => {
-    const initialState = {
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 0,
-      status: 'idle',
-    }
-    expect(attendanceSlice(initialState, setTabIndex(1))).toEqual({
-      selected: [],
-      editSelected: false,
-      currentlyEditing: null,
-      tabIndex: 1,
-      status: 'idle',
-    });
-  })
+  it.each([
+    stateWith({ status: 'idle' }),
+    stateWith({ status: 'selecting', selected: [first] }),
+    stateWith({ status: 'editing', attendance: first }),
+    stateWith({ status: 'bulkEditing', selected: [first] }),
+    stateWith({ status: 'creating' }),
+  ])('changes tabs independently of the $editor.status workflow', (state) => {
+    expect(attendanceReducer(state, setTabIndex(4))).toEqual({ ...state, tabIndex: 4 });
+  });
 });

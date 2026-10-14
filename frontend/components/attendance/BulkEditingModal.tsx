@@ -5,10 +5,10 @@ import { useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseBut
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { useState, useRef, ChangeEvent } from "react";
 import { useQueryClient } from "react-query";
-import { AppState } from "@/lib/store";
-import { useSelector } from "react-redux";
+import { NonEmptyAttendanceSelection } from "@/lib/features/editing-attendance/attendance.slice";
 
 type AttendanceModalProps = {
+  selected: NonEmptyAttendanceSelection,
   handleClose: () => void,
 }
 
@@ -21,7 +21,7 @@ enum UiStatus {
   ERROR,
 }
 
-export default function BulkEditingModalv2({ handleClose }: AttendanceModalProps) {
+export default function BulkEditingModalv2({ selected, handleClose }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [uiStatus, setUiStatus] = useState(UiStatus.SELECTING_DROPDOWN);
   const [dispatchLocation, setDispatchLocation] = useState('');
@@ -29,9 +29,6 @@ export default function BulkEditingModalv2({ handleClose }: AttendanceModalProps
   const finalRef = useRef(null);
   const queryClient = useQueryClient();
   const toast = useToast();
-
-  const store = useSelector((state: AppState) => state.attendanceSlice);
-
 
   const onSubmit = async () => {
     setUiStatus(UiStatus.SUBMITTING);
@@ -60,7 +57,7 @@ export default function BulkEditingModalv2({ handleClose }: AttendanceModalProps
         break;
     }
 
-    const updatedList = store.selected.map((attendance) => {
+    const updatedList = selected.map((attendance) => {
       let copy = JSON.parse(JSON.stringify(data));
       copy.id = attendance.id;
       copy.user = attendance.user.id;

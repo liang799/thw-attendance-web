@@ -30,7 +30,7 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 
 type AttendanceModalProps = {
-  attendance: Attendance | null,
+  attendance: Attendance,
   handleClose: () => void,
 }
 
@@ -80,7 +80,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
     }
 
     try {
-      await ApiClient.put(`/attendances/${attendance?.id}`, data);
+      await ApiClient.put(`/attendances/${attendance.id}`, data);
       setUiStatus(UiStatus.SUCCESS);
       toast({
         title: "Successful",
@@ -128,8 +128,8 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
       <ModalContent>
         <ModalHeader>
           Edit Attendance for {' '}
-          <Link as={NextLink} color='teal.500' href={`/user/${attendance?.user.id}`}>
-            {attendance?.user.name} <ExternalLinkIcon mx='2px' />
+          <Link as={NextLink} color='teal.500' href={`/user/${attendance.user.id}`}>
+            {attendance.user.name} <ExternalLinkIcon mx='2px' />
           </Link>
         </ModalHeader>
         <ModalCloseButton />
@@ -163,7 +163,7 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
                 Submit
               </Button>
               {uiStatus !== UiStatus.SUBMITTING &&
-                <DeleteAttendanceButton attendanceId={attendance?.id} handleClose={handleClose} />
+                <DeleteAttendanceButton attendanceId={attendance.id} handleClose={handleClose} />
               }
             </HStack>
           </form>

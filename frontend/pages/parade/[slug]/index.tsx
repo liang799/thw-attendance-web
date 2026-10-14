@@ -40,7 +40,7 @@ import AttendanceCard from '@/components/attendance/AttendanceCard';
 import { SearchBar } from '@/components/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '@/lib/store';
-import { disableSelection, enableSelection, enterAttendanceCreation, enterSingleEdit, exitAttendanceCreation, exitBulkEditing, exitSingleEdit, select, setTabIndex } from '@/lib/features/editing-attendance/attendance.slice';
+import { disableSelection, enableSelection, enterAttendanceCreation, exitAttendanceCreation, exitBulkEditing, exitSingleEdit, setTabIndex } from '@/lib/features/editing-attendance/attendance.slice';
 import BulkEditCommands from '@/components/attendance/BulkEditCommands';
 import CreateAttendaceModal from '@/components/attendance/CreateAttendanceModal';
 import BulkEditingModalv2 from '@/components/attendance/BulkEditingModal';
@@ -57,11 +57,9 @@ export default function ParadeIdPage() {
 
   const uiState = useSelector((state: AppState) => state.attendanceSlice);
   const dispatch = useDispatch();
-  const isEditing = uiState.status === "editing";
-  const isBulkEditing = uiState.status === "selecting";
-  const showBulkEditingModal = uiState.editSelected === true;
-  const isIdle = uiState.status === "idle";
-  const isCreating = uiState.status === "creating";
+  const { editor } = uiState;
+  const isSelecting = editor.status === 'selecting' || editor.status === 'bulkEditing';
+  const selected: readonly Attendance[] = isSelecting ? editor.selected : [];
 
   useAuthentication();
 
@@ -136,7 +134,7 @@ export default function ParadeIdPage() {
       ));
   };
 
-  const uniqueTypes = uiState.selected
+  const uniqueTypes = selected
     .reduce((userTypes, attendance) => {
       userTypes.add(attendance.user.type)
       return userTypes;
@@ -156,9 +154,9 @@ export default function ParadeIdPage() {
     <Container p={4} maxW='container.xl' minH='100vh' bg={bgColor}>
       <Navbar />
 
-      {isEditing &&
+      {editor.status === 'editing' &&
         <AttendanceModal
-          attendance={uiState.currentlyEditing}
+          attendance={editor.attendance}
           handleClose={() => dispatch(exitSingleEdit())}
         />
       }
@@ -215,22 +213,25 @@ export default function ParadeIdPage() {
           <HStack>
             <Heading as='h2' size='md' colorScheme='gray'>Attendance Bulk Editor</Heading>
             <Switch
-              isChecked={isBulkEditing}
+              isChecked={isSelecting}
+              isDisabled={editor.status !== 'idle' && editor.status !== 'selecting'}
               onChange={() => {
-                if (isBulkEditing) return dispatch(disableSelection());
+                if (isSelecting) return dispatch(disableSelection());
                 dispatch(enableSelection());
               }}
             />
           </HStack>
 
-          {isBulkEditing &&
+          {isSelecting &&
             <BulkEditCommands
+              selected={selected}
+              isDisabled={editor.status === 'bulkEditing'}
               mt={isMdScreenAndLarger ? 0 : 2}
-              colorScheme={uiState.selected.length > 0 ? 'blue' : undefined}
+              colorScheme={selected.length > 0 ? 'blue' : undefined}
             />
           }
-          {showBulkEditingModal &&
-            <BulkEditingModalv2 handleClose={() => dispatch(exitBulkEditing())} />
+          {editor.status === 'bulkEditing' &&
+            <BulkEditingModalv2 selected={editor.selected} handleClose={() => dispatch(exitBulkEditing())} />
           }
         </Flex>
 
@@ -280,12 +281,12 @@ export default function ParadeIdPage() {
           </TabPanels>
         </Tabs>
 
-        {isIdle &&
+        {editor.status === 'idle' &&
           <Button leftIcon={<AddIcon />} onClick={() => dispatch(enterAttendanceCreation())}>
             New Attendance
           </Button>
         }
-        {isCreating &&
+        {editor.status === 'creating' &&
           <CreateAttendaceModal
             handleClose={() => dispatch(exitAttendanceCreation())}
             existingAttendances={paradeData.attendances}
