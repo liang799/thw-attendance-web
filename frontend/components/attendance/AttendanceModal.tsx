@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { useId, useRef, useState } from 'react';
 import {
-  Badge,
   Button,
   FormControl,
   FormLabel,
@@ -21,7 +20,7 @@ import {
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
 import { Attendance, UpdateAttendanceData } from '@/utils/types/AttendanceData';
 import { ApiClient } from '@/utils/axios';
-import { useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { attendanceOptions } from '@/config/attendanceOptions';
 import AttendanceBadge from '@/components/attendance/AttendanceBadge';
 import DeleteAttendanceButton from '@/components/attendance/DeleteAttendanceButton';
@@ -34,96 +33,64 @@ type AttendanceModalProps = {
   handleClose: () => void,
 }
 
-enum UiStatus {
-  SELECTING_DROPDOWN,     // Default
-  INPUTTING_DISPATCH_LOC,
-  INPUTTING_MC_DATES,
-  SUBMITTING,             // User Submit form
-  SUCCESS,
-  ERROR,
-}
-
 export default function AttendanceModal({ attendance, handleClose }: AttendanceModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [uiStatus, setUiStatus] = useState(UiStatus.SELECTING_DROPDOWN);
   const [dispatchLocation, setDispatchLocation] = useState('');
   const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
+  const selectedOption = attendanceOptions[selectedIndex];
+  const mcDatesId = useId();
   const finalRef = useRef(null);
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const onSubmit = async () => {
-    setUiStatus(UiStatus.SUBMITTING);
-    let data: UpdateAttendanceData;
-    switch (uiStatus) {
-      case UiStatus.INPUTTING_DISPATCH_LOC:
-        data = {
-          availability: attendanceOptions[selectedIndex].availability,
-          status: attendanceOptions[selectedIndex].status,
-          location: dispatchLocation,
-        };
-        break;
-      case UiStatus.INPUTTING_MC_DATES:
-        data = {
-          availability: attendanceOptions[selectedIndex].availability,
-          status: attendanceOptions[selectedIndex].status,
-          absentStartDate: selectedDates[0],
-          absentEndDate: selectedDates[1],
-        };
-        break;
-      default:
-        data = {
-          availability: attendanceOptions[selectedIndex].availability,
-          status: attendanceOptions[selectedIndex].status,
-        };
-        break;
-    }
+  const saveAttendance = useMutation(
+    (data: UpdateAttendanceData) => ApiClient.put(`/attendances/${attendance.id}`, data),
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries();
+        handleClose();
+        toast({
+          title: "Successful",
+          description: "You have submitted your attendance",
+          status: "success",
+          duration: 5000,
+          isClosable: true
+        });
+      },
+      onError: (error: Error) => {
+        toast({
+          title: error.name,
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true
+        });
+      },
+    },
+  );
 
-    try {
-      await ApiClient.put(`/attendances/${attendance.id}`, data);
-      setUiStatus(UiStatus.SUCCESS);
-      toast({
-        title: "Successful",
-        description: "You have submitted your attendance",
-        status: "success",
-        duration: 5000,
-        isClosable: true
-      });
-      await queryClient.invalidateQueries();
-    } catch (error: any) {
-      setUiStatus(UiStatus.ERROR);
-      toast({
-        title: error.name,
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true
-      });
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (saveAttendance.isLoading) return;
+
+    const data: UpdateAttendanceData = { ...selectedOption };
+    if (selectedOption.availability === 'Dispatch') {
+      data.location = dispatchLocation;
+    } else if (selectedOption.availability === 'Absent') {
+      data.absentStartDate = selectedDates[0];
+      data.absentEndDate = selectedDates[1];
     }
+    saveAttendance.mutate(data);
   };
 
-  function determineAdditionalInput(event: ChangeEvent<HTMLSelectElement>) {
-    const value = +event.target.value;
-    setSelectedIndex(value);
-
-    if (attendanceOptions[value].availability === "Absent") {
-      setUiStatus(UiStatus.INPUTTING_MC_DATES);
-      return;
-    }
-    if (attendanceOptions[value].availability === "Dispatch") {
-      setUiStatus(UiStatus.INPUTTING_DISPATCH_LOC);
-      return;
-    }
-    setUiStatus(UiStatus.SELECTING_DROPDOWN);
-  }
-
-  if (uiStatus === UiStatus.SUCCESS || uiStatus === UiStatus.ERROR) {
-    handleClose();
-    return <></>;
-  }
-
   return (
-    <Modal finalFocusRef={finalRef} isOpen={true} onClose={handleClose}>
+    <Modal
+      finalFocusRef={finalRef}
+      isOpen={true}
+      onClose={() => { if (!saveAttendance.isLoading) handleClose(); }}
+      closeOnEsc={!saveAttendance.isLoading}
+      closeOnOverlayClick={!saveAttendance.isLoading}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -132,37 +99,39 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
             {attendance.user.name} <ExternalLinkIcon mx='2px' />
           </Link>
         </ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton isDisabled={saveAttendance.isLoading} />
         <ModalBody>
-          <form>
-            <FormControl>
+          <form onSubmit={onSubmit}>
+            <FormControl isDisabled={saveAttendance.isLoading}>
               <FormLabel>Status</FormLabel>
-              <Select onChange={determineAdditionalInput}>
+              <Select value={selectedIndex} onChange={(event) => setSelectedIndex(+event.target.value)}>
                 {attendanceOptions.map((data, index) => (
                   <option key={index} value={index}>{data.status}</option>
                 ))}
               </Select>
             </FormControl>
-            {uiStatus === UiStatus.INPUTTING_DISPATCH_LOC &&
-              <FormControl>
+            {selectedOption.availability === 'Dispatch' &&
+              <FormControl isDisabled={saveAttendance.isLoading}>
                 <FormLabel>Dispatch location</FormLabel>
-                <Input onChange={(event) => setDispatchLocation(event.target.value)} />
+                <Input value={dispatchLocation} onChange={(event) => setDispatchLocation(event.target.value)} />
               </FormControl>
             }
-            {uiStatus === UiStatus.INPUTTING_MC_DATES &&
-              <FormControl>
+            {selectedOption.availability === 'Absent' &&
+              <FormControl id={mcDatesId} isDisabled={saveAttendance.isLoading}>
                 <FormLabel>MC Dates</FormLabel>
                 <RangeDatepicker
+                  propsConfigs={{ inputProps: { 'aria-labelledby': `${mcDatesId}-label` } }}
+                  disabled={saveAttendance.isLoading}
                   selectedDates={selectedDates}
                   onDateChange={setSelectedDates}
                 />
               </FormControl>
             }
             <HStack mt={4} spacing={4}>
-              <Button isLoading={uiStatus === UiStatus.SUBMITTING} colorScheme='teal' onClick={onSubmit}>
+              <Button isLoading={saveAttendance.isLoading} colorScheme='teal' type='submit'>
                 Submit
               </Button>
-              {uiStatus !== UiStatus.SUBMITTING &&
+              {!saveAttendance.isLoading &&
                 <DeleteAttendanceButton attendanceId={attendance.id} handleClose={handleClose} />
               }
             </HStack>
@@ -170,12 +139,10 @@ export default function AttendanceModal({ attendance, handleClose }: AttendanceM
         </ModalBody>
 
         <ModalFooter>
-          {uiStatus !== UiStatus.SUBMITTING &&
-            <Text>
-              Last Known:
-              <AttendanceBadge attendance={attendance} />
-            </Text>
-          }
+          <Text>
+            Last Known:
+            <AttendanceBadge attendance={attendance} />
+          </Text>
         </ModalFooter>
       </ModalContent>
     </Modal>
