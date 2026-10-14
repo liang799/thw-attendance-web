@@ -60,4 +60,20 @@ describe('database connection configuration', () => {
       'DB_SSL_MODE must be DISABLED, REQUIRED, or VERIFY_IDENTITY',
     );
   });
+
+  it('loads the CA from a deployment environment without reading a local file', async () => {
+    process.env.DB_SSL_MODE = 'VERIFY_IDENTITY';
+    process.env.DB_SSL_CA = '-----BEGIN CERTIFICATE-----\nproject-ca\n';
+    process.env.DB_SSL_CA_PATH = './ca.pem';
+    const { readFileSync } = await import('node:fs');
+
+    const { default: config } = await import('./mikro-orm.config');
+
+    expect(config.driverOptions.connection.ssl).toEqual({
+      rejectUnauthorized: true,
+      verifyIdentity: true,
+      ca: process.env.DB_SSL_CA,
+    });
+    expect(readFileSync).not.toHaveBeenCalled();
+  });
 });

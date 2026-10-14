@@ -39,6 +39,20 @@ reset a disposable development database.
 
 Start the backend with `npm run start:dev` (port 3000 by default).
 
+### Vercel
+Use the `backend` root directory and the NestJS framework preset for the API.
+Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and
+`JWT_SECRET` in the backend project's environment variables. For verified Aiven
+TLS, set `DB_SSL_MODE=VERIFY_IDENTITY` and paste the full CA certificate into
+`DB_SSL_CA`. This takes precedence over `DB_SSL_CA_PATH`, so deployments do not
+need the ignored local `ca.pem` file.
+
+Use the `frontend` root directory and Next.js preset for the frontend. Set
+`NEXT_PUBLIC_BACKEND_URL` to the API's production HTTPS URL. If
+`NEXT_PUBLIC_BACKEND_URLS` is set, it overrides `NEXT_PUBLIC_BACKEND_URL`; keep
+both aligned or use only one. Redeploy after changing environment variables.
+Seed the database once from a configured local backend; do not seed during builds.
+
 # Screenshots
 ![image](https://github.com/user-attachments/assets/cbdfc3a6-380a-441c-9e03-3345b7544908)
 ![image](https://github.com/user-attachments/assets/6509d198-434a-4105-a95e-4b925ba28e3c)

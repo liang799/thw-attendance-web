@@ -25,9 +25,11 @@ const config: Options = {
           : {
               rejectUnauthorized: sslMode === 'VERIFY_IDENTITY',
               verifyIdentity: sslMode === 'VERIFY_IDENTITY',
-              ca: process.env.DB_SSL_CA_PATH
-                ? readFileSync(process.env.DB_SSL_CA_PATH, 'utf8')
-                : undefined,
+              ca:
+                process.env.DB_SSL_CA ||
+                (process.env.DB_SSL_CA_PATH
+                  ? readFileSync(process.env.DB_SSL_CA_PATH, 'utf8')
+                  : undefined),
             },
     },
   },
