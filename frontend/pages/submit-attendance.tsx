@@ -78,7 +78,7 @@ export default function SubmitAttendancePage() {
 
     try {
       await ApiClient.post('/attendances', data);
-      queryClient.invalidateQueries({ queryKey: [ReactQueryKey.ATTENDANCE] });
+      void queryClient.invalidateQueries();
       toast({
         title: 'Successful',
         description: 'You have submitted your attendance',

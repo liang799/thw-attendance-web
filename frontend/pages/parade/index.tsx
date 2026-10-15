@@ -1,5 +1,5 @@
 import HorizontalCard from '@/components/HorizontalCard';
-import { Button, CardBody, Container, Heading, Link, Skeleton, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Button, CardBody, Container, Heading, Link, Skeleton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { ReactQueryKey } from '@/utils/react-query-keys';
 import { ApiClient } from '@/utils/axios';
@@ -11,11 +11,14 @@ import { AddIcon } from '@chakra-ui/icons';
 import ParadeHistory from '@/components/history/ParadeHistory';
 import { useState } from 'react';
 import GenericErrorDisplay from '@/components/GenericErrorDisplay';
+import GuestWelcome from '@/components/guest/GuestWelcome';
+import { isGuestMode } from '@/utils/guest/session';
 
 export default function ParadeIndexPage() {
   useAuthentication();
 
   const router = useRouter();
+  const guest = isGuestMode();
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const { data, isLoading, isError, status } = useQuery(ReactQueryKey.LATEST_PARADE,
     () => {
@@ -51,6 +54,7 @@ export default function ParadeIndexPage() {
         <Navbar />
         <Stack p={4} spacing='12px'>
           <Heading pb={4}>Parade State Tracker</Heading>
+          {guest && <Text>Your demo parade has ended. Start a new one, browse history, or reset the demo above.</Text>}
 
           <Button
             leftIcon={<AddIcon />}
@@ -61,7 +65,7 @@ export default function ParadeIndexPage() {
             New Parade
           </Button>
 
-          <ParadeHistory />
+          <ParadeHistory completedOnly={guest} />
 
         </Stack>
       </Container>
@@ -74,12 +78,14 @@ export default function ParadeIndexPage() {
 
       <Stack p={4} spacing='12px'>
         <Heading py={4}>Parade State Tracker</Heading>
+        {guest && <GuestWelcome />}
 
         {getUserId() &&
           <Link href='/submit-attendance' as={NextLink}>
             <HorizontalCard>
               <CardBody>
                 <Heading size='md'>Submit Attendance</Heading>
+                {guest && <Text mt={2}>Try checking in as Alex Tan.</Text>}
               </CardBody>
             </HorizontalCard>
           </Link>
@@ -89,6 +95,7 @@ export default function ParadeIndexPage() {
           <HorizontalCard>
             <CardBody>
               <Heading size='md'>Parade Overview</Heading>
+              {guest && <Text mt={2}>View the team, change statuses, and try bulk editing.</Text>}
             </CardBody>
           </HorizontalCard>
         </Link>
@@ -97,9 +104,14 @@ export default function ParadeIndexPage() {
           <HorizontalCard>
             <CardBody>
               <Heading size='md'>Create User</Heading>
+              {guest && <Text mt={2}>Add a fictional team member to the demo.</Text>}
             </CardBody>
           </HorizontalCard>
         </Link>
+        {guest && <>
+          <Heading size="md" pt={6} pb={2}>Parade history</Heading>
+          <ParadeHistory completedOnly />
+        </>}
       </Stack>
     </Container>
   );

@@ -23,6 +23,8 @@ import { clearLocalStorage, getUserId } from "@/utils/auth";
 import { ApiClient } from "@/utils/axios";
 import { useQuery } from "react-query";
 import Link from 'next/link';
+import GuestBanner from '@/components/guest/GuestBanner';
+import { isGuestMode } from '@/utils/guest/session';
 
 interface Props {
   children: ReactNode;
@@ -50,6 +52,7 @@ const NavLink = (props: Props) => {
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
+  const guest = isGuestMode();
 
   const { isLoading, data } = useQuery("User ID", () =>
     ApiClient.get(`/users/${getUserId()}`).then(res =>
@@ -73,7 +76,7 @@ export default function Navbar() {
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
-              <Button onClick={toggleColorMode}>
+              <Button onClick={toggleColorMode} aria-label={`Switch to ${colorMode === 'light' ? 'dark' : 'light'} mode`}>
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </Button>
 
@@ -83,6 +86,7 @@ export default function Navbar() {
                   rounded={"full"}
                   variant={"link"}
                   cursor={"pointer"}
+                  aria-label="Account menu"
                   minW={0}>
                   <Avatar
                     size={"sm"}
@@ -103,14 +107,17 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem onClick={() => router.push("/user/changePassword")}>Change Password</MenuItem>
-                  <MenuItem onClick={logout}>Logout</MenuItem>
+                  {guest ? <MenuItem onClick={() => router.push('/parade')}>Demo home</MenuItem> : <>
+                    <MenuItem onClick={() => router.push("/user/changePassword")}>Change Password</MenuItem>
+                    <MenuItem onClick={logout}>Logout</MenuItem>
+                  </>}
                 </MenuList>
               </Menu>
             </Stack>
           </Flex>
         </Flex>
       </Box>
+      <GuestBanner />
     </>
   );
 }

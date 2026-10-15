@@ -17,6 +17,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Navbar from '@/components/Navbar';
 import { useAuthentication } from '@/utils/auth';
+import { useRouter } from 'next/router';
+import { useQueryClient } from 'react-query';
 
 const schema = yup.object({
   startDate: yup.date().required(),
@@ -30,6 +32,8 @@ export default function CreateParadePage() {
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const boxColor = useColorModeValue('white', 'gray.700');
   const toast = useToast();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
 
   useAuthentication();
@@ -37,6 +41,8 @@ export default function CreateParadePage() {
   const onSubmit = async (data: CreateParadeData) => {
     try {
       await ApiClient.post('/parades', data);
+      await queryClient.invalidateQueries();
+      void router.push('/parade');
       toast({
         title: 'Successful',
         description: 'Created new Parade!',
@@ -61,11 +67,12 @@ export default function CreateParadePage() {
         <Navbar />
         <Flex p={5} align='center' justify='center' flexDirection='column'>
           <Heading p={5}>New Parade</Heading>
-          <Stack w={[350, 400]} bg={boxColor} p={5}>
+          <Stack w="full" maxW="400px" bg={boxColor} p={5}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl isInvalid={!!errors.startDate}>
                 <FormLabel htmlFor='date'>Start Date</FormLabel>
                 <Input
+                  id='date'
                   placeholder='Select Date'
                   size='md'
                   type='date'

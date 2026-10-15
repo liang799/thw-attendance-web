@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { getAccessToken } from '@/utils/auth';
+import { isGuestMode } from '@/utils/guest/session';
+import { guestAdapter } from '@/utils/guest/adapter';
 
 
 const baseUrls = determineUrls();
@@ -16,7 +18,7 @@ let currentBaseUrlIndex = 0;
 ApiClient.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && error.response.status > 500 || !error.response) {     // > 500 http code || missing CORS
+    if (!isGuestMode() && (error.response && error.response.status > 500 || !error.response)) {     // > 500 http code || missing CORS
       currentBaseUrlIndex = (currentBaseUrlIndex + 1) % baseUrls.length;        // Cycles through array. If end of array, reset
       ApiClient.defaults.baseURL = baseUrls[currentBaseUrlIndex];               // TODO: Do not mutate `ApiClient`
       console.info(`Switched to base URL: ${baseUrls[currentBaseUrlIndex]}`);
@@ -28,6 +30,11 @@ ApiClient.interceptors.response.use(
 ApiClient.interceptors.request.use(
   (config) => {
     const newConfig = { ...config };
+    if (isGuestMode()) {
+      newConfig.adapter = guestAdapter;
+      newConfig.headers.delete('Authorization');
+      return newConfig;
+    }
     try {
       const token = getAccessToken();
       newConfig.headers.Authorization = `Bearer ${token}`;

@@ -8,7 +8,7 @@ import { ParadeListItem } from '@/utils/types/ParadeListItem';
 import { DateTime } from 'luxon';
 import GenericErrorDisplay from '@/components/GenericErrorDisplay';
 
-export default function ParadeHistory() {
+export default function ParadeHistory({ completedOnly = false }: { completedOnly?: boolean }) {
   const { data, isLoading, error } = useQuery(ReactQueryKey.ALL_PARADES,
     () => {
       return ApiClient.get('/parades').then(res => res.data);
@@ -35,7 +35,7 @@ export default function ParadeHistory() {
 
   return (
     <>
-      {data.map((parade: ParadeListItem) => {
+      {data.filter((parade: ParadeListItem) => !completedOnly || parade.endDate).map((parade: ParadeListItem) => {
         return (
           <Link href={`/parade/${parade.id}`} as={NextLink} key={parade.id}>
             <HorizontalCard>

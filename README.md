@@ -1,4 +1,17 @@
 # Setup
+## Guest demo
+Visitors can select **Explore as guest** on the login page without an account or
+running backend. The demo uses fictional people, an active parade, and two past
+parades. Visitors can submit attendance, edit or bulk-edit statuses, create demo
+users, copy summaries, and stop or create parades using the existing screens.
+
+Guest requests use a local Axios adapter; unsupported actions are rejected locally
+and no guest request is sent to the API. Demo changes survive refresh in this tab's
+`sessionStorage`. **Reset demo** restores the sample data; **Exit guest mode**
+removes it and returns to sign-in. These actions reload the page to clear cached
+queries and open editors. Browser session storage must be available. Guest mode
+does not create credentials or change the backend's authentication requirements.
+
 ## Frontend
 ### Create `.env` file
 ```.env

@@ -4,10 +4,10 @@ import { ApiClient } from '@/utils/axios';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
+import { GUEST_USER_ID, isGuestMode } from '@/utils/guest/session';
 
 export function getAccessToken(): string {
   const token = secureLocalStorage.getItem('token');
-  console.log(token)
   if (!token) throw new Error('Cannot get token');
   return String(token);
 }
@@ -21,9 +21,9 @@ export function clearLocalStorage() {
 }
 
 export function getUserId(): number | null {
+  if (isGuestMode()) return GUEST_USER_ID;
   const userIdString = secureLocalStorage.getItem('userId');
   if (!userIdString) return null;
-  console.log(`userId: ${userIdString}`);
   return +userIdString;
 }
 

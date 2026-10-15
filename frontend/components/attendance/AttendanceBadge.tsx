@@ -25,7 +25,7 @@ export default function AttendanceBadge({ attendance }: AttendanceBadgeProps) {
 
   return (
     <Badge ml='2' mb='1' colorScheme={determineAttendanceColor(attendance)}>
-      {generateAttendanceStatus(attendance.availability)}
+      {generateAttendanceStatus(attendance.availability) || 'Not submitted'}
     </Badge>
   );
 }

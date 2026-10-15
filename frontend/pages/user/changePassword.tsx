@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Stack,
+  Text,
   useColorModeValue, useToast,
 } from '@chakra-ui/react';
 import PasswordInput from '@/components/PasswordInput';
@@ -16,6 +17,7 @@ import { ApiClient } from '@/utils/axios';
 import * as yup from 'yup';
 import Navbar from '@/components/Navbar';
 import { useAuthentication } from '@/utils/auth';
+import { isGuestMode } from '@/utils/guest/session';
 
 const schema = yup.object({
   oldPassword: yup.string().required(),
@@ -70,7 +72,7 @@ export default function ChangePasswordPage() {
         <Navbar />
         <Flex p={5} align='center' justify='center' flexDirection='column'>
           <Heading p={5}>Change Password</Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          {isGuestMode() ? <Text>Guest mode has no password. Use “Exit guest mode” above to sign in to your account.</Text> : <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.oldPassword}>
               <FormLabel htmlFor='oldPassword'>Old Password</FormLabel>
               <PasswordInput {...register('oldPassword')} />
@@ -84,7 +86,7 @@ export default function ChangePasswordPage() {
             <Button mt={4} colorScheme='teal' isLoading={isSubmitting} type='submit'>
               Submit
             </Button>
-          </form>
+          </form>}
         </Flex>
       </Stack>
     </Container>

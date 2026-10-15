@@ -163,7 +163,7 @@ export default function ParadeIdPage() {
 
       <Stack p={4} spacing={4}>
         <Heading pt={4}>Parade State Summary</Heading>
-        <HStack spacing={4}>
+        <HStack spacing={0} gap={3} flexWrap='wrap'>
           <Tag
             size='md'
             variant='outline'
@@ -199,7 +199,7 @@ export default function ParadeIdPage() {
           >
             {hasCopied ? 'Copied!' : 'Copy'}
           </Button>
-          <StopParadeButton paradeId={paradeData.id} />
+          {!paradeData.endDate && <StopParadeButton paradeId={paradeData.id} />}
         </HStack>
 
         <Divider />
@@ -213,6 +213,7 @@ export default function ParadeIdPage() {
           <HStack>
             <Heading as='h2' size='md' colorScheme='gray'>Attendance Bulk Editor</Heading>
             <Switch
+              aria-label='Attendance Bulk Editor'
               isChecked={isSelecting}
               isDisabled={editor.status !== 'idle' && editor.status !== 'selecting'}
               onChange={() => {
@@ -281,7 +282,7 @@ export default function ParadeIdPage() {
           </TabPanels>
         </Tabs>
 
-        {editor.status === 'idle' &&
+        {editor.status === 'idle' && !paradeData.endDate &&
           <Button leftIcon={<AddIcon />} onClick={() => dispatch(enterAttendanceCreation())}>
             New Attendance
           </Button>
